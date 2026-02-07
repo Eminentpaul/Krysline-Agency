@@ -1,0 +1,199 @@
+{% load static %}
+
+
+
+<!-- meta tags and other links -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrixlab - Admin Login</title>
+
+    <link rel="shortcut icon" type="image/png" href="assets/images/logo_icon/favicon.png">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'assets/global/css/bootstrap.min.css' %}">
+
+    <link rel="stylesheet" href="{% static 'assets/admin/css/vendor/bootstrap-toggle.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/global/css/all.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/global/css/line-awesome.min.css' %}">
+
+    
+    <link rel="stylesheet" href="{% static 'assets/global/css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/admin/css/app.css' %}">
+
+
+    </head>
+<body>
+<div class="login-main"
+    style="background-image: url('assets/admin/images/login.jpg')">
+    <div class="container custom-container">
+        <div class="row justify-content-center">
+            <div class="col-xxl-5 col-xl-5 col-lg-6 col-md-8 col-sm-11">
+                <div class="login-area">
+                    <div class="login-wrapper">
+                        <div class="login-wrapper__top">
+                            <h3 class="title text-white">Welcome to <strong>Matrixlab</strong></h3>
+                            <p class="text-white">Admin Login to Matrixlab
+                                Dashboard</p>
+                        </div>
+                        <div class="login-wrapper__body">
+                            <form action="" method="POST"
+                                class="cmn-form mt-30 verify-gcaptcha login-form">
+                                {% csrf_token %}
+                                {% include "message.html" %}
+                                <input type="hidden" name="_token" value="nlmdlMt3kAZJh20ojUD1Ghqw3d9c9Ey86eG3WnR6" autocomplete="off">                                <div class="form-group">
+                                    <label>Username</label>
+                                    <input type="email" class="form-control" value="" name="email" placeholder="Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <div class="d-flex justify-content-between">
+                                        <label>Password</label>
+                                        <a href="#" class="forget-text">Forgot Password?</a>
+                                    </div>
+                                    <input type="password" class="form-control" value="" name="password" placeholder="Password" required>
+                                </div>
+                                <div class="mb-3">
+        
+{% comment %} <script src="https://www.google.com/recaptcha/api.js"></script>
+<div class="g-recaptcha" data-sitekey="6LdPC88fAAAAADQlUf_DV6Hrvgm-pZuLJFSLDOWV" data-callback="verifyCaptcha"></div>
+<div id="g-recaptcha-error"></div>    </div> {% endcomment %}
+                                <button type="submit" class="btn cmn-btn w-100">LOGIN</button>
+                            </form>
+                            <div class="form-group">
+                            <p class="text-white m-0">Don'	 have an account? <a href="{% url "register" %}" class="text-theme">Sign Up</a></p>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="{% static 'assets/global/js/jquery-3.7.1.min.js' %}"></script>
+<script src="{% static 'assets/global/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'assets/admin/js/vendor/bootstrap-toggle.min.js' %}"></script>
+
+
+<link href="{% static 'assets/global/css/iziToast.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/global/css/iziToast_custom.css' %}" rel="stylesheet">
+<script src="{% static 'assets/global/js/iziToast.min.js' %}"></script>
+
+<script>
+    "use strict";
+    const colors = {
+        success: '#28c76f',
+        error: '#eb2222',
+        warning: '#ff9f43',
+        info: '#1e9ff2',
+    }
+
+    const icons = {
+        success: 'fas fa-check-circle',
+        error: 'fas fa-times-circle',
+        warning: 'fas fa-exclamation-triangle',
+        info: 'fas fa-exclamation-circle',
+    }
+
+    const notifications = [];
+    const errors = [];
+
+
+    const triggerToaster = (status, message) => {
+        iziToast[status]({
+            title: status.charAt(0).toUpperCase() + status.slice(1),
+            message: message,
+            position: "topRight",
+            backgroundColor: '#fff',
+            icon: icons[status],
+            iconColor: colors[status],
+            progressBarColor: colors[status],
+            titleSize: '1rem',
+            messageSize: '1rem',
+            titleColor: '#474747',
+            messageColor: '#a2a2a2',
+            transitionIn: 'obunceInLeft'
+        });
+    }
+
+    if (notifications.length) {
+        notifications.forEach(element => {
+            triggerToaster(element[0], element[1]);
+        });
+    }
+
+    if (errors.length) {
+        errors.forEach(error => {
+            triggerToaster('error', error);
+        });
+    }
+
+    function notify(status, message) {
+        if (typeof message == 'string') {
+            triggerToaster(status, message);
+        } else {
+            $.each(message, (i, val) => triggerToaster(status, val));
+        }
+    }
+</script>
+
+<script src="{% static 'assets/global/js/nicEdit.js' %}"></script>
+
+<script src="{% static 'assets/global/js/select2.min.js' %}"></script>
+<script src="{% static 'assets/admin/js/app.js' %}"></script>
+
+
+<script>
+    "use strict";
+    bkLib.onDomLoaded(function() {
+        $( ".nicEdit" ).each(function( index ) {
+            $(this).attr("id","nicEditor"+index);
+            new nicEditor({fullPanel : true}).panelInstance('nicEditor'+index,{hasPanel : true});
+        });
+    });
+    (function($){
+        $( document ).on('mouseover ', '.nicEdit-main,.nicEdit-panelContain',function(){
+            $('.nicEdit-main').focus();
+        });
+
+        $('.breadcrumb-nav-open').on('click', function() {
+            $(this).toggleClass('active');
+            $('.breadcrumb-nav').toggleClass('active');
+        });
+
+        $('.breadcrumb-nav-close').on('click', function() {
+            $('.breadcrumb-nav').removeClass('active');
+        });
+
+        if($('.topTap').length){
+            $('.breadcrumb-nav-open').removeClass('d-none');
+        }
+    })(jQuery);
+</script>
+
+    <script>
+        (function($){
+            "use strict"
+            $('.verify-gcaptcha').on('submit',function(){
+                var response = grecaptcha.getResponse();
+                if (response.length == 0) {
+                    document.getElementById('g-recaptcha-error').innerHTML = '<span class="text--danger">Captcha field is required.</span>';
+                    return false;
+                }
+                return true;
+            });
+
+            window.verifyCaptcha = () => {
+                document.getElementById('g-recaptcha-error').innerHTML = '';
+            }
+        })(jQuery);
+    </script>
+
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"0542d18bc5a94bf6b5460f8530f5a523","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>

@@ -1,0 +1,500 @@
+{% load static %}
+
+
+
+<!doctype html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title> Matrixlab - Register</title>
+    <meta name="title" Content="Matrixlab - Register">
+    <meta name="description" content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit">
+    <meta name="keywords" content="MatrixLab,MLM platform,matrix platform,Multi-level-marketing">
+    <link rel="shortcut icon" href="{% static "assets/images/logo_icon/favicon.png" %}}" type="image/x-icon">
+
+    
+    <link rel="apple-touch-icon" href="assets/images/logo_icon/logo.png">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Matrixlab - Register">
+    
+    <meta itemprop="name" content="Matrixlab - Register">
+    <meta itemprop="description" content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit">
+    <meta itemprop="image" content="{% static "assets/images/seo/666c205fc90f81718362207.png" %}">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MatrixLab - Matrix MLM Platform">
+    <meta property="og:description" content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit ff">
+    <meta property="og:image" content="{% static "assets/images/seo/666c205fc90f81718362207.png" %}">
+    <meta property="og:image:type" content="image/png">
+        <meta property="og:image:width" content="1180">
+    <meta property="og:image:height" content="600">
+    <meta property="og:url" content="user/register">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <link href="{% static 'assets/global/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/global/css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/global/css/line-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/magnific-popup.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/owl.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/odometer.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/nice-select.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/main.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/custom.css' %}" rel="stylesheet">
+
+    
+        <style>
+        .social-login-btn {
+            border: 1px solid rgba(255, 255, 255, .1);
+            background-color: rgba(255, 255, 255, .06);
+            padding: 7px 16px;
+            border-radius: 4px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            justify-content: center;
+            color: #fff;
+            font-size: 15px;
+            transition: all linear 0.3s;
+        }
+
+        .social-login-btn:hover {
+            background-color: rgba(255, 255, 255, .1);
+            color: #fff;
+        }
+
+        .social-login-btn img {
+            width: 20px;
+        }
+
+        .social-auth {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap
+        }
+
+        .auth-devide {
+            text-align: center;
+            margin-top: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .auth-devide::after {
+            content: '';
+            width: 100%;
+            height: 1px;
+            background: rgba(255, 255, 255, .1);
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            z-index: -1;
+        }
+
+        .auth-devide span {
+            padding-inline: 6px;
+            background: #073b4b;
+            color: #fff;
+        }
+
+        .linkedin-facebook,
+        .continue-facebook,
+        .continue-google {
+            flex: auto 1 1;
+        }
+    </style>
+    <style>
+        .form-disabled {
+            overflow: hidden;
+            position: relative;
+        }
+
+
+        .form-disabled::after {
+            content: "";
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.2);
+            top: 0;
+            left: 0;
+            backdrop-filter: blur(2px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            z-index: 99;
+        }
+
+        .form-disabled-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 991;
+            font-size: 24px;
+            height: auto;
+            width: 100%;
+            text-align: center;
+            color: hsl(var(--dark-600));
+            font-weight: 800;
+            line-height: 1.2;
+        }
+    </style>
+
+    <link href="assets/templates/basic/css/color.php?color=f99f0b" rel="stylesheet">
+</head>
+
+
+<body>
+
+    
+    <div class="overlay"></div>
+
+    <a class="scrollToTop" href="https://script.viserlab.com/matrixlab"><i class="fas fa-angle-up"></i></a>
+    <div class="preloader">
+        <div class="loader">
+            <div class="loader-inner"></div>
+        </div>
+    </div>
+
+        
+    <section class="account-section style--two">
+        <div class="left" style="background-image: url('assets/images/frontend/auth/636777f0dff201667725296.jpg');">
+            <div class="left-inner text-center">
+                <h6 class="text--base">Welcome back</h6>
+                <h3 class="title mt-2 text-white">Sign Up to your account</h3>
+            </div>
+        </div>
+
+        <div class="right ">
+            <div class="top w-100 text-center">
+                <a class="account-logo" href="https://script.viserlab.com/matrixlab"><img
+                         src="{% static 'assets/images/logo_icon/logo.png' %}" alt="logo"></a>
+            </div>
+
+            
+            <div class="mt-3">
+        <div class="social-auth">
+                            <div class="continue-google">
+                    <a href="user/social-login/google" class="social-login-btn">
+                        <span class="google-icon">
+                            <img src="{% static 'assets/templates/basic/images/google.svg' %}" alt="Google">
+                        </span> Register with Google                    </a>
+                </div>
+            
+                            <div class="continue-facebook">
+                    <a href="user/social-login/facebook" class="social-login-btn">
+                        <span class="facebook-icon">
+                            <img src="{% static 'assets/templates/basic/images/facebook.svg' %}" alt="Facebook">
+                        </span> Register with Facebook                    </a>
+                </div>
+            
+                            <div class="linkedin-facebook">
+                    <a href="user/social-login/linkedin" class="social-login-btn">
+                        <span class="linkedin-icon">
+                            <img src="{% static 'assets/templates/basic/images/linkdin.svg' %}" alt="Linkedin">
+                        </span> Register with Linkedin                    </a>
+                </div>
+                    </div>
+
+        <div class="auth-devide">
+            <span>OR</span>
+        </div>
+    </div>
+
+
+            <div class="middle w-100">
+                <form class="contact-form row mb--25 align-items-center verify-gcaptcha disableSubmission" action="user/register" method="POST">
+                    <input type="hidden" name="_token" value="ql8iFPYMLJeFK9Jlz7tbbB3wbRpNS0ETlGMRHdmI" autocomplete="off">                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>First Name</label>
+                            <input name="firstname" type="text" value="" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Last Name</label>
+                            <input name="lastname" type="text" value="" required>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <div class="form-group">
+                            <label>E-Mail Address</label>
+                            <input name="email" type="email" value="" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Password</label>
+                            <input class="form-control form--control " name="password" type="password" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Confirm Password</label>
+                            <input class="form-control form--control" name="password_confirmation" type="password" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 captcha">
+                        <div class="mb-3">
+        
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<div class="g-recaptcha" data-sitekey="6LdPC88fAAAAADQlUf_DV6Hrvgm-pZuLJFSLDOWV" data-callback="verifyCaptcha"></div>
+<div id="g-recaptcha-error"></div>    </div>
+                    </div>
+
+                                            <div class="col-md-12">
+                            <div class="form-group checkgroup">
+                                <input id="check" name="agree" type="checkbox" required>
+                                <label for="check">I agree with                                                                            <a class="text-theme" href="policy/privacy-policy?42">Privacy Policy</a>
+                                                                                    ,
+                                                                                                                    <a class="text-theme" href="policy/terms-of-service?43">Terms of Service</a>
+                                                                                                            </label>
+                            </div>
+                        </div>
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <button class="mt-3" type="submit">Create Account</button>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-md-right">
+                        <div class="form-group">
+                            <p class="m-0 text-white">Already have an account? <a class="text-theme" href="user/login">Sign In</a></p>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="bottom w-100 text-center">
+                <p class="text-white">&copy; All Right Reserved By <a class="text-theme" href="https://script.viserlab.com/matrixlab">Matrixlab</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal fade custom--modal" id="existModalCenter" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">You are with us</h5>
+                    <button class="close text-white" data-bs-dismiss="modal" type="button" aria-label="Close">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-white">You already have an account please Sign in </p>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn--danger" data-bs-dismiss="modal" href="javascript:void(0)">Close</button>
+                    <a class="custom-button theme btn-sm text-white" href="user/login">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{% static 'assets/global/js/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'assets/global/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/magnific-popup.min.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/wow.min.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/owl.min.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/odometer.min.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/viewport.jquery.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/nice-select.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/app.js' %}"></script>
+
+    
+    
+    <link href="{% static 'assets/global/css/iziToast.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/global/css/iziToast_custom.css' %}" rel="stylesheet">
+<script src="{% static 'assets/global/js/iziToast.min.js' %}"></script>
+
+<script>
+    "use strict";
+    const colors = {
+        success: '#28c76f',
+        error: '#eb2222',
+        warning: '#ff9f43',
+        info: '#1e9ff2',
+    }
+
+    const icons = {
+        success: 'fas fa-check-circle',
+        error: 'fas fa-times-circle',
+        warning: 'fas fa-exclamation-triangle',
+        info: 'fas fa-exclamation-circle',
+    }
+
+    const notifications = [];
+    const errors = [];
+
+
+    const triggerToaster = (status, message) => {
+        iziToast[status]({
+            title: status.charAt(0).toUpperCase() + status.slice(1),
+            message: message,
+            position: "topRight",
+            backgroundColor: '#fff',
+            icon: icons[status],
+            iconColor: colors[status],
+            progressBarColor: colors[status],
+            titleSize: '1rem',
+            messageSize: '1rem',
+            titleColor: '#474747',
+            messageColor: '#a2a2a2',
+            transitionIn: 'obunceInLeft'
+        });
+    }
+
+    if (notifications.length) {
+        notifications.forEach(element => {
+            triggerToaster(element[0], element[1]);
+        });
+    }
+
+    if (errors.length) {
+        errors.forEach(error => {
+            triggerToaster('error', error);
+        });
+    }
+
+    function notify(status, message) {
+        if (typeof message == 'string') {
+            triggerToaster(status, message);
+        } else {
+            $.each(message, (i, val) => triggerToaster(status, val));
+        }
+    }
+</script>
+
+            <script>
+        (function($){
+            "use strict"
+            $('.verify-gcaptcha').on('submit',function(){
+                var response = grecaptcha.getResponse();
+                if (response.length == 0) {
+                    document.getElementById('g-recaptcha-error').innerHTML = '<span class="text--danger">Captcha field is required.</span>';
+                    return false;
+                }
+                return true;
+            });
+
+            window.verifyCaptcha = () => {
+                document.getElementById('g-recaptcha-error').innerHTML = '';
+            }
+        })(jQuery);
+    </script>
+    <script>
+        "use strict";
+        (function($) {
+
+            $('.checkUser').on('focusout', function(e) {
+                var url = 'user/check-user';
+                var value = $(this).val();
+                var token = 'ql8iFPYMLJeFK9Jlz7tbbB3wbRpNS0ETlGMRHdmI';
+
+                var data = {
+                    email: value,
+                    _token: token
+                }
+
+                $.post(url, data, function(response) {
+                    if (response.data != false) {
+                        $('#existModalCenter').modal('show');
+                    }
+                });
+            });
+
+                    })(jQuery);
+    </script>
+
+    <script>
+        (function($) {
+            "use strict";
+
+            $(".langSel").on("click", function() {
+                var code = $(this).data('code');
+                window.location.href = "change/" + code;
+            });
+
+            var inputElements = $('[type=text],[type=password],select,textarea');
+            $.each(inputElements, function(index, element) {
+                element = $(element);
+                element.closest('.form-group').find('label').attr('for', element.attr('name'));
+                element.attr('id', element.attr('name'))
+            });
+
+            $.each($('input, select, textarea'), function(i, element) {
+                var elementType = $(element);
+                if (elementType.attr('type') != 'checkbox') {
+                    if (element.hasAttribute('required')) {
+                        $(element).closest('.form-group').find('label').addClass('required');
+                    }
+                }
+            });
+
+            $.each($('input:not([type=checkbox]):not([type=hidden]), select, textarea'), function(i, element) {
+                if (element.hasAttribute('required')) {
+                    $(element).closest('.form-group').find('label').addClass('required');
+                }
+
+            });
+
+            let disableSubmission = false;
+            $('.disableSubmission').on('submit', function(e) {
+                if (disableSubmission) {
+                    e.preventDefault()
+                } else {
+                    disableSubmission = true;
+                }
+            });
+
+        })(jQuery);
+    </script>
+
+
+<script>
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/5fe0b9b2a8a254155ab5421d/1eq2tap1m';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+  })();
+</script>
+
+
+
+<script>
+if (window.top != window.self) {
+    document.body.innerHTML += '<div style="position:fixed;top:0;width:100%;z-index:9999999;background:#f8d7da;color:#721c24;text-align:center; padding: 20px;"><p style="font-size:20px; font-weight: bold;">You are using this website under an external iframe!!</p><p style="font-size:16px; margin-top: 20px;">for a better experience, please browse directly instead of an external iframe.</p><a href="'+window.self.location+'" target="_blank" style=" margin-top:20px; color: #fff;background-color: #dc3545; padding: 5px 10px; border-radius: 5px; text-decoration: none;">Browse Directly</a></div>';
+}
+</script>
+
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1ME4K0RD7K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1ME4K0RD7K');
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"0542d18bc5a94bf6b5460f8530f5a523","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+
+</html>

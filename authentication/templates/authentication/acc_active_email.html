@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your KAL Account</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 20px auto; padding: 20px; border: 1px solid #e1e1e1; border-radius: 8px; }
+        .header { text-align: center; padding-bottom: 20px; border-bottom: 2px solid #0056b3; }
+        .logo { font-size: 24px; font-weight: bold; color: #0056b3; text-decoration: none; }
+        .content { padding: 30px 0; text-align: center; }
+        .btn { 
+            background-color: #0056b3; 
+            color: #ffffff !important; 
+            padding: 12px 30px; 
+            text-decoration: none; 
+            border-radius: 5px; 
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .footer { font-size: 12px; color: #777; text-align: center; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; }
+        .warning { background-color: #fff3cd; color: #856404; padding: 10px; border-radius: 4px; font-size: 13px; margin-top: 20px; }
+        .link-text { word-break: break-all; font-size: 11px; color: #0056b3; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <a href="{{ domain }}" class="logo">KRYSLINE AGENCY LTD</a>
+        </div>
+        
+        <div class="content">
+            <h2>Welcome to the Team, {{ user.username }}!</h2>
+            <p>Thank you for registering as a KAL Affiliate. To activate your account and start earning commissions, please verify your email address by clicking the button below:</p>
+            
+            <a href="{{ link }}" class="btn">Verify Email Address</a>
+            
+            <div class="warning">
+                <strong>Security Note:</strong> This verification link will expire in 24 hours. If you did not create this account, please ignore this email.
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>If the button above doesn't work, copy and paste this link into your browser:</p>
+            <p class="link-text">{{ link }}</p>
+            <hr>
+            <p>&copy; {% now "Y" %} Krysline Agency Ltd. All rights reserved.<br>
+            Enugu, Nigeria.</p>
+        </div>
+    </div>
+</body>
+</html>

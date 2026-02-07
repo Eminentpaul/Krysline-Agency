@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Your Email | Krysline Agency Ltd</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com">
+
+    <style>
+        :root {
+            --kal-blue: #0056b3;
+            --kal-dark: #1a1a1a;
+            --kal-accent: #00d2ff;
+            --bg-gradient: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .verify-card {
+            max-width: 500px;
+            width: 100%;
+            border-radius: 24px;
+            border: none;
+            background: #ffffff;
+            box-shadow: 0 20px 40px rgba(0, 86, 179, 0.1);
+            overflow: hidden;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-header-kal {
+            background: var(--kal-blue);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .icon-circle {
+            width: 90px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            backdrop-filter: blur(5px);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4); }
+            70% { transform: scale(1); box-shadow: 0 0 0 15px rgba(255, 255, 255, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+        }
+
+        .card-body-kal {
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .kal-title {
+            color: var(--kal-dark);
+            font-weight: 800;
+            margin-bottom: 15px;
+        }
+
+        .btn-resend {
+            background: linear-gradient(45deg, var(--kal-blue), var(--kal-accent));
+            border: none;
+            color: white;
+            padding: 14px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-resend:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 86, 179, 0.3);
+            color: white;
+        }
+
+        .info-box {
+            background: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            color: #664d03;
+            margin: 25px 0;
+            text-align: left;
+        }
+
+        .footer-text {
+            font-size: 0.85rem;
+            color: #adb5bd;
+            margin-top: 25px;
+        }
+
+        .back-link {
+            color: #6c757d;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .back-link:hover {
+            color: var(--kal-blue);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="verify-card">
+        <div class="card-header-kal">
+            <div class="icon-circle">
+                <i class="fas fa-envelope-open-text fa-3x"></i>
+            </div>
+            <h4 class="mb-0 text-uppercase tracking-wider" style="letter-spacing: 2px;">Krysline Agency</h4>
+        </div>
+
+        <div class="card-body-kal">
+            <h2 class="kal-title">Check Your Inbox</h2>
+            <p class="text-muted">
+                We've sent a secure activation link to your email. Please click the link to verify your account and start earning commissions.
+            </p>
+
+            <div class="info-box">
+                <i class="fas fa-lightbulb me-2"></i>
+                <strong>Pro-tip:</strong> If you don't see the email within 2 minutes, please check your <strong>Spam</strong> or <strong>Promotions</strong> folder.
+            </div>
+
+            <a href="/auth/resend-activation/" class="btn btn-resend">
+                Resend Verification Email
+            </a>
+
+            <div class="mt-4">
+                <a href="{% url "login" %}" class="back-link">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Login
+                </a>
+            </div>
+
+            <div class="footer-text">
+                &copy; 2025 Krysline Agency Ltd. <br>
+                <small>Trusted Partners in Real Estate & Excellence</small>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

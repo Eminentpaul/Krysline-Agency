@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resend Activation | KAL</title>
+    <link href="https://cdn.jsdelivr.net" rel="stylesheet">
+    <style>
+        body { background: #f8f9fa; display: flex; align-items: center; min-height: 100vh; }
+        .card { border-radius: 20px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .btn-kal { background: #0056b3; color: white; border-radius: 50px; padding: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                <div class="card p-4">
+                    <h3 class="text-center fw-bold mb-4">Resend Activation</h3>
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label">Enter your registered email</label>
+                            <input type="email" name="email" class="form-control" placeholder="agent@krysline.com" required>
+                        </div>
+                        <button type="submit" class="btn btn-kal w-100 mb-3">Send New Link</button>
+                        <div class="text-center">
+                            <a href="{% url 'login' %}" class="text-decoration-none small text-muted">Back to Login</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

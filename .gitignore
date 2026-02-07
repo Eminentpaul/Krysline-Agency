@@ -1,0 +1,18 @@
+# Security: Ignore environment variables
+.env
+
+# Ignore Virtual Environment
+venv/
+env/
+ENV/
+
+# Ignore Python cache
+__pycache__/
+*.py[cod]
+
+# Ignore Database (if using SQLite for testing)
+*.sqlite3
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
