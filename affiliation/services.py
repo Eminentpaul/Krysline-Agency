@@ -1,6 +1,13 @@
 from django.db import transaction
 from decimal import Decimal
-from .models import CommissionLog
+from .models import CommissionLog, AffiliatePackage, Affiliate
+from authentication.models import User
+from django.shortcuts import get_object_or_404
+import requests
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 
 @transaction.atomic
@@ -36,3 +43,65 @@ def distribute_commissions(new_user_profile):
         
         current_upline = current_upline.referrer
         gen += 1
+
+
+
+def verify_transaction_with_api(transaction_id, user):
+    import paystack
+
+    paystack.api_key(os.environ.get('SECRET_KEY'))
+
+    paystack.Transaction.fetch
+    """
+    Step 2: Server-to-Server re-verification
+    """
+    url = f"https://api.flutterwave.com/v3/transactions/{transaction_id}/verify"
+    headers = {
+        "Authorization": f"Bearer {os.environ.get('SECRET_KEY')}",
+        "Content-Type": "application/json"
+    }
+
+
+    
+
+    try:
+        response = requests.get(url, headers=headers)
+        res_data = response.json()
+
+        if res_data["status"] == "success" and res_data["data"]["status"] == "successful":
+            data = res_data["data"]
+            # Fetch the pending affiliate record using the reference
+            # tx_ref was generated in the 'process_payment' view
+            
+            with transaction.atomic():
+                package = get_object_or_404(AffiliatePackage, price=float(data['amount']))
+                try:
+                    affiliate = Affiliate.objects.select_for_update().get(referral_code=str(user.affiliate_record.referral_code))
+                    
+                    if float(data["amount"]) >= package.price and data["currency"] == "NGN":
+                        # SUCCESS: Activate user and trigger MLM Commissions
+                        affiliate.is_active = True
+                        affiliate.save()
+                        
+                        # Trigger your MLM commission distribution logic
+                        # distribute_commissions(affiliate.user.profile)
+
+                        # print("Normal Ziko")
+                        return True
+                    
+
+                except Affiliate.DoesNotExist:
+                    Affiliate.objects.create(
+                        user = user,
+                        package = package
+                    )
+
+                
+                # Critical check: Does the paid amount match the package price?
+                
+                    
+    except Exception as e:
+        print(f"Verification Error: {e}")
+        
+    
+    return False

@@ -9,24 +9,24 @@
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title> Matrixlab - Register</title>
-    <meta name="title" Content="Matrixlab - Register">
+    <title> Krysline Agency Ltd - Register</title>
+    <meta name="title" Content="Krysline Agency Ltd - Register">
     <meta name="description" content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit">
-    <meta name="keywords" content="MatrixLab,MLM platform,matrix platform,Multi-level-marketing">
+    <meta name="keywords" content="Krysline Agency Ltd,MLM platform,matrix platform,Multi-level-marketing">
     <link rel="shortcut icon" href="{% static "assets/images/logo_icon/favicon.png" %}}" type="image/x-icon">
 
     
     <link rel="apple-touch-icon" href="assets/images/logo_icon/logo.png">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Matrixlab - Register">
+    <meta name="apple-mobile-web-app-title" content="Krysline Agency Ltd - Register">
     
-    <meta itemprop="name" content="Matrixlab - Register">
+    <meta itemprop="name" content="Krysline Agency Ltd - Register">
     <meta itemprop="description" content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit">
     <meta itemprop="image" content="{% static "assets/images/seo/666c205fc90f81718362207.png" %}">
     
     <meta property="og:type" content="website">
-    <meta property="og:title" content="MatrixLab - Matrix MLM Platform">
+    <meta property="og:title" content="Krysline Agency Ltd - Matrix MLM Platform">
     <meta property="og:description" content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit ff">
     <meta property="og:image" content="{% static "assets/images/seo/666c205fc90f81718362207.png" %}">
     <meta property="og:image:type" content="image/png">
@@ -154,7 +154,7 @@
     
     <div class="overlay"></div>
 
-    <a class="scrollToTop" href="https://script.viserlab.com/matrixlab"><i class="fas fa-angle-up"></i></a>
+    <a class="scrollToTop" href="https://script.viserlab.com/Krysline Agency Ltd"><i class="fas fa-angle-up"></i></a>
     <div class="preloader">
         <div class="loader">
             <div class="loader-inner"></div>
@@ -172,7 +172,7 @@
 
         <div class="right ">
             <div class="top w-100 text-center">
-                <a class="account-logo" href="https://script.viserlab.com/matrixlab"><img
+                <a class="account-logo" href="https://script.viserlab.com/Krysline Agency Ltd"><img
                          src="{% static 'assets/images/logo_icon/logo.png' %}" alt="logo"></a>
             </div>
 
@@ -208,58 +208,71 @@
 
 
             <div class="middle w-100">
-                <form class="contact-form row mb--25 align-items-center verify-gcaptcha disableSubmission" action="user/register" method="POST">
-                    <input type="hidden" name="_token" value="ql8iFPYMLJeFK9Jlz7tbbB3wbRpNS0ETlGMRHdmI" autocomplete="off">                    
+                <form class="contact-form row mb--25 align-items-center verify-gcaptcha" action="" method="POST">
+                    {% csrf_token %}
+                    {% include "message.html" %}
+                                        
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>First Name</label>
-                            <input name="firstname" type="text" value="" required>
+                            <input name="first_name" type="text" value="" required>
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Last Name</label>
-                            <input name="lastname" type="text" value="" required>
+                            <input name="last_name" type="text" value="" required>
                         </div>
                     </div>
-
-                    <div class="col-12">
+                                        
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <label>E-Mail Address</label>
-                            <input name="email" type="email" value="" required>
+                            <label>Username</label>
+                            <input name="username" type="text" value="" required>
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-group">
+                            <label>Email Address</label>
+                            <input name="email" type="email" value="" required>
+                        </div>
+                    </div>
+
+                    
+                    <div class="col-md-6">
+                        <div class="form-group">
                             <label>Password</label>
-                            <input class="form-control form--control " name="password" type="password" required>
+                            <input class="form-control form--control " name="password1" type="password" required>
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-group">
                             <label>Confirm Password</label>
-                            <input class="form-control form--control" name="password_confirmation" type="password" required>
+                            <input class="form-control form--control" name="password2" type="password" required>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Referral Code:</label>
+                            <input name="referrer_code" type="text" value="{{initial_data}}" required>
                         </div>
                     </div>
 
                     <div class="col-md-12 captcha">
-                        <div class="mb-3">
-        
-<script src="https://www.google.com/recaptcha/api.js"></script>
-<div class="g-recaptcha" data-sitekey="6LdPC88fAAAAADQlUf_DV6Hrvgm-pZuLJFSLDOWV" data-callback="verifyCaptcha"></div>
-<div id="g-recaptcha-error"></div>    </div>
+                        
                     </div>
 
                                             <div class="col-md-12">
                             <div class="form-group checkgroup">
                                 <input id="check" name="agree" type="checkbox" required>
-                                <label for="check">I agree with                                                                            <a class="text-theme" href="policy/privacy-policy?42">Privacy Policy</a>
+                                <label for="check">I agree with                                                                            <a class="text-theme" href="#">Privacy Policy</a>
                                                                                     ,
-                                                                                                                    <a class="text-theme" href="policy/terms-of-service?43">Terms of Service</a>
-                                                                                                            </label>
+                                    <a class="text-theme" href="policy/terms-of-service?43">Terms of Service</a>
+                            </label>
                             </div>
                         </div>
                     
@@ -270,13 +283,13 @@
                     </div>
                     <div class="col-md-6 text-md-right">
                         <div class="form-group">
-                            <p class="m-0 text-white">Already have an account? <a class="text-theme" href="user/login">Sign In</a></p>
+                            <p class="m-0 text-white">Already have an account? <a class="text-theme" href="{% url "login" %}">Sign In</a></p>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="bottom w-100 text-center">
-                <p class="text-white">&copy; All Right Reserved By <a class="text-theme" href="https://script.viserlab.com/matrixlab">Matrixlab</a>
+                <p class="text-white">&copy; All Right Reserved By <a class="text-theme" href="https://script.viserlab.com/Krysline Agency Ltd">Krysline Agency Ltd</a>
                 </p>
             </div>
         </div>
@@ -296,7 +309,7 @@
                 </div>
                 <div class="modal-footer">
                     <button class="btn btn--danger" data-bs-dismiss="modal" href="javascript:void(0)">Close</button>
-                    <a class="custom-button theme btn-sm text-white" href="user/login">Login</a>
+                    <a class="custom-button theme btn-sm text-white" href="{% url "login" %}">Login</a>
                 </div>
             </div>
         </div>

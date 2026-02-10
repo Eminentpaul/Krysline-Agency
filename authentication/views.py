@@ -1,9 +1,10 @@
 
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.db import transaction
+from affiliation.models import Affiliate
 from django.utils import timezone
-from django.contrib import messages
+from django.contrib import messages as mg
 from .forms import SecureLoginForm, AffiliateRegistrationForm
 from security.decorators import rate_limit, get_client_ip, log_security_event, logger
 from security.models import SecurityAuditLog
@@ -13,13 +14,14 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from .models import User
 
 
 
 @rate_limit(rate='5/minute')
 def login(request):
     if request.user.is_authenticated:
-        return 
+        return redirect("dashboard")
     # TODO RETURN TO DASHBOARD
     
     # Initialize the form 
@@ -35,7 +37,7 @@ def login(request):
 
         # pre-authentication check (IP blocking)
         if is_ip_blocked(ip_address):
-            messages.error(request, 'Access Denied.')
+            mg.error(request, 'Access Denied.')
             # return render(request, 'authentication/login.html')
 
 
@@ -46,15 +48,16 @@ def login(request):
 
             # Account Status Check
             if profile.account_locked_until and profile.account_locked_until > timezone.now():
-                messages.error(request, 'Account temporarily locked, Try later')
+                mg.error(request, 'Account temporarily locked, Try later')
                 # return redirect('login')
             
             if not user.is_active:
-                messages.error(request, 'Account Disabled')
+                mg.error(request, 'Account Disabled')
                 # return render(request, 'authenticate/login.html')
 
 
             # Success login 
+            auth_login(request, user)
             profile.last_login_ip_address = ip_address
             profile.save()
 
@@ -76,12 +79,12 @@ def login(request):
 
             match getattr(user, 'user_type', 'default'):
                 case 'affiliate':
-                    print("User Dashboard")
-                    return
+                    # print("User Dashboard")
+                    return redirect('dashboard')
                 # TODO return to user dasboard
                 case 'admin':
                     print('Admin Dashboard')
-                    return
+                    return redirect('/admin')
                 # TODO return to admin dashboard
 
                 case _:
@@ -89,7 +92,7 @@ def login(request):
                 
         else:
             increment_failed_attempts(username, ip_address)
-            messages.error(request, 'Invalid Username or Password')
+            mg.error(request, 'Invalid Username or Password')
 
     return render(request, 'authentication/login.html')
 
@@ -97,24 +100,52 @@ def login(request):
 
 
 
-@rate_limit(rate='5/hour')  # Strictly limit account creation per IP
+@rate_limit(rate='50/hour')  # Strictly limit account creation per IP
 @log_security_event(action='USER_REGISTRATION_ATTEMPT')
-def register_view(request):
+def register(request): 
     if request.user.is_authenticated:
         return redirect('secure_dashboard')
+    
+    initial_data =  request.GET.get('ref', '')
+    error_msg = None
+    form = ''
 
     if request.method == 'POST':
+        # referrer_code = request.POST.get("referrer_code")
+
         form = AffiliateRegistrationForm(request.POST)
+        
         if form.is_valid():
+            user = User()
+            referrer_code = request.POST.get("referrer_code") # Capture from form
+            username = form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
+            first_name = form.cleaned_data.get('first_name')
+            last_name = form.cleaned_data.get('last_name')
+            password1 = form.cleaned_data.get('password1')
+            password2 = form.cleaned_data.get('password2')
+
+
+
+            if referrer_code:
+                request.session['pending_referrer'] = referrer_code
             try:
                 with transaction.atomic():
                     # Save user (password is hashed automatically by the form)
-                    user = form.save()
+                    user.first_name = first_name
+                    user.last_name = last_name
+                    user.email = email
+                    user.username = username
+                    user.set_password(password1)
+
+                    user.save
+
+
 
                     # Generate Verification Link
                     uid = urlsafe_base64_encode(force_bytes(user.pk))
                     token = email_verification_token.make_token(user)
-                    link = f"{request.scheme}://{request.get_host()}/activate/{uid}/{token}/"
+                    link = f"{request.scheme}://{request.get_host()}/user/activate/{uid}/{token}/"
 
                     # Send Email
                     subject = "Verify your KAL Affiliate Account"
@@ -139,29 +170,65 @@ def register_view(request):
             except Exception as e:
                 logger.error("registration_error", error=str(e))
                 form.add_error(None, "An internal error occurred. Please try again.")
-    else:
-        # Pre-fill referral code from URL if present (e.g., /register/?ref=KAL123)
-        initial_data = {'referrer_code': request.GET.get('ref', '')}
-        form = AffiliateRegistrationForm(initial=initial_data)
+        else:
+            errors = form.errors.get_json_data(escape_html=True)
+            for error in errors:
+                error_msg = errors[error][0]['message']
 
-    return render(request, 'authentication/register.html', {'form': form})
-# TODO: update the template 
+            mg.error(request, error_msg)
+
+    return render(request, 'authentication/register.html', {'initial_data': initial_data})
+
 
 
 
 def activate_account(request, uidb64, token):
+
     try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
+         # 1. Decode the bytes
+        uid_bytes = urlsafe_base64_decode(uidb64)
+        print(uid_bytes)
+        # 2. Convert bytes to string (This is where None usually happens)
+        uid = force_str(uid_bytes)
+        print(uid)
         user = User.objects.get(pk=uid)
+        print(user)
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
 
     if user is not None and email_verification_token.check_token(user, token):
         user.is_active = True
         user.save()
+
+        new_profile = user.profile
+        # 2. Get the code from the session
+        ref_code = request.session.get('pending_referrer')
+        
+        if ref_code:
+            try:
+                # 3. Search the Affiliate model for the owner of the code
+        
+                upline_affiliate = Affiliate.objects.get(referral_code=ref_code)
+                
+                # 4. LINKING POINT: 
+                # We point the new profile's 'referrer' to the upline's 'profile'
+                new_profile.referrer = upline_affiliate.user.profile
+                new_profile.save()
+
+                
+                Affiliate.objects.get_or_create(
+                    user=user,
+                    upline=upline_affiliate,
+                    # is_active=False # Stays inactive until they pay for a package
+                )
+                
+            except Affiliate.DoesNotExist:
+                # If code is wrong, they just don't have a referrer (Company Direct)
+                pass 
+
         # Log them in automatically after verification
         login(request, user)
-        messages.success(request, "Email verified successfully! Now choose your package.")
+        mg.success(request, "Email verified successfully! Now choose your package.")
         return redirect('choose_package')
     else:
         return render(request, 'authentication/activation_invalid.html')
@@ -178,13 +245,13 @@ def resend_activation(request):
             # 1. SECURITY: Check if we recently sent an email (2-minute cooldown)
             cache_key = f"resend_lock_{user.id}"
             if cache.get(cache_key):
-                messages.warning(request, "Please wait 2 minutes before requesting another link.")
+                mg.warning(request, "Please wait 2 minutes before requesting another link.")
                 return redirect('resend_activation')
 
             # 2. Generate New Link
             uid = urlsafe_base64_encode(force_bytes(user.pk))
             token = email_verification_token.make_token(user)
-            link = f"{request.scheme}://{request.get_host()}/activate/{uid}/{token}/"
+            link = f"{request.scheme}://{request.get_host()}/user/activate/{uid}/{token}/"
 
             # 3. Send Email (Re-use your logic from register_view)
             # ... [Email sending code here] ...
@@ -192,12 +259,12 @@ def resend_activation(request):
             # 4. Set the 2-minute lock in cache
             cache.set(cache_key, True, 120) 
             
-            messages.success(request, "A new activation link has been sent to your email.")
+            mg.success(request, "A new activation link has been sent to your email.")
             return redirect('verify_email_sent')
         
         # 5. SECURITY: If user doesn't exist or is already active, 
         # still show success to prevent "Email Enumeration" (hacking)
-        messages.success(request, "If an account exists with that email, a link has been sent.")
+        mg.success(request, "If an account exists with that email, a link has been sent.")
         return redirect('verify_email_sent')
 
     return render(request, 'authentication/resend_form.html')
@@ -212,3 +279,12 @@ def verify_email_sent(request):
     # but usually, a simple render is fine for this informational page.
     return render(request, 'authentication/verify_email_sent.html')
 
+
+
+
+
+def logout(request):
+    if request.user.is_authenticated:
+        auth_logout(request)
+        return redirect('login')
+   

@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matrixlab - Admin Login</title>
+    <title>KSL AGENCY Login</title>
 
     <link rel="shortcut icon" type="image/png" href="assets/images/logo_icon/favicon.png">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -42,7 +42,8 @@
                                 class="cmn-form mt-30 verify-gcaptcha login-form">
                                 {% csrf_token %}
                                 {% include "message.html" %}
-                                <input type="hidden" name="_token" value="nlmdlMt3kAZJh20ojUD1Ghqw3d9c9Ey86eG3WnR6" autocomplete="off">                                <div class="form-group">
+                                
+                                <div class="form-group">
                                     <label>Username</label>
                                     <input type="email" class="form-control" value="" name="email" placeholder="Email" required>
                                 </div>
@@ -83,7 +84,7 @@
 <link href="{% static 'assets/global/css/iziToast_custom.css' %}" rel="stylesheet">
 <script src="{% static 'assets/global/js/iziToast.min.js' %}"></script>
 
-<script>
+{% comment %} <script>
     "use strict";
     const colors = {
         success: '#28c76f',
@@ -139,7 +140,7 @@
             $.each(message, (i, val) => triggerToaster(status, val));
         }
     }
-</script>
+</script> {% endcomment %}
 
 <script src="{% static 'assets/global/js/nicEdit.js' %}"></script>
 

@@ -6,3 +6,4 @@ class EmailVerificationTokenGenerator(PasswordResetTokenGenerator):
         return str(user.pk) + str(timestamp) + str(user.is_active)
 
 email_verification_token = EmailVerificationTokenGenerator()
+# print('Email Verification:', email_verification_token)

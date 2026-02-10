@@ -18,14 +18,14 @@ class User(AbstractUser):
     )
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
-    username = models.CharField(max_length=200, unique=True)
+    username = models.CharField(max_length=200)
     email = models.EmailField(unique=True)
     user_type = models.CharField(max_length=25, choices=USER_TYPE, default='affiliate')
     is_active = models.BooleanField(default=False)
     verified_email = models.BooleanField(default=False)
 
 
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     USERNAME_FIELD = 'email'
 
 
@@ -49,7 +49,7 @@ class UserProfile(models.Model):
     two_factor_enabled = models.BooleanField(default=False)
     account_locked_until = models.DateTimeField(null=True, blank=True)
     failed_login_attempts = models.IntegerField(default=0)
-    last_login_ip_address = models.GenericIPAddressField(unique=True, db_index=True)
+    last_login_ip_address = models.GenericIPAddressField(unique=True, null=True, blank=True, db_index=True)
 
     def clean(self):
         # Recursive prevention
