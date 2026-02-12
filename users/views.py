@@ -10,6 +10,9 @@ from affiliation.services import *
 from dotenv import load_dotenv
 import os
 import paystack
+from .models import Withdrawal, Transaction
+from authentication.models import UserProfile
+from django.db.models import Sum
 
 load_dotenv()
 
@@ -18,48 +21,72 @@ load_dotenv()
 @two_factor_required
 #@kyc_required  # Optional: Only if you want to block dashboard until KYC is done
 @rate_limit(rate='60/minute')
+@login_required
 def dashboard(request):
-    """
-    Main Affiliate Dashboard showing earnings and downline stats.
-    """
     user = request.user
+    profile = user.profile
     
-    
+    # 1. Fetch Affiliate Record Safely
+    affiliate = getattr(user, 'affiliate_record', None)
 
-    if not user.affiliate_record.is_active:
-        # If they haven't picked a package yet, send them to onboarding
+    # 2. Security Check: Redirect if no affiliate, no package, or inactive
+    if not affiliate or not affiliate.is_active or not affiliate.package:
         return redirect('choose_package')
 
-    # Fetch stats for the dashboard
-    recent_transactions = PropertyTransaction.objects.filter(
-        affiliate=user.affiliate_record, 
-        is_verified=True
-    )[:5]
-    
-    # Get total earnings from your CommissionLog model
-    commissions = CommissionLog.objects.filter(recipient_profile=user.profile)
-    total_earned = sum(c.amount for c in commissions)
+    # 3. Financial Calculations (Withdrawals)
+    # Total Paid Out (Approved)
+    total_withdrawn = Withdrawal.objects.filter(
+        user=user, status='approved'
+    ).aggregate(total=Sum('amount'))['total'] or 0
 
-    # Use 'match' to set a status message based on their package
-    match str(user.affiliate_record.package.name).lower():
+    # Total Currently Locked (Pending)
+    pending_withdrawn = Withdrawal.objects.filter(
+        user=user, status='pending'
+    ).aggregate(total=Sum('amount'))['total'] or 0
+
+    # 4. Commission Calculations
+    commissions = CommissionLog.objects.filter(recipient_profile=profile)
+    total_commission = commissions.aggregate(total=Sum('amount'))['total'] or 0
+    
+    latest_commissions = commissions.order_by('-created_at')[:10]
+    
+    # Current Balance from Profile
+    current_balance = profile.balance
+
+    # 5. Business Stats
+    total_deposit = affiliate.package.price
+    total_tx_count = PropertyTransaction.objects.filter(
+        affiliate=affiliate, 
+        is_verified=True
+    ).count()
+
+    # 6. Rank Logic
+    plan_name = affiliate.package.get_name_display()
+    match str(affiliate.package.name).lower():
         case 'elite':
-            rank_msg = "You are an Elite Member (Max Earnings + Spillover)"
+            rank_msg = "Elite Member (Max Depth + Spillover)"
         case 'professional' | 'premium':
-            rank_msg = "You are a Pro Member (3 Generations active)"
+            rank_msg = "Pro Member (3 Generations)"
         case _:
-            rank_msg = "Basic Affiliate (1 Generation active)"
+            rank_msg = "Basic Member (1 Generation)"
 
     context = {
-        'affiliate': user.affiliate_record,
-        'profile': user.profile,
-        'recent_transactions': recent_transactions,
-        'total_earned': total_earned,
+        'affiliate': affiliate,
+        'profile': profile,
+        'current_balance': current_balance,
+        'total_deposit': total_deposit,
+        'total_withdrawn': total_withdrawn,
+        'pending_withdrawn': pending_withdrawn,
+        'total_tx_count': total_tx_count,
+        'total_commission': total_commission,
+        'plan_name': plan_name,
         'rank_msg': rank_msg,
-        'referral_url': f"{request.scheme}://{request.get_host()}/user/register/?ref={user.affiliate_record.referral_code}",
-        # 'downline_count': user.affiliate_record.downlines.count(),
+        'latest_commissions': latest_commissions,
+        'referral_url': f"{request.scheme}://{request.get_host()}/user/register/?ref={affiliate.referral_code}",
     }
 
-    return render(request, 'users/user-dashboard.html', context) 
+    return render(request, 'users/user-dashboard.html', context)
+
 
 
 
@@ -79,6 +106,8 @@ def choose_package(request):
         return redirect('dashboard')
 
     packages = AffiliatePackage.objects.filter(is_active=True).order_by('price')
+
+
 
     if request.method == "POST":
         package_id = request.POST.get('package_id')
@@ -114,8 +143,11 @@ def choose_package(request):
                 'packages': packages,
                 'error': "An error occurred. Please try again."
             })
+        
+    # print()
     context = {
-        'packages': packages
+        'packages': packages,
+        'user_package': request.user.affiliate_record
     }
 
     return render(request, 'users/plans.html', context)
@@ -135,6 +167,7 @@ def payments(request):
         response = paystack.Transaction.verify(tx_ref)
 
         if response.status and response.data["status"] == "success":
+
             amount = response.data["amount"]/100
             with transaction.atomic():
                 package = get_object_or_404(AffiliatePackage, price=float(amount))
@@ -146,10 +179,12 @@ def payments(request):
                         affiliate.is_active = True
                         affiliate.save()
                         
+                        print("Normal", affiliate)
                         # Trigger your MLM commission distribution logic
                         # distribute_commissions(affiliate.user.profile)
 
-                        return redirect('dashboard')
+                        if distribute_commissions(affiliate):
+                            return redirect('dashboard')
                     
 
                 except Affiliate.DoesNotExist:
@@ -171,27 +206,103 @@ def payments(request):
 
 
 
+@login_required(login_url='login')
+@transaction.atomic
+def withdraw_funds(request):
+    """
+    Secure withdrawal logic for KAL Affiliates.
+    Only allows withdrawal of earned commissions.
+    """
+    profile = request.user.profile
 
-
-
-# # @login_required
-# # def payment_callback(request):
-# #     """
-# #     Handles the GET redirect from Flutterwave after payment.
-# #     URL: /Dashboard/payments/?status=completed&tx_ref=...
-# #     """
-# #     status = request.GET.get('status')
-# #     tx_ref = request.GET.get('tx_ref')
-# #     transaction_id = request.GET.get('transaction_id')
-
-#     if status == 'completed' or status == 'successful':
-#         # 🛡️ SECURITY: Always re-verify with the API, never trust the URL params
-#         if verify_transaction_with_api(transaction_id):
-#             messages.success(request, "Payment successful! Your KAL account is now active.")
-#             return redirect('secure_dashboard')
-#         else:
-#             messages.error(request, "Verification failed. Please contact KAL support.")
-# #     else:
-# #         messages.error(request, "Payment was cancelled or failed.")
+    package_price = int(request.user.affiliate_record.package.price)
     
-# #     return redirect('choose_package')
+    if request.method == 'POST':
+        try:
+            # 1. Get amount and sanitize
+            amount = Decimal(request.POST.get('amount', 0))
+            MIN_WITHDRAWAL = Decimal('100.00') # KAL Policy: Min ₦2k
+
+            # 2. SECURITY CHECKS
+            # A. Check if they have enough commission balance
+            if amount > (profile.balance - package_price):
+                messages.error(request, "Insufficient commission balance.")
+                return redirect('withdraw_funds')
+
+            # B. Check for minimum withdrawal limit
+            if amount < MIN_WITHDRAWAL:
+                messages.error(request, f"Minimum withdrawal is ₦{MIN_WITHDRAWAL}")
+                return redirect('withdraw_funds')
+
+            # 3. ATOMIC PROCESSING
+            # We use select_for_update() to lock the profile row during the math
+            user_profile = UserProfile.objects.select_for_update().get(id=profile.id)
+            
+            # Deduct from balance immediately (Hold the funds)
+            user_profile.balance -= amount
+            user_profile.save()
+
+            # Create the withdrawal record
+            Withdrawal.objects.create(
+                user=request.user,
+                amount=amount,
+                status='pending'
+            )
+
+            messages.success(request, f"Withdrawal request for ₦{amount:,.2f} submitted successfully.")
+            return redirect('dashboard')
+
+        except ValueError:
+            messages.error(request, "Invalid amount entered.")
+
+    return render(request, 'users/user-withdraw.html', {'balance': profile.balance})
+
+
+
+
+@login_required(login_url="login")
+def withdraw_history(request):
+    context = {
+        "history": Withdrawal.objects.all().filter(user=request.user)
+    }
+    return render(request, 'users/withdraw-history.html', context)
+
+
+
+
+@login_required(login_url='login')
+def transaction_history(request):
+    context = {
+        "history": Transaction.objects.all().filter(user=request.user)
+    }
+    return render(request, 'users/transaction-history.html', context)
+
+
+
+
+@login_required(login_url='login')
+def referral_list(request):
+    """
+    Displays the list of users directly referred by the current user (Gen 1).
+    """
+    user_profile = request.user.profile
+    
+    # Fetch all profiles where 'referrer' points to me
+    # We use select_related to get the User and Affiliate data in one query (Performance)
+    referrals = UserProfile.objects.filter(
+        referrer=user_profile
+    ).select_related('user', 'user__affiliate_record').order_by('-user__date_joined')
+
+    # Calculate some stats for the top of the page
+    total_referrals = referrals.count()
+    active_referrals = referrals.filter(user__affiliate_record__is_active=True).count()
+    pending_referrals = total_referrals - active_referrals
+
+    context = {
+        'referrals': referrals,
+        'total_referrals': total_referrals,
+        'active_referrals': active_referrals,
+        'pending_referrals': pending_referrals,
+    }
+
+    return render(request, 'users/user-referal.html', context)

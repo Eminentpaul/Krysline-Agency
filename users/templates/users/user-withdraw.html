@@ -1,0 +1,139 @@
+{% extends "user_nav.html" %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+
+{% block content %}
+    <section class="hero-section primary-overlay oh bg_img"
+    data-background="assets/images/frontend/breadcrumb/636781d83acec1667727832.jpg">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="title">Withdraw Money</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="/">Home</a>
+                </li>
+                <li>
+                    Withdraw Money
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+        <div class="padding-top padding-bottom">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-9">
+                    <form action="" method="post" class="withdraw-form">
+                        {% csrf_token %}
+                        {% include "message.html" %}
+                        <input type="hidden" name="_token" value="ACwuLd4zcDeoqoIx3i8FhTDwgS6cSq8JS8eDYMV0" autocomplete="off">                        <div class="gateway-card card custom--card primary-bg">
+                            <div class="row justify-content-center gy-sm-4 gy-3">
+                                <div class="col-12">
+                                    <h5 class="payment-card-title">Withdraw</h5>
+                                </div>
+                                
+                                <div class="col-lg-6">
+                                    <div class="payment-system-list p-3">
+                                        <div class="deposit-info">
+                                            <div class="deposit-info__title">
+                                                <p class="text mb-0">Amount</p>
+                                            </div>
+                                            <div class="deposit-info__input">
+                                                <div class="deposit-info__input-group input-group">
+                                                    <span class="deposit-info__input-group-text px-2">₦</span>
+                                                    <input type="text" class="form-control form--control amount"
+                                                        name="amount" placeholder="00.00"
+                                                        value="" autocomplete="off" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        
+
+                                        <div class="deposit-info gateway-conversion d-none total-amount pt-2">
+                                            <div class="deposit-info__title">
+                                                <p class="text">Conversion                                                </p>
+                                            </div>
+                                            <div class="deposit-info__input">
+                                                <p class="text"></p>
+                                            </div>
+                                        </div>
+                                        <div class="deposit-info conversion-currency d-none total-amount pt-2">
+                                            <div class="deposit-info__title">
+                                                <p class="text">
+                                                    In <span class="gateway-currency"></span>
+                                                </p>
+                                            </div>
+                                            <div class="deposit-info__input">
+                                                <p class="text">
+                                                    <span class="in-currency"></span>
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn btn--base w-100">
+                                            Confirm Withdraw                                        </button>
+                                        <div class="info-text pt-3">
+                                            <p class="text">Safely withdraw your funds using our highly secure process and various withdrawal method</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer class="padding-top primary-overlay bg_img"
+    data-background="assets/images/frontend/footer/6367819801e991667727768.jpg">
+    <div class="footer-top padding-bottom">
+        <div class="container">
+            <div class="footer-wrapper cl-white">
+                <div class="footer-logo">
+                    <a href="">
+                        <img src="{% static 'assets/images/logo_icon/logo.png' %}" alt="images">
+                    </a>
+                </div>
+                <p>Krysline Agency Ltd is a complete multilevel matrix solution designed for network marketers. Easily manage referrals, track earnings, and process payments securely. Start your journey today with our ready-to-go platform and expert support.</p>
+                <ul class="social__icons">
+                                            <li>
+                            <a href="https://www.facebook.com" target="_blank"
+                                class="facebook"><i class="lab la-facebook-f"></i></a>
+                        </li>
+                                            <li>
+                            <a href="https://twitter.com" target="_blank"
+                                class="facebook"><i class="lab la-twitter"></i></a>
+                        </li>
+                                            <li>
+                            <a href="https://www.linkedin.com" target="_blank"
+                                class="facebook"><i class="lab la-linkedin-in"></i></a>
+                        </li>
+                                    </ul>
+            </div>
+            <ul class="footer-menu">
+                                    <li>
+                        <a href="policy/terms-of-service?43">Terms of Service</a>
+                    </li>
+                                    <li>
+                        <a href="policy/privacy-policy?42">Privacy Policy</a>
+                    </li>
+                            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container">
+            <p>&copy; All Right Reserved By <a href="https://script.viserlab.com/Krysline Agency Ltd">Krysline Agency Ltd</a></p>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+    {% endblock%}

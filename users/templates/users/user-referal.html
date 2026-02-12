@@ -1,0 +1,98 @@
+{% extends "user_nav.html" %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+
+{% block content %}
+    <section class="hero-section primary-overlay oh bg_img"
+    data-background="assets/images/frontend/breadcrumb/636781d83acec1667727832.jpg">
+    <div class="container">
+        <div class="hero-content">
+            <h1 class="title">My Referred Users</h1>
+            <ul class="breadcrumb">
+                <li>
+                    <a href="https://script.viserlab.com/matrixlab">Home</a>
+                </li>
+                <li>
+                    My Referred Users
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+    <div class="transaction-section padding-top padding-bottom">
+        {% comment %} <div class="container">
+            <div class="row">
+                {% for refer in referrals %}
+                
+                <div class="col-md-12 w-25">
+                    <div class="card primary-bg text-white">
+                        <div class="card-body">
+                            <div class="treeview-container">
+                                <ul class="treeview">
+                                    <li class="items-expanded"> 
+                                        <p>Name: {{ refer.user.get_full_name|title }}</p>
+                                        
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div> {% endcomment %}
+        
+    <div class="container">
+        <div class="card custom--card primary-bg">
+            <div class="card-header">
+                <h5 class="card-title">My Referred Users</h5>
+            </div>
+            <div class="card-body p-0">
+                <table class="deposite-table">
+                    <thead class="custom--table">
+                        <tr>
+                            <th>User</th>
+                            <th>Email</th>
+                            <th>Joined Date</th>
+                            <th>Plan</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ref in referrals %}
+                        <tr>
+                            <td><strong>{{ ref.user.get_full_name }}</strong></td>
+                            <td>{{ ref.user.email }}</td>
+                            <td>{{ ref.user.date_joined|date:"d M, Y" }}</td>
+                            <td>
+                                {% if ref.user.affiliate_record.package %}
+                                    {{ ref.user.affiliate_record.package.name }}
+                                {% else %}
+                                    <span class="text-muted">No Plan</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if ref.user.affiliate_record.is_active %}
+                                    <span class="badge bg-success">Active</span>
+                                {% else %}
+                                    <span class="badge bg-warning">Pending Payment</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="100%" class="text-center py-4">You haven't referred anyone yet.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+    
+    
+    
+    
+    {% endblock %}

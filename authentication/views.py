@@ -1,4 +1,6 @@
 
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
+from django.urls import reverse_lazy
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.db import transaction
@@ -12,8 +14,13 @@ from security.security_utils import *
 from .token import email_verification_token
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-from django.template.loader import render_to_string
+
 from django.core.mail import EmailMessage
+# Email Require
+from django.conf import settings
+from django.core.mail import EmailMultiAlternatives
+from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 from .models import User
 
 
@@ -55,6 +62,9 @@ def login(request):
                 mg.error(request, 'Account Disabled')
                 # return render(request, 'authenticate/login.html')
 
+            if not user.verified_email:
+                return render(request, 'authentication/verify_email_sent.html')
+
 
             # Success login 
             auth_login(request, user)
@@ -81,7 +91,7 @@ def login(request):
                 case 'affiliate':
                     # print("User Dashboard")
                     return redirect('dashboard')
-                # TODO return to user dasboard
+
                 case 'admin':
                     print('Admin Dashboard')
                     return redirect('/admin')
@@ -104,7 +114,7 @@ def login(request):
 @log_security_event(action='USER_REGISTRATION_ATTEMPT')
 def register(request): 
     if request.user.is_authenticated:
-        return redirect('secure_dashboard')
+        return redirect('dashboard')
     
     initial_data =  request.GET.get('ref', '')
     error_msg = None
@@ -116,32 +126,19 @@ def register(request):
         form = AffiliateRegistrationForm(request.POST)
         
         if form.is_valid():
-            user = User()
+
             referrer_code = request.POST.get("referrer_code") # Capture from form
-            username = form.cleaned_data.get('username')
-            email = form.cleaned_data.get('email')
-            first_name = form.cleaned_data.get('first_name')
-            last_name = form.cleaned_data.get('last_name')
-            password1 = form.cleaned_data.get('password1')
-            password2 = form.cleaned_data.get('password2')
-
-
 
             if referrer_code:
                 request.session['pending_referrer'] = referrer_code
             try:
                 with transaction.atomic():
                     # Save user (password is hashed automatically by the form)
-                    user.first_name = first_name
-                    user.last_name = last_name
-                    user.email = email
-                    user.username = username
-                    user.set_password(password1)
+                    
 
-                    user.save
+                    user = form.save()
 
-
-
+                    
                     # Generate Verification Link
                     uid = urlsafe_base64_encode(force_bytes(user.pk))
                     token = email_verification_token.make_token(user)
@@ -154,7 +151,12 @@ def register(request):
                         'domain': request.get_host(),
                         'link': link,
                     })
-                    email = EmailMessage(subject, message, to=[user.email])
+
+                    text_content = strip_tags(message)
+
+                    email = EmailMultiAlternatives(subject, text_content, to=[user.email])
+                    # email = EmailMessage(subject, message, to=[user.email])
+                    email.attach_alternative(message, 'text/html')
                     email.send()
                     
                     # Log success
@@ -187,17 +189,29 @@ def activate_account(request, uidb64, token):
     try:
          # 1. Decode the bytes
         uid_bytes = urlsafe_base64_decode(uidb64)
-        print(uid_bytes)
+
         # 2. Convert bytes to string (This is where None usually happens)
         uid = force_str(uid_bytes)
-        print(uid)
         user = User.objects.get(pk=uid)
-        print(user)
+
     except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
 
+        if not user:
+            return redirect("resend_activation")
+
+    if user.is_active:
+        affiliate = Affiliate.objects.all().filter(user=user).first()
+        if affiliate and not affiliate.is_active:
+            return redirect('choose_package')
+        else: return redirect('dashboard')
+    # else: 
+    #     return redirect("resend_activation")
+    
+
     if user is not None and email_verification_token.check_token(user, token):
         user.is_active = True
+        user.verified_email = True
         user.save()
 
         new_profile = user.profile
@@ -227,7 +241,7 @@ def activate_account(request, uidb64, token):
                 pass 
 
         # Log them in automatically after verification
-        login(request, user)
+        auth_login(request, user)
         mg.success(request, "Email verified successfully! Now choose your package.")
         return redirect('choose_package')
     else:
@@ -235,7 +249,7 @@ def activate_account(request, uidb64, token):
     
 
 
-@rate_limit(rate='3/hour') # Strict global rate limit per IP
+@rate_limit(rate='300/hour') # Strict global rate limit per IP
 def resend_activation(request):
     if request.method == 'POST':
         email = request.POST.get('email', '').strip().lower()
@@ -254,8 +268,21 @@ def resend_activation(request):
             link = f"{request.scheme}://{request.get_host()}/user/activate/{uid}/{token}/"
 
             # 3. Send Email (Re-use your logic from register_view)
-            # ... [Email sending code here] ...
+            # Send Email
+            subject = "Verify your KAL Affiliate Account"
+            message = render_to_string('authentication/acc_active_email.html', {
+                'user': user,
+                'domain': request.get_host(),
+                'link': link,
+            })
 
+            text_content = strip_tags(message)
+
+            email = EmailMultiAlternatives(subject, text_content, to=[user.email])
+            # email = EmailMessage(subject, message, to=[user.email])
+            email.attach_alternative(message, 'text/html')
+            email.send()
+            
             # 4. Set the 2-minute lock in cache
             cache.set(cache_key, True, 120) 
             
@@ -288,3 +315,16 @@ def logout(request):
         auth_logout(request)
         return redirect('login')
    
+
+
+
+class CustomPasswordResetView(PasswordResetView):
+    template_name = 'authentication/password_reset_form.html'
+    email_template_name = 'authentication/password_reset_email.txt'
+    subject_template_name = 'authentication/password_reset_subject.txt'
+    success_url = reverse_lazy('password_reset_done')
+
+
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    template_name = 'authentication/password_reset_confirm.html'
+    success_url = reverse_lazy('password_reset_complete')

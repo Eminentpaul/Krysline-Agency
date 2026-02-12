@@ -91,7 +91,7 @@
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
-            width: 100%;
+            width: 80%;
             margin-top: 10px;
         }
 
@@ -151,7 +151,7 @@
                 <strong>Pro-tip:</strong> If you don't see the email within 2 minutes, please check your <strong>Spam</strong> or <strong>Promotions</strong> folder.
             </div>
 
-            <a href="/auth/resend-activation/" class="btn btn-resend">
+            <a href="{% url "resend_activation" %}" class="btn btn-resend">
                 Resend Verification Email
             </a>
 

@@ -1,0 +1,466 @@
+
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+
+<!doctype html>
+<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title> Krysline Agency Ltd - Dashboard</title>
+    <meta name="title" Content="Matrixlab - Dashboard">
+    <meta name="description" content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit">
+    <meta name="keywords" content="MatrixLab,MLM platform,matrix platform,Multi-level-marketing">
+    <link rel="shortcut icon" href="assets/images/logo_icon/favicon.png" type="image/x-icon">
+
+    
+    <link rel="apple-touch-icon" href="{% static "assets/images/logo_icon/logo.png" %}">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-title" content="Matrixlab - Dashboard">
+    
+    <meta itemprop="name" content="Matrixlab - Dashboard">
+    <meta itemprop="description" content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit">
+    <meta itemprop="image" content="{% static "assets/images/seo/666c205fc90f81718362207.png" %}">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="MatrixLab - Matrix MLM Platform">
+    <meta property="og:description" content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit ff">
+    <meta property="og:image" content="{% static "assets/images/seo/666c205fc90f81718362207.png" %}">
+    <meta property="og:image:type" content="image/png">
+        <meta property="og:image:width" content="1180">
+    <meta property="og:image:height" content="600">
+    <meta property="og:url" content="user/dashboard">
+    
+    <meta name="twitter:card" content="summary_large_image">
+    <link href="{% static 'assets/global/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/global/css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/global/css/line-awesome.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/animate.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/magnific-popup.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/owl.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/odometer.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/nice-select.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/main.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/templates/basic/css/custom.css' %}" rel="stylesheet">
+
+        <link href="{% static 'assets/global/css/select2.min.css' %}" rel="stylesheet">
+
+        <style>
+        .copied::after {
+            background-color: #f99f0b;
+        }
+    </style>
+
+    <link href="assets/templates/basic/css/color.php?color=f99f0b" rel="stylesheet">
+</head>
+
+
+<body>
+
+    
+    <div class="overlay"></div>
+
+    <a class="scrollToTop" href="#"><i class="fas fa-angle-up"></i></a>
+    <div class="preloader">
+        <div class="loader">
+            <div class="loader-inner"></div>
+        </div>
+    </div>
+
+        <header class="header-section">
+    <div class="container">
+        <div class="header-wrapper">
+            <div class="logo">
+                <a href="{% url "dashboard" %}">
+                    <img src="{% static 'assets/images/logo_icon/logo.png' %}" alt="logo">
+                </a>
+            </div>
+            <ul class="menu">
+                <li>
+                    <a href="{% url "dashboard" %}">Dashboard</a>
+                </li>
+
+                {% comment %} <li class="menu-item-has-children">
+                    <a href="javascript:void(0)">Deposit</a>
+                    <ul class="submenu">
+                        <li>
+                            <a href="user/deposit">Deposit Money</a>
+                        </li>
+                        <li>
+                            <a href="user/deposit/history">Deposit History</a>
+                        </li>
+                    </ul>
+                </li> {% endcomment %}
+
+                <li class="menu-item-has-children">
+                    <a href="javascript:void(0)">Withdraw</a>
+                    <ul class="submenu">
+                        <li>
+                            <a href="{% url "withdraw_funds" %}">Withdraw Money</a>
+                        </li>
+                        <li>
+                            <a href="{% url "withdraw_history" %}">Withdraw History</a>
+                        </li>
+                    </ul>
+                </li>
+
+                <li>
+                    <a href="{% url "choose_package" %}">Plan</a>
+                </li>
+
+                <li>
+                    <a href="{% url "transaction_history" %}">Transactions</a>
+                </li>
+
+                <li class="menu-item-has-children">
+                    <a href="javascript:void(0)">Referrals</a>
+                    <ul class="submenu">
+                        <li>
+                            <a href="{% url "referral_list" %}">Referred Users</a>
+                        </li>
+
+                        {% comment %} <li>
+                            <a href="user/referral/commissions/plan">Referrals Commissions</a>
+                        </li> {% endcomment %}
+
+                        {% comment %} <li>
+                            <a href="user/level/commissions/plan">Level Commissions</a>
+                        </li> {% endcomment %}
+                    </ul>
+                </li>
+
+                <li class="menu-item-has-children">
+                    <a href="javascript:void(0)">Account</a>
+                    <ul class="submenu">
+                        <li>
+                            <a href="user/profile-setting">Profile Setting</a>
+                        </li>
+                                                    <li>
+                                <a href="user/balance/transfer">Balance Transfer</a>
+                            </li>
+                        
+                                                    <li>
+                                <a href="user/e-pin/recharge">E-Pin Recharge</a>
+                            </li>
+                            <li>
+                                <a href="user/e-pin/recharge/log">Recharge Log</a>
+                            </li>
+                        
+                        <li>
+                            <a href="user/change-password">Change Password</a>
+                        </li>
+
+                        <li>
+                            <a href="ticket">Support Ticket</a>
+                        </li>
+
+                        <li>
+                            <a href="user/twofactor">2FA Security</a>
+                        </li>
+
+                        <li>
+                            <a href="{% url "logout" %}">Logout</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+            <div class="header-bar ml-2 ml-md-4">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+{% block content %}
+
+{% endblock content %}
+
+
+<footer class="padding-top primary-overlay bg_img"
+    data-background="assets/images/frontend/footer/6367819801e991667727768.jpg">
+    <div class="footer-top padding-bottom">
+        <div class="container">
+            <div class="footer-wrapper cl-white">
+                <div class="footer-logo">
+                    <a href="">
+                        <img src="{% static 'assets/images/logo_icon/logo.png' %}" alt="images">
+                    </a>
+                </div>
+                <p>Krysline Agency Ltd is a complete multilevel matrix solution designed for network marketers. Easily manage referrals, track earnings, and process payments securely. Start your journey today with our ready-to-go platform and expert support.</p>
+                <ul class="social__icons">
+                                            <li>
+                            <a href="https://www.facebook.com" target="_blank"
+                                class="facebook"><i class="lab la-facebook-f"></i></a>
+                        </li>
+                                            <li>
+                            <a href="https://twitter.com" target="_blank"
+                                class="facebook"><i class="lab la-twitter"></i></a>
+                        </li>
+                                            <li>
+                            <a href="https://www.linkedin.com" target="_blank"
+                                class="facebook"><i class="lab la-linkedin-in"></i></a>
+                        </li>
+                                    </ul>
+            </div>
+            <ul class="footer-menu">
+                                    <li>
+                        <a href="policy/terms-of-service?43">Terms of Service</a>
+                    </li>
+                                    <li>
+                        <a href="policy/privacy-policy?42">Privacy Policy</a>
+                    </li>
+                            </ul>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <div class="container">
+            <p>&copy; All Right Reserved By <a href="/">Krysline Agency Ltd</a></p>
+        </div>
+    </div>
+
+
+</footer>
+
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{% static 'assets/global/js/jquery-3.7.1.min.js' %}"></script>
+    <script src="{% static 'assets/global/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/magnific-popup.min.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/wow.min.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/owl.min.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/odometer.min.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/viewport.jquery.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/nice-select.js' %}"></script>
+    <script src="{% static 'assets/templates/basic/js/app.js' %}"></script>
+
+        <script src="{% static 'assets/global/js/select2.min.js' %}"></script>
+
+    
+    <link href="{% static 'assets/global/css/iziToast.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/global/css/iziToast_custom.css' %}" rel="stylesheet">
+<script src="{% static 'assets/global/js/iziToast.min.js' %}"></script>
+
+<script>
+    "use strict";
+    const colors = {
+        success: '#28c76f',
+        error: '#eb2222',
+        warning: '#ff9f43',
+        info: '#1e9ff2',
+    }
+
+    const icons = {
+        success: 'fas fa-check-circle',
+        error: 'fas fa-times-circle',
+        warning: 'fas fa-exclamation-triangle',
+        info: 'fas fa-exclamation-circle',
+    }
+
+    const notifications = [];
+    const errors = [];
+
+
+    const triggerToaster = (status, message) => {
+        iziToast[status]({
+            title: status.charAt(0).toUpperCase() + status.slice(1),
+            message: message,
+            position: "topRight",
+            backgroundColor: '#fff',
+            icon: icons[status],
+            iconColor: colors[status],
+            progressBarColor: colors[status],
+            titleSize: '1rem',
+            messageSize: '1rem',
+            titleColor: '#474747',
+            messageColor: '#a2a2a2',
+            transitionIn: 'obunceInLeft'
+        });
+    }
+
+    if (notifications.length) {
+        notifications.forEach(element => {
+            triggerToaster(element[0], element[1]);
+        });
+    }
+
+    if (errors.length) {
+        errors.forEach(error => {
+            triggerToaster('error', error);
+        });
+    }
+
+    function notify(status, message) {
+        if (typeof message == 'string') {
+            triggerToaster(status, message);
+        } else {
+            $.each(message, (i, val) => triggerToaster(status, val));
+        }
+    }
+</script>
+
+            <script>
+        (function($) {
+            "use strict";
+            $('#copyBoard').click(function() {
+                var copyText = document.getElementsByClassName("referralURL");
+                copyText = copyText[0];
+                copyText.select();
+                copyText.setSelectionRange(0, 99999);
+                /*For mobile devices*/
+                document.execCommand("copy");
+                copyText.blur();
+                this.classList.add('copied');
+                setTimeout(() => this.classList.remove('copied'), 1500);
+            });
+        })(jQuery);
+    </script>
+    <script>
+        (function($) {
+            "use strict";
+
+            function formatState(state) {
+                if (!state.id) return state.text;
+                let gatewayData = $(state.element).data();
+                return $(`<div class="d-flex gap-2">${gatewayData.imageSrc ? `<div class="select2-image-wrapper"><img class="select2-image" src="{% static '${gatewayData.imageSrc}' %}"></div>` : '' }<div class="select2-content"> <p class="select2-title">${gatewayData.title}</p><p class="select2-subtitle">${gatewayData.subtitle}</p></div></div>`);
+            }
+
+            $('.select2').each(function(index, element) {
+                $(element).select2({
+                    templateResult: formatState,
+                    minimumResultsForSearch: "-1"
+                });
+            });
+
+            $('.select2-searchable').each(function(index, element) {
+                $(element).select2({
+                    templateResult: formatState,
+                    minimumResultsForSearch: "1"
+                });
+            });
+
+            $('.select2-basic').each(function(index, element) {
+                $(element).select2({
+                    dropdownParent: $(element).closest('.select2-parent')
+                });
+            });
+
+            $.each($('.select2'), function() {
+                $(this)
+                    .wrap(`<div class="position-relative"></div>`)
+                    .select2({
+                        dropdownParent: $(this).parent()
+                    });
+            });
+
+            $.each($('.select2-auto-tokenize'), function() {
+                $(this)
+                    .wrap(`<div class="position-relative"></div>`)
+                    .select2({
+                        tags: true,
+                        tokenSeparators: [','],
+                        dropdownParent: $(this).parent()
+                    });
+            });
+            
+            $('.showFilterBtn').on('click',function(){
+                $('.responsive-filter-card').slideToggle();
+            });
+
+            Array.from(document.querySelectorAll('table')).forEach(table => {
+                let heading = table.querySelectorAll('thead tr th');
+                Array.from(table.querySelectorAll('tbody tr')).forEach((row) => {
+                    Array.from(row.querySelectorAll('td')).forEach((colum, i) => {
+                        colum.setAttribute('data-label', heading[i].innerText)
+                    });
+                });
+            });
+
+        })(jQuery);
+    </script>
+
+    <script>
+        (function($) {
+            "use strict";
+
+            $(".langSel").on("click", function() {
+                var code = $(this).data('code');
+                window.location.href = "change/" + code;
+            });
+
+            var inputElements = $('[type=text],[type=password],select,textarea');
+            $.each(inputElements, function(index, element) {
+                element = $(element);
+                element.closest('.form-group').find('label').attr('for', element.attr('name'));
+                element.attr('id', element.attr('name'))
+            });
+
+            $.each($('input, select, textarea'), function(i, element) {
+                var elementType = $(element);
+                if (elementType.attr('type') != 'checkbox') {
+                    if (element.hasAttribute('required')) {
+                        $(element).closest('.form-group').find('label').addClass('required');
+                    }
+                }
+            });
+
+            $.each($('input:not([type=checkbox]):not([type=hidden]), select, textarea'), function(i, element) {
+                if (element.hasAttribute('required')) {
+                    $(element).closest('.form-group').find('label').addClass('required');
+                }
+
+            });
+
+            let disableSubmission = false;
+            $('.disableSubmission').on('submit', function(e) {
+                if (disableSubmission) {
+                    e.preventDefault()
+                } else {
+                    disableSubmission = true;
+                }
+            });
+
+        })(jQuery);
+    </script>
+
+
+<script>
+  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+  (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/5fe0b9b2a8a254155ab5421d/1eq2tap1m';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+  })();
+</script>
+
+
+
+<script>
+if (window.top != window.self) {
+    document.body.innerHTML += '<div style="position:fixed;top:0;width:100%;z-index:9999999;background:#f8d7da;color:#721c24;text-align:center; padding: 20px;"><p style="font-size:20px; font-weight: bold;">You are using this website under an external iframe!!</p><p style="font-size:16px; margin-top: 20px;">for a better experience, please browse directly instead of an external iframe.</p><a href="'+window.self.location+'" target="_blank" style=" margin-top:20px; color: #fff;background-color: #dc3545; padding: 5px 10px; border-radius: 5px; text-decoration: none;">Browse Directly</a></div>';
+}
+</script>
+
+
+
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-1ME4K0RD7K"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-1ME4K0RD7K');
+</script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"0542d18bc5a94bf6b5460f8530f5a523","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+
+</html>

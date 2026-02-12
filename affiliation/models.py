@@ -101,7 +101,9 @@ class Affiliate(models.Model):
     package = models.ForeignKey(
         'AffiliatePackage', 
         on_delete=models.PROTECT, 
-        related_name='members'
+        related_name='members',
+        null= True,
+        blank= True
     )
 
     referral_code = models.CharField(max_length=15, unique=True, db_index=True)
