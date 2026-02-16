@@ -1,0 +1,19 @@
+
+{% if fetched %}
+    <label class="form-label">Account Name</label>
+    <!-- This entire input area will be replaced by the HTMX response -->
+    <input type="text" name="account_name" id="account_name" value="{{accountName}}" readonly class="form-control bg-light mb-3">
+    <div id="bank_error_msg" hx-swap-oob="true"></div>
+
+    
+    
+{% else %}
+    <label class="form-label">Account Name</label>
+    <!-- This entire input area will be replaced by the HTMX response -->
+    <input type="text" name="account_name" id="account_name" value="{{accountName}}" readonly class="form-control border-danger">
+    <div id="bank_error_msg" hx-swap-oob="True" class="text-danger small mt-1">
+        <span class="text-danger" >
+            <i class="fas fa-exclamation-circle"></i> Invalid account details. Please check and try again.
+        </span>
+    </div>
+{% endif %}

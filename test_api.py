@@ -3,16 +3,42 @@ from pprint import pprint
 import os
 
 # Set your API key based on domain (test or live mode)
-paystack.api_key = os.environ.get("SECRET_KEY")
+secret_key = os.environ.get("SECRET_KEY")
+paystack.api_key = secret_key
+
+url = "https://api.paystack.co"
+headers = {
+    "Authorization": f"Bearer {secret_key}", # This is the header Paystack says is missing
+    "Content-Type": "application/json",
+}
 
 
-# Fetch Banks
+# # Fetch Banks
 
-response = paystack.Verification.fetch_banks(
+# response = paystack.Verification.fetch_banks(
+# )
+customer = "oshipaulinus@gmail.com"
+amount = 100*100
+
+
+response = paystack.PaymentRequest.create(
+    customer,
 )
 
+reference = f"REG-666afa"
 
-response ={'data': [
+response = paystack.Transaction.initialize(
+    email=customer,
+    amount= amount,
+    reference=reference
+)
+
+with open("customer", "w") as file:
+    file.write(f"Response={response}")
+
+
+
+responseddd ={'data': [
     {
         'active': True,
         'available_for_direct_debit': False,
@@ -3700,23 +3726,23 @@ response ={'data': [
  'message': 'Banks retrieved',
  'status': True}
 
-nece_bank = ["Zenith Bank", "Wema Bank", 'United Bank For Africa', 'Sterling Bank', 'OPay Digital Services Limited (OPay)', 'Moniepoint MFB', 'Guaranty Trust Bank', 'First Bank of Nigeria', 'First City Monument Bank', 'Fidelity Bank', 'Access Bank', 'Access Bank (Diamond)']
+# nece_bank = ["Zenith Bank", "Wema Bank", 'United Bank For Africa', 'Sterling Bank', 'OPay Digital Services Limited (OPay)', 'Moniepoint MFB', 'Guaranty Trust Bank', 'First Bank of Nigeria', 'First City Monument Bank', 'Fidelity Bank', 'Access Bank', 'Access Bank (Diamond)']
 
-bank_codes = [('044-Access Bank', 'Access Bank'),('063-Access Bank (Diamond)', 'Access Bank (Diamond)'),('070-Fidelity Bank', 'Fidelity Bank'),('011-First Bank of Nigeria', 'First Bank'),('214-First City Monument Bank', 'FCMB'),('058-Guaranty Trust Bank', 'GTB'),('50515-Moniepoint MFB', 'Moniepoint MFB'),('999992-OPay Digital Services Limited (OPay)', 'OPay'),('232-Sterling Bank', 'Sterling Bank'),('033-United Bank For Africa', 'UBA'),('035-Wema Bank', 'Wema Bank'),('057-Zenith Bank', 'Zenith Bank')]
-
-
-# with open('bank_code', 'w') as file:
-#     for bank in response["data"]:
-#         if bank['active']:
-#             if bank["name"] in nece_bank:
-#                 file.writelines(str((f"{bank['code']}-{bank["name"]}", ""),))
+# bank_codes = [('044-Access Bank', 'Access Bank'),('063-Access Bank (Diamond)', 'Access Bank (Diamond)'),('070-Fidelity Bank', 'Fidelity Bank'),('011-First Bank of Nigeria', 'First Bank'),('214-First City Monument Bank', 'FCMB'),('058-Guaranty Trust Bank', 'GTB'),('50515-Moniepoint MFB', 'Moniepoint MFB'),('999992-OPay Digital Services Limited (OPay)', 'OPay'),('232-Sterling Bank', 'Sterling Bank'),('033-United Bank For Africa', 'UBA'),('035-Wema Bank', 'Wema Bank'),('057-Zenith Bank', 'Zenith Bank')]
 
 
-for bank in bank_codes:
-    code, bank_name = bank[0].split('-')
+# # with open('bank_code', 'w') as file:
+# #     for bank in response["data"]:
+# #         if bank['active']:
+# #             if bank["name"] in nece_bank:
+# #                 file.writelines(str((f"{bank['code']}-{bank["name"]}", ""),))
 
-    print(f"Code: {code} Bank Name: {bank_name} - name: {bank[1]}")
+
+# for bank in bank_codes:
+#     code, bank_name = bank[0].split('-')
+
+#     print(f"Code: {code} Bank Name: {bank_name} - name: {bank[1]}")
 
 
-# with open("example", "w") as file:
-#     file.write(f"Response={response}")
+# # with open("example", "w") as file:
+# #     file.write(f"Response={response}")

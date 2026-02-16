@@ -101,13 +101,14 @@ MY_APPS = [
     'authentication',
     'security',
     'affiliation',
-    'users'
+    'users',
+    'monnify_verification'
 ]
 
 THIRD_PARTY_APPS = [
     'corsheaders',
     'auditlog',
-    'mathfilters'
+    'mathfilters',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MY_APPS

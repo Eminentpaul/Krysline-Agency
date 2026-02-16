@@ -53,10 +53,12 @@ def distribute_commissions(new_affiliate):
     """
     Climbs the MLM tree and pays uplines based on their package depth.
     """
+
     # The person who just paid
     payment_amount = new_affiliate.package.price
     # The first person to get paid (The Referrer)
-    current_upline_profile = new_affiliate.user.profile.referrer
+    current_upline_profile = new_affiliate.user.profile.referrer 
+
     
     gen = 1
     # KAL Policy: We only pay up to 3 generations
@@ -95,7 +97,7 @@ def distribute_commissions(new_affiliate):
 
         # print('Commission')
 
-        # return True
+    return True
 
 
 

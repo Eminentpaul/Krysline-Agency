@@ -8,6 +8,8 @@
 
 <head>
     <!-- Required meta tags -->
+    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
+    
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title> Krysline Agency Ltd - Dashboard</title>
@@ -46,8 +48,7 @@
     <link href="{% static 'assets/templates/basic/css/nice-select.css' %}" rel="stylesheet">
     <link href="{% static 'assets/templates/basic/css/main.css' %}" rel="stylesheet">
     <link href="{% static 'assets/templates/basic/css/custom.css' %}" rel="stylesheet">
-
-        <link href="{% static 'assets/global/css/select2.min.css' %}" rel="stylesheet">
+    <link href="{% static 'assets/global/css/select2.min.css' %}" rel="stylesheet">
 
         <style>
         .copied::after {
@@ -56,6 +57,15 @@
     </style>
 
     <link href="assets/templates/basic/css/color.php?color=f99f0b" rel="stylesheet">
+
+    <!-- Fixi -->
+     {% comment %} <script src="{% static 'assets/global/js/fixi.js' %}"></script> {% endcomment %}
+
+     {% comment %} <script src="https://cdn.jsdelivr.net/gh/bigskysoftware/fixi@0.9.1/fixi.js"
+        crossorigin="anonymous"
+        integrity="sha256-0957yKwrGW4niRASx0/UxJxBY/xBhYK63vDCnTF7hH4="></script> {% endcomment %}
+
+
 </head>
 
 
@@ -137,7 +147,7 @@
                     <a href="javascript:void(0)">Account</a>
                     <ul class="submenu">
                         <li>
-                            <a href="user/profile-setting">Profile Setting</a>
+                            <a href="{% url "profile_update" %}">Profile Setting</a>
                         </li>
                                                     <li>
                                 <a href="user/balance/transfer">Balance Transfer</a>
@@ -185,7 +195,7 @@
 
 
 <footer class="padding-top primary-overlay bg_img"
-    data-background="assets/images/frontend/footer/6367819801e991667727768.jpg">
+    data-background="{% static "assets/images/frontend/footer/6367819801e991667727768.jpg" %}">
     <div class="footer-top padding-bottom">
         <div class="container">
             <div class="footer-wrapper cl-white">
@@ -240,12 +250,12 @@
     <script src="{% static 'assets/templates/basic/js/nice-select.js' %}"></script>
     <script src="{% static 'assets/templates/basic/js/app.js' %}"></script>
 
-        <script src="{% static 'assets/global/js/select2.min.js' %}"></script>
+    <script src="{% static 'assets/global/js/select2.min.js' %}"></script>
 
     
     <link href="{% static 'assets/global/css/iziToast.min.css' %}" rel="stylesheet">
-<link href="{% static 'assets/global/css/iziToast_custom.css' %}" rel="stylesheet">
-<script src="{% static 'assets/global/js/iziToast.min.js' %}"></script>
+    <link href="{% static 'assets/global/css/iziToast_custom.css' %}" rel="stylesheet">
+    <script src="{% static 'assets/global/js/iziToast.min.js' %}"></script>
 
 <script>
     "use strict";
@@ -385,7 +395,7 @@
         })(jQuery);
     </script>
 
-    <script>
+    {% comment %} <script>
         (function($) {
             "use strict";
 
@@ -427,20 +437,10 @@
             });
 
         })(jQuery);
-    </script>
+    </script> {% endcomment %}
 
 
-<script>
-  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-  (function(){
-    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-    s1.async=true;
-    s1.src='https://embed.tawk.to/5fe0b9b2a8a254155ab5421d/1eq2tap1m';
-    s1.charset='UTF-8';
-    s1.setAttribute('crossorigin','*');
-    s0.parentNode.insertBefore(s1,s0);
-  })();
-</script>
+
 
 
 
@@ -451,16 +451,41 @@ if (window.top != window.self) {
 </script>
 
 
+{% comment %} <script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+
+    document.body.addEventListener('htmx:configRequest', function(evt) {
+        evt.detail.headers['X-CSRFToken'] = csrftoken; // add a new header into the request
+    });
+</script> {% endcomment %}
+
+
 
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-1ME4K0RD7K"></script>
+{% comment %} <script async src="https://www.googletagmanager.com/gtag/js?id=G-1ME4K0RD7K"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-1ME4K0RD7K');
 </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"0542d18bc5a94bf6b5460f8530f5a523","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"0542d18bc5a94bf6b5460f8530f5a523","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script> {% endcomment %}
 </body>
 
 </html>

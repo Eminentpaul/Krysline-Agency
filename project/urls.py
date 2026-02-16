@@ -20,5 +20,6 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('user/', include("authentication.urls")),
-    path('Dashboard/', include("users.urls"))
+    path('Dashboard/', include("users.urls")), 
+    path('api', include("monnify_verification.urls"))
 ]

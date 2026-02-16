@@ -45,6 +45,13 @@ class UserProfile(models.Model):
     )
 
     user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
+
+    # User Location Information 
+    address = models.TextField(null=True, blank=True)
+    state = models.CharField(max_length=200, blank=True, null=True)
+    zip_code = models.CharField(max_length=25, null=True, blank=True)
+    city = models.CharField(max_length=255, blank=True, null=True)
+    country = models.CharField(max_length=200, blank=True, null=True)
     # Use string reference to prevent circular imports
     referrer = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='downline')
     

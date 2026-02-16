@@ -76,7 +76,7 @@ class UserProfileAdmin(admin.ModelAdmin):
     # 5. Grouped Layout
     fieldsets = (
         ('Account Identity', {
-            'fields': ('user', 'referrer')
+            'fields': ('user', 'referrer', 'address', 'zip_code', 'city', 'state', 'country')
         }),
         ('Financials', {
             'fields': ('balance', 'account_number', 'account_name', 'bank')

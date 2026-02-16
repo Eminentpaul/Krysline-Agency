@@ -10,5 +10,7 @@ urlpatterns = [
     path('withdraw-history', views.withdraw_history, name="withdraw_history"),
     path('transaction-history', views.transaction_history, name="transaction_history"),
     path('referral-list', views.referral_list, name="referral_list"),
+    path('profile_update', views.profile_update, name="profile_update"),
+    path('verify_bank_account', views.verify_bank_account, name="verify_bank_account"),
 ]
 
