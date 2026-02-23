@@ -1,0 +1,164 @@
+{% extends "user_dash_nav.html" %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+
+
+{% block content %}
+
+<main class="adminuiux-content has-sidebar" onclick="contentClick()">
+                    <!-- body content of pages -->
+
+                    <!-- breadcrumb -->
+    <div class="container-fluid mt-4">
+        <div class="row gx-3 align-items-center">
+            <div class="col-12 col-sm">
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item bi"><a href="{% url "dashboard" %}">Home</a></li>
+                        <li class="breadcrumb-item active bi" aria-current="page">Payment Settings</li>
+                    </ol>
+                </nav>
+                <h5>Payment Settings</h5>
+            </div>
+        </div>
+    </div>
+
+    <!-- content -->
+    <div class="container mt-4" id="main-content">
+
+        <!-- cover -->
+        {% comment %} <div class="card adminuiux-card overflow-hidden mb-4 pt-5">
+            <figure class="coverimg start-0 top-0 w-100 h-100 z-index-0 position-absolute overlay-gradiant">
+                <div class="position-absolute top-0 end-0 m-2">
+                    <button class="btn btn-theme" onclick="$(this).next().click()">
+                        <i class="bi bi-camera"></i> Change Cover
+                    </button>
+                    <input type="file" class="d-none">
+                </div>
+                <img src="assets/img/modern-ai-image/flamingo-3.jpg" class="mw-100" alt="">
+            </figure>
+
+            <div class="card-body text-center text-white z-index-1">
+                <div class="d-inline-block position-relative w-auto mx-auto my-3">
+                    <figure class="avatar avatar-150 coverimg rounded-circle">
+                        <img src="assets/img/modern-ai-image/user-6.jpg" alt="">
+                    </figure>
+                    <div class="position-absolute bottom-0 end-0 z-index-1 h-auto">
+                        <button class="btn btn-lg btn-theme btn-square" onclick="$(this).next().click()">
+                            <i class="bi bi-camera"></i>
+                        </button>
+                        <input type="file" class="d-none">
+                    </div>
+                </div>
+                <h4>AdminUIUX</h4>
+                <p class="opacity-75 mb-3">guest@adminuiux.com</p>
+            </div>
+        </div> {% endcomment %}
+
+        <!-- settings -->
+        <div class="row">
+            {% include "users/setting-option.html" %}
+            <div class="col">
+                <div class="card adminuiux-card overflow-hidden mb-4">
+                    <div class="card-body">
+                        <form action="" method="POST" >
+                            {% csrf_token %}
+                            {% include "message.html" %}
+                                <h6 class="mb-3">Basic Details</h6>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="account_number" placeholder="Account Number" {% if user.profile.account_number %}value="{{user.profile.account_number|title}}"{% endif %} required class="form-control {% if user.profile.account_number %}is-valid{% endif %}">
+                                            <label>Account Number</label>
+                                        </div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                        <div class="form-floating mb-3">
+                                            <select name="bank" id="bank" class="form-control form-select " required
+                                            hx-post="{% url 'verify_bank_account' %}"
+                                            hx-trigger="change"
+                                            hx-target="#account_name_container"
+                                            hx-include="#account_number"
+                                            hx-indicator="#loading-spinner" 
+                                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
+                                        >
+                                            <option value="" disabled selected>-- Choose Bank --</option>
+                                            {% if user.profile.bank %}
+                                                <option value="{{user.profile.bank}}" selected>{{user.profile.get_bank_display}}</option>
+                                            {% endif %}
+                                            <option value="044-Access Bank">Access Bank</option>
+                                            <option value="063-Access Bank (Diamond)">Access Bank (Diamond)</option>
+                                            <option value="070-Fidelity Bank">Fidelity Bank</option>
+                                            <option value="011-First Bank of Nigeria">First Bank</option>
+                                            <option value="214-First City Monument Bank">FCMB</option>
+                                            <option value="058-Guaranty Trust Bank">GTB</option>
+                                            <option value="50515-Moniepoint MFB">Moniepoint MFB</option>
+                                            <option value="999992-OPay Digital Services Limited (OPay)">OPay</option>
+                                            <option value="232-Sterling Bank">Sterling Bank</option>
+                                            <option value="033-United Bank For Africa">UBA</option>
+                                            <option value="035-Wema Bank">Wema Bank</option>
+                                            <option value="057-Zenith Bank">Zenith Bank</option>
+                                        </select>
+                                            <label>Bank Name</label>
+                                        </div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
+                                    </div>
+
+                                    <style>
+                                        /* This hides the loader until the request starts */
+                                        .htmx-indicator {
+                                            display: none;
+                                        }
+
+                                        /* This shows the loader while the request is 'in-flight' */
+                                        .htmx-request .htmx-indicator {
+                                            display: inline-block;
+                                        }
+                                        .htmx-request.htmx-indicator {
+                                            display: inline-block;
+                                        }
+                                    </style>
+                                    
+                                    
+                                    <div class="col-12 col-md-6 col-lg-6" id="account_name_container">
+                                        
+                                    </div>
+                                    
+                                    <div id="loading-spinner" class="htmx-indicator col-12 col-sm-6 col-md-4 col-lg-3 height-150 mb-3 text-center">
+                                        <div class="loader6 mb-3 mx-auto" role="status"></div>
+                                        <p class="text-secondary text-center">Verifying Account....</p>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col">
+                                        <button class="btn btn-theme">Save</button>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="{% url "dashboard" %}" class="btn btn-link">Cancel</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+</div>
+
+<!-- page footer -->
+<!-- standard footer -->
+   
+   
+    {% comment %} <script src="{% static 'assets/global/js/fixi.js' %}"></script> {% endcomment %}
+    <script src="{% static 'assets/templates/basic/js/htmx.min.js' %}"></script>
+
+   
+    {% endblock %}

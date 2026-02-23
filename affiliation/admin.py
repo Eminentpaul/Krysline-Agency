@@ -56,6 +56,11 @@ class AffiliatePackageAdmin(admin.ModelAdmin):
             'fields': ('commissions',),
             'description': "Enter as JSON. Example: {'1': 20, '2': 10, '3': 5}"
         }),
+        ('Package Description', {
+            # Use 'commissions' (the JSONField) instead of the old separate gen fields
+            'fields': ('description',),
+            'description': "Enter the Description of the Package"
+        }),
     )
 
     @admin.display(description='Price (NGN)')
@@ -88,7 +93,7 @@ class AffiliateAdmin(admin.ModelAdmin):
     search_fields = ('user__email', 'user__username', 'referral_code')
     
     # 4. Security: Prevent manual editing of codes and dates
-    readonly_fields = ('referral_code', 'joined_at')
+    readonly_fields = ('referral_code', 'joined_at', 'updated_at')
     
     # 5. Searchable dropdown for Upline (Essential for large MLM trees)
     raw_id_fields = ('upline', 'user')
@@ -126,7 +131,9 @@ class AffiliateAdmin(admin.ModelAdmin):
     # Security: Prevent deletion of Affiliates (Deactivate instead)
     # This preserves the financial audit trail
     def has_delete_permission(self, request, obj=None):
-        return False 
+        if request.user.user_type == 'admin' or request.user.user_type == 'manager':
+            return True
+        else: return False
     
 
 

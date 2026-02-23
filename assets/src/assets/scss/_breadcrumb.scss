@@ -1,0 +1,39 @@
+.breadcrumb {
+    --bs-breadcrumb-font-size: 14px;
+
+    .breadcrumb-item {
+        a {
+            color: var(--adminuiux-theme-1);
+            text-decoration: none;
+
+            &:hover,
+            &:focus {
+                color: var(--adminuiux-theme-1-hover);
+            }
+        }
+
+        &.active {
+            color: var(--bs-secondary);
+        }
+    }
+}
+
+[aria-label=breadcrumb] {
+    --bs-breadcrumb-divider: "\f285";
+
+    .bi:before {
+        line-height: 1.5;
+    }
+}
+
+/* dark mode */
+[data-bs-theme=dark] {
+    .breadcrumb .breadcrumb-item a {
+        color: var(--adminuiux-theme-1-text);
+
+        &:hover,
+        &:focus {
+            color: var(--adminuiux-theme-1);
+        }
+    }
+}

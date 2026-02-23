@@ -1,0 +1,326 @@
+.btn {
+    white-space: nowrap;
+
+    i,
+    svg {
+        vertical-align: middle;
+        display: inline-block;
+        position: relative;
+        // margin-bottom: -2px;
+        font-size: 16px;
+        line-height: 16px;
+        width: 18px;
+    }
+
+    &.btn-square:not(.btn-sm):not(.btn-lg) {
+        --bs-btn-padding-x: 0.525rem;
+        --bs-btn-padding-y: 0.285rem;
+        --bs-navbar-toggler-padding-x: 0.5rem;
+        --bs-navbar-toggler-padding-y: 0.475rem;
+        min-width: 38px;
+        line-height: 26px;
+        min-height: 38px;
+        vertical-align: middle;
+
+        i,
+        svg {
+            font-size: 16px;
+            min-width: 18px;
+            height: 18px;
+            line-height: 16px;
+            margin: 0 auto;
+        }
+
+        svg {
+            margin-top: -2px;
+            height: 25px;
+        }
+    }
+
+    &.btn-sm.btn-square {
+        --bs-btn-padding-x: 0.0rem;
+        --bs-btn-padding-y: 0.0rem;
+        --bs-navbar-toggler-padding-x: 0.0rem;
+        --bs-navbar-toggler-padding-y: 0.0rem;
+        min-width: 30px;
+        line-height: 28px;
+        min-height: 30px;
+        vertical-align: middle;
+
+        i {
+            font-size: 14px;
+            line-height: 14px;
+        }
+
+        svg {
+            margin-top: -2px;
+            height: 26px;
+        }
+    }
+
+    &.btn-lg.btn-square {
+        --bs-btn-padding-x: 0.0rem;
+        --bs-btn-padding-y: 0.0rem;
+        --bs-navbar-toggler-padding-x: 0.0rem;
+        --bs-navbar-toggler-padding-y: 0.0rem;
+        min-width: 48px;
+        line-height: 46px;
+        min-height: 48px;
+        vertical-align: middle;
+
+        svg {
+            margin-top: -2px;
+            height: 26px;
+        }
+    }
+
+    &.btn-link {
+        --bs-btn-color: var(--bs-link-color);
+        --bs-btn-hover-color: var(--adminuiux-theme-1);
+        --bs-btn-hover-bg: rgba(var(--adminuiux-theme-1-rgb), 0.1);
+        --bs-btn-active-color: var(--adminuiux-theme-1-text);
+        --bs-btn-active-bg: var(--adminuiux-theme-1);
+        text-decoration: none;
+
+        svg,
+        i {
+            color: var(--bs-link-color);
+            stroke: var(--bs-link-color);
+        }
+
+        &:hover,
+        &:focus {
+            color: var(--bs-btn-hover-color);
+
+            svg,
+            i {
+                color: var(--bs-btn-hover-color);
+                stroke: var(--bs-btn-hover-color);
+            }
+        }
+
+        &:active,
+        &.active,
+        &.show {
+
+            svg,
+            i {
+                color: var(--bs-btn-active-color);
+                stroke: var(--bs-btn-active-color);
+            }
+
+            &:hover,
+            &:focus {
+                color: var(--bs-btn-active-color);
+            }
+
+        }
+
+    }
+
+    &.text-white {
+        --bs-btn-hover-bg: rgba(var(--bs-white-rgb), 0.15);
+
+        svg,
+        i {
+            color: var(--bs-white);
+            stroke: var(--bs-white);
+        }
+    }
+}
+
+.btn-outline-dashed {
+    border-style: dashed;
+}
+
+.btn-outline-accent {
+    --bs-btn-color: rgba(var(--adminuiux-theme-accent-1-rgb), 0.75);
+    --bs-btn-border-color: rgba(var(--adminuiux-theme-accent-1-rgb), 0.75);
+    --bs-btn-hover-bg: rgba(var(--adminuiux-theme-accent-1-rgb), 0.85);
+    --bs-btn-hover-border-color: rgba(var(--adminuiux-theme-accent-1-rgb), 0.85);
+    --bs-btn-hover-color: white;
+    --bs-btn-active-bg: rgba(var(--adminuiux-theme-accent-1-rgb), 1);
+    --bs-btn-active-border-color: rgba(var(--adminuiux-theme-accent-1-rgb), 1);
+    --bs-btn-active-color: #fff;
+    --bs-btn-disabled-color: rgba(var(--adminuiux-theme-accent-1-rgb), 0.5);
+    --bs-btn-disabled-border-color: rgba(var(--adminuiux-theme-accent-1-rgb), 0.5);
+}
+
+.btn-outline-theme {
+    --bs-btn-color: rgba(var(--adminuiux-theme-1-rgb), 0.75);
+    --bs-btn-border-color: rgba(var(--adminuiux-theme-1-rgb), 0.75);
+    --bs-btn-hover-bg: rgba(var(--adminuiux-theme-1-rgb), 0.85);
+    --bs-btn-hover-border-color: rgba(var(--adminuiux-theme-1-rgb), 0.85);
+    --bs-btn-hover-color: white;
+    --bs-btn-active-bg: rgba(var(--adminuiux-theme-1-rgb), 1);
+    --bs-btn-active-border-color: rgba(var(--adminuiux-theme-1-rgb), 1);
+    --bs-btn-active-color: #fff;
+    --bs-btn-disabled-color: rgba(var(--adminuiux-theme-1-rgb), 0.5);
+    --bs-btn-disabled-border-color: rgba(var(--adminuiux-theme-1-rgb), 0.5);
+}
+
+.btn-accent {
+    --bs-btn-color: var(--adminuiux-theme-accent-1-text);
+    --bs-btn-bg: var(--adminuiux-theme-accent-1);
+    --bs-btn-border-color: rgba(var(--adminuiux-theme-accent-1-rgb), 0.75);
+    --bs-btn-hover-color: var(--adminuiux-theme-accent-1-text);
+    --bs-btn-hover-bg: var(--adminuiux-theme-accent-1-hover);
+    --bs-btn-hover-border-color: rgba(var(--adminuiux-theme-accent-1-rgb), 0.85);
+    --bs-btn-focus-shadow-rgb: 60, 153, 110;
+    --bs-btn-active-color: var(--adminuiux-theme-accent-1-text);
+    --bs-btn-active-bg: var(--adminuiux-theme-accent-1-active);
+    --bs-btn-active-border-color: rgba(var(--adminuiux-theme-accent-1-rgb), 1);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: var(--adminuiux-theme-accent-1-text);
+    --bs-btn-disabled-bg: rgba(var(--adminuiux-theme-accent-1-rgb), 0.5);
+    --bs-btn-disabled-border-color: rgba(var(--adminuiux-theme-accent-1-rgb), 0.5);
+
+    &.btn-light-color {
+        --bs-btn-border-color: transparent;
+        --bs-btn-bg: rgba(var(--adminuiux-theme-accent-1-rgb), 0.5);
+    }
+}
+
+.btn-theme {
+    --bs-btn-color: var(--adminuiux-theme-1-text);
+    --bs-btn-bg: var(--adminuiux-theme-1);
+    --bs-btn-border-color: rgba(var(--adminuiux-theme-1-rgb), 0.75);
+    --bs-btn-hover-color: var(--adminuiux-theme-1-text);
+    --bs-btn-hover-bg: var(--adminuiux-theme-1-hover);
+    --bs-btn-hover-border-color: rgba(var(--adminuiux-theme-1-rgb), 0.85);
+    --bs-btn-focus-shadow-rgb: 60, 153, 110;
+    --bs-btn-active-color: var(--adminuiux-theme-1-text);
+    --bs-btn-active-bg: var(--adminuiux-theme-1-active);
+    --bs-btn-active-border-color: rgba(var(--adminuiux-theme-1-rgb), 1);
+    --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    --bs-btn-disabled-color: var(--adminuiux-theme-1-text);
+    --bs-btn-disabled-bg: rgba(var(--adminuiux-theme-1-rgb), 0.5);
+    --bs-btn-disabled-border-color: rgba(var(--adminuiux-theme-1-rgb), 0.5);
+
+    &.btn-light-color {
+        --bs-btn-border-color: transparent;
+        --bs-btn-bg: rgba(var(--adminuiux-theme-1-rgb), 0.5);
+    }
+}
+
+.btn-success {
+    --bs-btn-bg: var(--bs-success);
+    --bs-btn-border-color: var(--bs-success);
+}
+
+.btn-danger {
+    --bs-btn-bg: var(--bs-danger);
+    --bs-btn-border-color: var(--bs-danger);
+}
+
+.btn-outline-success {
+    --bs-btn-color: var(--bs-success);
+    --bs-btn-border-color: var(--bs-success);
+    --bs-btn-hover-bg: var(--bs-success);
+    --bs-btn-hover-border-color: var(--bs-success);
+}
+
+.btn-outline-danger {
+    --bs-btn-color: var(--bs-danger);
+    --bs-btn-border-color: var(--bs-danger);
+    --bs-btn-hover-bg: var(--bs-danger);
+    --bs-btn-hover-border-color: var(--bs-danger);
+}
+
+.btn-group {
+    .btn-link {
+        --bs-btn-bg: rgba(var(--adminuiux-theme-1-rgb), 0.08);
+    }
+}
+
+.navbar-toggler {
+    &:not(.btn-outline-) {
+        --bs-border-width: 0;
+    }
+
+    --bs-navbar-toggler-focus-width: 1px;
+}
+
+.btn-primary {
+    &.btn-light-color {
+        --bs-btn-border-color: transparent;
+        --bs-btn-bg: rgba(var(--bs-primary-rgb), 0.5);
+    }
+}
+
+.btn-secondary {
+    &.btn-light-color {
+        --bs-btn-border-color: transparent;
+        --bs-btn-bg: rgba(var(--bs-secondary-rgb), 0.5);
+    }
+}
+
+.btn-success {
+    &.btn-light-color {
+        --bs-btn-border-color: transparent;
+        --bs-btn-bg: rgba(var(--bs-success-rgb), 0.5);
+    }
+}
+
+.btn-danger {
+    &.btn-light-color {
+        --bs-btn-border-color: transparent;
+        --bs-btn-bg: rgba(var(--bs-danger-rgb), 0.5);
+    }
+}
+
+.btn-warning {
+    &.btn-light-color {
+        --bs-btn-border-color: transparent;
+        --bs-btn-bg: rgba(var(--bs-warning-rgb), 0.5);
+    }
+}
+
+.btn-info {
+    &.btn-light-color {
+        --bs-btn-border-color: transparent;
+        --bs-btn-bg: rgba(var(--bs-info-rgb), 0.5);
+    }
+}
+
+.btn-dark {
+    &.btn-light-color {
+        --bs-btn-border-color: transparent;
+        --bs-btn-bg: rgba(var(--bs-dark-rgb), 0.5);
+    }
+}
+
+/* dark mode */
+[data-bs-theme=dark] {
+    .btn-link {
+        --bs-btn-hover-color: #ffffff
+    }
+
+    .btn-outline-accent {
+        --bs-btn-color: var(--bs-link-color)
+    }
+
+    .btn-group {
+        .btn-link:not(.active) {
+            background-color: rgba(var(--adminuiux-theme-1-rgb), 0.5);
+            color: rgba(255, 255, 255, 0.75);
+
+            i,
+            svg {
+                color: rgba(255, 255, 255, 0.75);
+                stroke: rgba(255, 255, 255, 0.75);
+            }
+
+            &:hover,
+            &:focus {
+                color: #ffffff;
+
+                i,
+                svg {
+                    color: #ffffff;
+                    stroke: #ffffff;
+                }
+            }
+        }
+    }
+}

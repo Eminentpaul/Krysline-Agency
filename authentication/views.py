@@ -14,7 +14,7 @@ from security.security_utils import *
 from .token import email_verification_token
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
-
+import requests
 from django.core.mail import EmailMessage
 # Email Require
 from django.conf import settings
@@ -28,9 +28,26 @@ from .models import User
 @rate_limit(rate='5/minute')
 def login(request):
     if request.user.is_authenticated:
-        return redirect("dashboard")
-    # TODO RETURN TO DASHBOARD
+        match getattr(request.user, 'user_type', 'default'):
+            case 'affiliate':
+                # print("User Dashboard")
+                return redirect('dashboard')
+
+            case 'manager':
+                return redirect('krysline_admin')
+
+            case 'secretary':
+                return redirect('krysline_admin')
+
+            case 'admin':
+                return redirect('/developer/eminent/account')
+
+            case _:
+                return redirect('login')
     
+    
+    # Getting the Initial url 
+    url = request.META.get('HTTP_REFERER')
     # Initialize the form 
     form = SecureLoginForm(request.POST or None)
     ip_address = get_client_ip(request)
@@ -80,25 +97,37 @@ def login(request):
                 severity="LOW"
             )
 
+            
+            try:
+                query = requests.utils.urlparse(url).query
+                params = dict(x.split('=') for x in query.split('&'))
+                if 'next' in params:
+                    nextPage = params['next']
+                    return redirect(nextPage)
+            except:
+                if profile.two_factor_enabled:
+                    request.session['2fa_verified'] = False
+                    return
+                    # TODO "RETURN TO 2FA PAGE"
 
-            if profile.two_factor_enabled:
-                request.session['2fa_verified'] = False
-                return
-                # TODO "RETURN TO 2FA PAGE"
 
+                match getattr(request.user, 'user_type', 'default'):
+                    case 'affiliate':
+                        # print("User Dashboard")
+                        return redirect('dashboard')
 
-            match getattr(user, 'user_type', 'default'):
-                case 'affiliate':
-                    # print("User Dashboard")
-                    return redirect('dashboard')
+                    case 'manager':
+                        return redirect('krysline_admin')
 
-                case 'admin':
-                    print('Admin Dashboard')
-                    return redirect('/admin')
-                # TODO return to admin dashboard
+                    case 'secretary':
+                        return redirect('krysline_admin')
 
-                case _:
-                    return redirect('login')
+                    case 'admin':
+                        print('Admin Dashboard')
+                        return redirect('/developer/eminent/account')
+
+                    case _:
+                        return redirect('login')
                 
         else:
             increment_failed_attempts(username, ip_address)

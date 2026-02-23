@@ -12,7 +12,7 @@ headers = {
     "Content-Type": "application/json",
 }
 
-
+paystack.Subscription.create()
 # # Fetch Banks
 
 # response = paystack.Verification.fetch_banks(

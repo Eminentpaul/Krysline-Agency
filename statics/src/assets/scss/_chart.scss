@@ -1,0 +1,21 @@
+.semidoughnutchart {
+    display: block;
+    position: relative;
+    height: 240px;
+
+    .expensedatasemidoughnut {
+        position: absolute;
+        left: 0;
+        right: 0;
+        text-align: center;
+        bottom: 40px;
+        z-index: 0;
+    }
+
+    canvas {
+        margin: -50px 0;
+        vertical-align: top;
+        z-index: 1;
+        position: relative;
+    }
+}

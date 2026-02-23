@@ -3,489 +3,944 @@
 {% load humanize %}
 {% load mathfilters %}
 
-<!doctype html>
-<html lang="en" itemscope itemtype="http://schema.org/WebPage">
+
+<!DOCTYPE html>
+<html lang="en">
+<!-- dir="rtl"-->
 
 <head>
-    <!-- Required meta tags -->
-    <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.8/dist/htmx.min.js" integrity="sha384-/TgkGk7p307TH7EXJDuUlgG3Ce1UVolAOFopFekQkkXihi5u/6OCvVKyz1W+idaz" crossorigin="anonymous"></script>
-    
+    <!-- Required meta tags  -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title> Krysline Agency Ltd - Dashboard</title>
-    <meta name="title" Content="Matrixlab - Dashboard">
-    <meta name="description" content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit">
-    <meta name="keywords" content="MatrixLab,MLM platform,matrix platform,Multi-level-marketing">
-    <link rel="shortcut icon" href="assets/images/logo_icon/favicon.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
 
-    
-    <link rel="apple-touch-icon" href="{% static "assets/images/logo_icon/logo.png" %}">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <meta name="apple-mobile-web-app-title" content="Matrixlab - Dashboard">
-    
-    <meta itemprop="name" content="Matrixlab - Dashboard">
-    <meta itemprop="description" content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit">
-    <meta itemprop="image" content="{% static "assets/images/seo/666c205fc90f81718362207.png" %}">
-    
-    <meta property="og:type" content="website">
-    <meta property="og:title" content="MatrixLab - Matrix MLM Platform">
-    <meta property="og:description" content="Neque porro quisquam est qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit ff">
-    <meta property="og:image" content="{% static "assets/images/seo/666c205fc90f81718362207.png" %}">
-    <meta property="og:image:type" content="image/png">
-        <meta property="og:image:width" content="1180">
-    <meta property="og:image:height" content="600">
-    <meta property="og:url" content="user/dashboard">
-    
-    <meta name="twitter:card" content="summary_large_image">
-    <link href="{% static 'assets/global/css/bootstrap.min.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/global/css/all.min.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/global/css/line-awesome.min.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/templates/basic/css/animate.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/templates/basic/css/magnific-popup.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/templates/basic/css/owl.min.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/templates/basic/css/odometer.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/templates/basic/css/nice-select.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/templates/basic/css/main.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/templates/basic/css/custom.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/global/css/select2.min.css' %}" rel="stylesheet">
+    <title>Krysline Agency Ltd</title>
+    <link rel="icon" type="image/png" href="assets/img/favicon.png">
 
-        <style>
-        .copied::after {
-            background-color: #f99f0b;
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --adminuiux-content-font: "Open Sans", sans-serif;
+            --adminuiux-content-font-weight: 400;
+            --adminuiux-title-font: "Lexend", sans-serif;
+            --adminuiux-title-font-weight: 600;
         }
     </style>
 
-    <link href="assets/templates/basic/css/color.php?color=f99f0b" rel="stylesheet">
+<script defer src="{% static 'assets/js/app.js' %}"></script>
+<link href="{% static 'assets/css/app.css' %}" rel="stylesheet"></head>
 
-    <!-- Fixi -->
-     {% comment %} <script src="{% static 'assets/global/js/fixi.js' %}"></script> {% endcomment %}
-
-     {% comment %} <script src="https://cdn.jsdelivr.net/gh/bigskysoftware/fixi@0.9.1/fixi.js"
-        crossorigin="anonymous"
-        integrity="sha256-0957yKwrGW4niRASx0/UxJxBY/xBhYK63vDCnTF7hH4="></script> {% endcomment %}
-
-
-</head>
-
-
-<body>
-
-    
-    <div class="overlay"></div>
-
-    <a class="scrollToTop" href="#"><i class="fas fa-angle-up"></i></a>
-    <div class="preloader">
-        <div class="loader">
-            <div class="loader-inner"></div>
+<body class="main-bg main-bg-opac main-bg-blur adminuiux-sidebar-fill-white adminuiux-sidebar-boxed  theme-blue roundedui" data-theme="theme-blue" data-sidebarfill="adminuiux-sidebar-fill-white" data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" tabindex="0">
+    <!-- Pageloader -->
+<div class="pageloader">
+    <div class="container h-100">
+        <div class="row justify-content-center align-items-center text-center h-100">
+            <div class="col-12 mb-auto pt-4"></div>
+            <div class="col-auto">
+                <img src="{% static 'assets/img/logo.svg' %}" alt="" class="height-60 mb-3">
+                <p class="h6 mb-0">Krysline</p>
+                <p class="h3 mb-4">Agency Ltd</p>
+                <div class="loader10 mb-2 mx-auto"></div>
+            </div>
+            <div class="col-12 mt-auto pb-4">
+                <p class="text-secondary">Please wait we are preparing awesome things to preview...</p>
+            </div>
         </div>
     </div>
+</div>
+        <!-- standard header -->
+<header class="adminuiux-header">
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container-fluid">
 
-        <header class="header-section">
-    <div class="container">
-        <div class="header-wrapper">
-            <div class="logo">
-                <a href="{% url "dashboard" %}">
-                    <img src="{% static 'assets/images/logo_icon/logo.png' %}" alt="logo">
-                </a>
+            <!-- main sidebar toggle -->
+            <button class="btn btn-link btn-square sidebar-toggler" type="button" onclick="initSidebar()">
+                <i class="sidebar-svg" data-feather="menu"></i>
+            </button>
+
+            <!-- logo -->
+            <a class="navbar-brand" href="{% url "dashboard" %}">
+                <img data-bs-img="light" src="{% static 'assets/img/logo-light.svg' %}" alt="">
+                <img data-bs-img="dark" src="{% static 'assets/img/logo.svg' %}" alt="">
+                <div class="">
+                    <span class="h4">Investment<b>UX</b></span>
+                    <p class="company-tagline">AdminUIUX HTML template</p>
+                </div>
+            </a>
+
+            <!-- navigation inline -->
+            <div class="collapse navbar-collapse right-in-device justify-content-center" id="header-navbar">
+                <ul class="navbar-nav mx-lg-3 mb-2 mb-md-0 ">
+                    {% if user.user_type == "manager" %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url "krysline_admin" %}">Dashboard </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="">Transaction</a>
+                            <!--TODO change url-->
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url "dashboard" %}">Dashboard</a>
+                        </li>
+                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url "transaction_history" %}">Transaction</a>
+                        </li>
+                    {% endif %}
+                    {% comment %} <li class="nav-item">
+                        <a class="nav-link" href="investment-portfolio.html">Portfolio</a>
+                    </li> {% endcomment %}
+                    {% comment %} <li class="nav-item">
+                        <a class="nav-link" href="investment-blogs.html">News</a>
+                    </li> {% endcomment %}
+                </ul>
             </div>
-            <ul class="menu">
-                <li>
-                    <a href="{% url "dashboard" %}">Dashboard</a>
-                </li>
 
-                {% comment %} <li class="menu-item-has-children">
-                    <a href="javascript:void(0)">Deposit</a>
-                    <ul class="submenu">
+            <!-- right icons button -->
+            <div class="ms-auto">
+                <!-- global search toggle -->
+                <button class="btn btn-link btn-square btn-icon btn-link-header" type="button" onclick="openSearch()">
+                    <i data-feather="search"></i>
+                </button>
+
+                <!-- dark mode -->
+                <button class="btn btn-link btn-square btnsunmoon btn-link-header" id="btn-layout-modes-dark-page">
+                    <i class="sun mx-auto" data-feather="sun"></i>
+                    <i class="moon mx-auto" data-feather="moon"></i>
+                </button>
+
+                <!-- application list dropdown -->
+                {% comment %} <div class="dropdown d-none d-sm-inline-block">
+                    <button class="btn btn-link btn-square btn-icon btn-link-header dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i data-feather="grid"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end width-300 pt-0 px-0">
+                        <div class="bg-theme-1-space rounded py-3 mb-2 dropdown-dontclose text-center">
+                            <p class="mb-0">Applications</p>
+                            <p class="opacity-50 small">Make your app innovative</p>
+                        </div>
+                        <div class="px-2">
+                            <div class="row g-0 text-center mb-2">
+                                <div class="col-4">
+                                    <a class="dropdown-item square-item" href="app-finance.html">
+                                        <div class="avatar avatar-40 rounded mb-2">
+                                            <i class="bi bi-bank fs-4 mx-0"></i>
+                                        </div>
+                                        <p class="mb-0">Finance</p>
+                                        <p class="fs-12 opacity-50 mb-2">Accounting</p>
+                                    </a>
+                                </div>
+                                <div class="col-4">
+                                    <a class="dropdown-item square-item" href="app-network.html">
+                                        <div class="avatar avatar-40 rounded mb-2">
+                                            <i class="bi bi-globe fs-4 mx-0"></i>
+                                        </div>
+                                        <p class="mb-0">Network</p>
+                                        <p class="fs-12 opacity-50 mb-2">Stabilize</p>
+                                    </a>
+                                </div>
+                                <div class="col-4">
+                                    <a class="dropdown-item square-item" href="app-ecommerce.html">
+                                        <div class="avatar avatar-40 rounded mb-2">
+                                            <i class="bi bi-box fs-4 mx-0"></i>
+                                        </div>
+                                        <p class="mb-0">Inventory</p>
+                                        <p class="fs-12 opacity-50 mb-2">Assuring</p>
+                                    </a>
+                                </div>
+                                <div class="col-4">
+                                    <a class="dropdown-item square-item" href="app-project.html">
+                                        <div class="avatar avatar-40 rounded mb-2">
+                                            <i class="bi bi-folder fs-4 mx-0"></i>
+                                        </div>
+                                        <p class="mb-0">Project</p>
+                                        <p class="fs-12 opacity-50 mb-2">Management</p>
+                                    </a>
+                                </div>
+                                <div class="col-4">
+                                    <a class="dropdown-item square-item" href="app-social.html">
+                                        <div class="avatar avatar-40 rounded mb-2">
+                                            <i class="bi bi-people fs-4 mx-0"></i>
+                                        </div>
+                                        <p class="mb-0">Social</p>
+                                        <p class="fs-12 opacity-50 mb-2">Tracking</p>
+                                    </a>
+                                </div>
+                                <div class="col-4">
+                                    <a class="dropdown-item square-item" href="app-learning.html">
+                                        <div class="avatar avatar-40 rounded mb-2">
+                                            <i class="bi bi-journal-bookmark fs-4 mx-0"></i>
+                                        </div>
+                                        <p class="mb-0">Learning</p>
+                                        <p class="fs-12 opacity-50 mb-2">Make-easy</p>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <a class="btn btn-link text-center" href="app-demo.html">View all
+                                <i class="bi bi-arrow-right fs-14"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div> {% endcomment %}
+
+            
+
+                <!-- notification dropdown -->
+                {% comment %} <div class="dropdown d-inline-block">
+                    <button class="btn btn-link btn-square btn-icon btn-link-header dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i data-feather="bell"></i>
+                        <span class="position-absolute top-0 end-0 badge rounded-pill bg-danger p-1">
+                            <small>9+</small>
+                            <span class="visually-hidden">unread messages</span>
+                        </span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end notification-dd sm-mi-95px">
                         <li>
-                            <a href="user/deposit">Deposit Money</a>
+                            <a class="dropdown-item p-2" href="#">
+                                <div class="row gx-3">
+                                    <div class="col-auto">
+                                        <figure class="avatar avatar-40 rounded-circle bg-pink">
+                                            <i class="bi bi-gift text-white"></i>
+                                        </figure>
+                                    </div>
+                                    <div class="col">
+                                        <p class="mb-2 small">Congratulation! Your property <span class="fw-bold">#H10215</span> has reached 1000 views.</p>
+                                        <span class="row">
+                                            <span class="col"><span class="badge badge-light rounded-pill text-bg-warning small">Directory</span></span>
+                                            <span class="col-auto small opacity-75">1:00 am</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
                         </li>
                         <li>
-                            <a href="user/deposit/history">Deposit History</a>
+                            <a class="dropdown-item p-2" href="#">
+                                <div class="row gx-3">
+                                    <div class="col-auto">
+                                        <figure class="avatar avatar-40 rounded-circle bg-success">
+                                            <i class="bi bi-patch-check text-white"></i>
+                                        </figure>
+                                    </div>
+                                    <div class="col">
+                                        <p class="mb-2 small">Your property <span class="fw-bold">#H10215</span> is published and live now.</p>
+                                        <span class="row">
+                                            <span class="col"><span class="badge badge-light rounded-pill text-bg-primary small">System</span></span>
+                                            <span class="col-auto small opacity-75">1:00 am</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item p-2" href="#">
+                                <div class="row gx-3">
+                                    <div class="col-auto">
+                                        <figure class="avatar avatar-40 rounded-circle bg-info">
+                                            <i class="bi bi-clipboard-check text-white"></i>
+                                        </figure>
+                                    </div>
+                                    <div class="col">
+                                        <p class="mb-2 small">User <span class="fw-bold">Rahana</span> has updated <span class="fw-bold">#H10215</span> property.</p>
+                                        <span class="row">
+                                            <span class="col"><span class="badge badge-light rounded-pill text-bg-success small">team</span></span>
+                                            <span class="col-auto small opacity-75">1:00 am</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                        <li>
+                            <div class="dropdown-item p-2">
+                                <div class="row gx-3">
+                                    <div class="col-auto">
+                                        <figure class="avatar avatar-40 rounded-circle bg-warning ">
+                                            <i class="bi bi-bell text-white"></i>
+                                        </figure>
+                                    </div>
+                                    <div class="col">
+                                        <p class="mb-2 small">Your subscription going to expire soon. Please <a href="profile-subscription.html">upgrade</a> to get service interrupt free.</p>
+                                        <p class="opacity-75 small">4 days ago</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="text-center">
+                            <button class="btn btn-link text-center" onclick="notifcationAll()">
+                                View all <i class="bi bi-arrow-right fs-14"></i>
+                            </button>
                         </li>
                     </ul>
-                </li> {% endcomment %}
+                </div> {% endcomment %}
 
-                <li class="menu-item-has-children">
-                    <a href="javascript:void(0)">Withdraw</a>
-                    <ul class="submenu">
-                        <li>
-                            <a href="{% url "withdraw_funds" %}">Withdraw Money</a>
-                        </li>
-                        <li>
-                            <a href="{% url "withdraw_history" %}">Withdraw History</a>
-                        </li>
-                    </ul>
-                </li>
+                <!-- profile dropdown -->
+                <div class="dropdown d-inline-block">
+                    <a class="dropdown-toggle btn btn-link btn-square btn-link-header style-none no-caret px-0" id="userprofiledd" data-bs-toggle="dropdown" aria-expanded="false" role="button">
+                        <div class="row gx-0 d-inline-flex">
+                            <div class="col-auto align-self-center">
+                                <figure class="avatar avatar-28 rounded-circle coverimg align-middle">
+                                    <img src="{% static 'assets/img/modern-ai-image/user-6.jpg' %}" alt="" id="userphotoonboarding2">
+                                </figure>
+                            </div>
+                        </div>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end width-300 pt-0 px-0 sm-mi-45px" aria-labelledby="userprofiledd">
+                        <div class="bg-theme-1-space rounded py-3 mb-3 dropdown-dontclose">
+                            <div class="row gx-0">
+                                <div class="col-auto px-3">
+                                    <figure class="avatar avatar-50 rounded-circle coverimg align-middle">
+                                        <img src="{% static 'assets/img/modern-ai-image/user-6.jpg' %}" alt="">
+                                    </figure>
+                                </div>
+                                <div class="col align-self-center ">
+                                    <p class="mb-1"><span>{{user.username|title}}</span></p>
+                                    <p><i class="bi bi-wallet2 me-2"></i> ₦{{ current_balance|floatformat:2|intcomma }} <small class="opacity-50">Balance</small>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="px-2">
+                            <div><a class="dropdown-item" href="investment-myprofile.html"><i data-feather="user" class="avatar avatar-18 me-1"></i> My
+                                    Profile</a>
+                            </div>
+                            <div>
+                                <a class="dropdown-item" href="{% url "dashboard" %}">
+                                    <div class="row g-0">
+                                        <div class="col align-self-center"><i data-feather="layout" class="avatar avatar-18 me-1"></i>
+                                            My Dashboard
+                                        </div>
+                                        {% comment %} <div class="col-auto">
+                                            <figure class="avatar avatar-20 coverimg rounded-circle">
+                                                <img src="{% static 'assets/img/modern-ai-image/user-1.jpg' %}" alt="">
+                                            </figure>
+                                            <figure class="avatar avatar-20 coverimg rounded-circle">
+                                                <img src="{% static 'assets/img/modern-ai-image/user-2.jpg' %}" alt="">
+                                            </figure>
+                                            <figure class="avatar avatar-20 coverimg rounded-circle">
+                                                <img src="{% static 'assets/img/modern-ai-image/user-4.jpg' %}" alt="">
+                                            </figure>
+                                            <div class="avatar avatar-20 bg-theme-1 rounded-circle text-center align-middle">
+                                                <small class="fs-10 align-middle">9+</small>
+                                            </div>
+                                        </div> {% endcomment %}
+                                    </div>
+                                </a>
+                            </div>
+                            <div>
+                                <a class="dropdown-item" href="{% url "referral_list" %}">
+                                    <i data-feather="dollar-sign" class="avatar avatar-18 me-1"></i> Earning
+                                </a>
+                            </div>
+                            <div>
+                                <a class="dropdown-item" href="{% url "choose_package" %}">
+                                    <div class="row">
+                                        <div class="col"><i data-feather="gift" class="avatar avatar-18 me-1"></i> Subscription</div>
+                                        <div class="col-auto">
+                                            <p class="small text-success">Upgrade</p>
+                                        </div>
+                                        <div class="col-auto"><span class="arrow bi bi-chevron-right"></span></div>
+                                    </div>
+                                </a>
+                            </div>
+                            {% comment %} <div class="dropdown open-left dropdown-dontclose">
+                                <a class="dropdown-item" data-bs-toggle="dropdown" aria-expanded="false" role="button">
+                                    <div class="row">
+                                        <div class="col"><i class="bi bi-translate avatar avatar-18 me-1"></i> Language</div>
+                                        <div class="col-auto"><small class="vm">EN - English</small> <i class="bi bi-translate"></i></div>
+                                        <div class="col-auto"><span class="arrow bi bi-chevron-right"></span></div>
+                                    </div>
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <div><a class="dropdown-item active" data-value="EN">EN - English</a></div>
+                                    <div><a class="dropdown-item" data-value="FR">FR - French</a></div>
+                                    <div><a class="dropdown-item" data-value="CH">CH - Chinese</a></div>
+                                    <div><a class="dropdown-item" data-value="HI">HI - Hindi</a></div>
+                                </div>
+                            </div> {% endcomment %}
+                            <div>
+                                <a class="dropdown-item" href="{% url "profile_update" %}">
+                                    <i data-feather="settings" class="avatar avatar-18 me-1"></i> Account Setting
+                                </a>
+                            </div>
+                            <div>
+                                <a class="dropdown-item theme-red" href="{% url "logout" %}">
+                                    <i data-feather="power" class="avatar avatar-18 me-1"></i> Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-                <li>
-                    <a href="{% url "choose_package" %}">Plan</a>
-                </li>
+                <!-- navigation inline toggler for small screen-->
+                <button class="navbar-toggler btn btn-link btn-link-header btn-square btn-icon collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#header-navbar" aria-controls="header-navbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <i data-feather="more-vertical" class="openbtn"></i>
+                    <i data-feather="x" class="closebtn"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
 
-                <li>
-                    <a href="{% url "transaction_history" %}">Transactions</a>
-                </li>
+    <!-- search global wrap -->
+    <div class="adminuiux-search-full">
+        <div class="row gx-2 align-items-center">
+            <div class="col-auto">
+                <!-- close global search toggle -->
+                <button class="btn btn-link btn-square " type="button" onclick="closeSearch()">
+                    <i data-feather="arrow-left"></i>
+                </button>
+            </div>
+            <div class="col">
+                <input class="form-control pe-0 border-0" type="search" placeholder="Type something here...">
+            </div>
+            <div class="col-auto">
 
-                <li class="menu-item-has-children">
-                    <a href="javascript:void(0)">Referrals</a>
-                    <ul class="submenu">
-                        <li>
-                            <a href="{% url "referral_list" %}">Referred Users</a>
-                        </li>
-
-                        {% comment %} <li>
-                            <a href="user/referral/commissions/plan">Referrals Commissions</a>
-                        </li> {% endcomment %}
-
-                        {% comment %} <li>
-                            <a href="user/level/commissions/plan">Level Commissions</a>
-                        </li> {% endcomment %}
-                    </ul>
-                </li>
-
-                <li class="menu-item-has-children">
-                    <a href="javascript:void(0)">Account</a>
-                    <ul class="submenu">
-                        <li>
-                            <a href="{% url "profile_update" %}">Profile Setting</a>
-                        </li>
-                                                    <li>
-                                <a href="user/balance/transfer">Balance Transfer</a>
+                <!-- filter dropdown -->
+                {% comment %} <div class="dropdown input-group-text border-0 p-0">
+                    <button class="dropdown-toggle btn btn-link btn-square no-caret" type="button" id="searchfilter2" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i data-feather="sliders"></i>
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-dontclose width-300">
+                        <ul class="nav adminuiux-nav" id="searchtab2" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="searchall-tab2" data-bs-toggle="tab" data-bs-target="#searchall2" type="button" role="tab" aria-controls="searchall2" aria-selected="true">All</button>
                             </li>
-                        
-                                                    <li>
-                                <a href="user/e-pin/recharge">E-Pin Recharge</a>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="searchorders-tab2" data-bs-toggle="tab" data-bs-target="#searchorders2" type="button" role="tab" aria-controls="searchorders2" aria-selected="false" tabindex="-1">Orders</button>
                             </li>
-                            <li>
-                                <a href="user/e-pin/recharge/log">Recharge Log</a>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="searchcontacts-tab2" data-bs-toggle="tab" data-bs-target="#searchcontacts2" type="button" role="tab" aria-controls="searchcontacts2" aria-selected="false" tabindex="-1">Contacts</button>
                             </li>
-                        
-                        <li>
-                            <a href="user/change-password">Change Password</a>
-                        </li>
-
-                        <li>
-                            <a href="ticket">Support Ticket</a>
-                        </li>
-
-                        <li>
-                            <a href="user/twofactor">2FA Security</a>
-                        </li>
-
-                        <li>
-                            <a href="{% url "logout" %}">Logout</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-
-            <div class="header-bar ml-2 ml-md-4">
-                <span></span>
-                <span></span>
-                <span></span>
+                        </ul>
+                        <div class="tab-content py-3" id="searchtabContent">
+                            <div class="tab-pane fade active show" id="searchall2" role="tabpanel" aria-labelledby="searchall-tab2">
+                                <ul class="list-group adminuiux-list-group list-group-flush bg-none show">
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">Search apps</div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="searchswitch1">
+                                                    <label class="form-check-label" for="searchswitch1"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">Include Pages</div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="searchswitch2" checked="">
+                                                    <label class="form-check-label" for="searchswitch2"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">Internet resource</div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="searchswitch3" checked="">
+                                                    <label class="form-check-label" for="searchswitch3"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">News and Blogs</div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="searchswitch4">
+                                                    <label class="form-check-label" for="searchswitch4"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-pane fade" id="searchorders2" role="tabpanel" aria-labelledby="searchorders-tab2">
+                                <ul class="list-group adminuiux-list-group list-group-flush bg-none show">
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">Show order ID</div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="searchswitch5">
+                                                    <label class="form-check-label" for="searchswitch5"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">International Order</div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="searchswitch6" checked="">
+                                                    <label class="form-check-label" for="searchswitch6"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">Taxable Product</div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="searchswitch7" checked="">
+                                                    <label class="form-check-label" for="searchswitch7"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">Published Product</div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="searchswitch8">
+                                                    <label class="form-check-label" for="searchswitch8"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="tab-pane fade" id="searchcontacts2" role="tabpanel" aria-labelledby="searchcontacts-tab2">
+                                <ul class="list-group adminuiux-list-group list-group-flush bg-none show">
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">Have email ID</div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="searchswitch9">
+                                                    <label class="form-check-label" for="searchswitch9"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">Have phone number</div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="searchswitch10" checked="">
+                                                    <label class="form-check-label" for="searchswitch10"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">Photo available</div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="searchswitch11" checked="">
+                                                    <label class="form-check-label" for="searchswitch11"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <li class="list-group-item">
+                                        <div class="row">
+                                            <div class="col">Referral</div>
+                                            <div class="col-auto">
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="searchswitch12">
+                                                    <label class="form-check-label" for="searchswitch12"></label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="">
+                            <div class="row">
+                                <div class="col"><button class="btn btn-link">Reset</button></div>
+                                <div class="col-auto">
+                                    <button class="btn btn-theme">Apply</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> {% endcomment %}
             </div>
         </div>
     </div>
 </header>
 
+            <!-- page wrapper -->
+            <div class="adminuiux-wrap">
+
+                <!-- Standard sidebar -->
+                <!-- Standard sidebar -->
+<div class="adminuiux-sidebar">
+    <div class="adminuiux-sidebar-inner">
+        <!-- Profile -->
+        <div class="px-3 not-iconic mt-3">
+            <div class="row">
+                <div class="col align-self-center ">
+                    <h6 class="fw-medium">Main Menu</h6>
+                </div>
+                <div class="col-auto">
+                    <a class="btn btn-link btn-square" data-bs-toggle="collapse" data-bs-target="#usersidebarprofile" aria-expanded="false" role="button" aria-controls="usersidebarprofile">
+                        <i data-feather="user"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="text-center collapse " id="usersidebarprofile">
+                <figure class="avatar avatar-100 rounded-circle coverimg my-3">
+                    <img src="{% static 'assets/img/modern-ai-image/user-6.jpg' %}" alt="">
+                </figure>
+                <h5 class="mb-1 fw-medium">{{user.username|upper}}</h5>
+                <p class="small">{{user.get_full_name|title}}</p>
+            </div>
+        </div>
+
+        <ul class="nav flex-column menu-active-line">
+            <!-- investment sidebar -->
+
+            {% if user.user_type == "manager" %}
+                <li class="nav-item">
+                    <a href="{% url "krysline_admin" %}" class="nav-link">
+                        <i class="menu-icon bi bi-columns-gap"></i>
+                        <span class="menu-name">Dashboard</span>
+                    </a>
+                </li>
+            {% else %}
+            
+                <li class="nav-item">
+                    <a href="{% url "dashboard" %}" class="nav-link">
+                        <i class="menu-icon bi bi-columns-gap"></i>
+                        <span class="menu-name">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url "withdraw_funds" %}" class="nav-link">
+                        <i class="menu-icon bi bi-bank"></i>
+                        <span class="menu-name">Withdraw Funds</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url "choose_package" %}" class="nav-link">
+                        <i class="menu-icon bi bi-gift"></i>
+                        <span class="menu-name">Subscription Plan</span>
+                    </a>
+                </li> 
+                
+            <!-- User account -->
+            <ul class="nav flex-column menu-active-line">
+                <!-- bottom sidebar menu -->
+                <li class="nav-item">
+                    <a href="{% url "referral_list" %}" class="nav-link">
+                        <i class="menu-icon" data-feather="users"></i>
+                        <span class="menu-name">Referral</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{% url "profile_update" %}" class="nav-link">
+                        <i class="menu-icon" data-feather="settings"></i>
+                        <span class="menu-name">Settings</span>
+                    </a>
+                </li>
+            </ul>
+        {% endif %}
+
+    </div>
+</div>
 
 {% block content %}
 
 {% endblock content %}
 
-
-<footer class="padding-top primary-overlay bg_img"
-    data-background="{% static "assets/images/frontend/footer/6367819801e991667727768.jpg" %}">
-    <div class="footer-top padding-bottom">
-        <div class="container">
-            <div class="footer-wrapper cl-white">
-                <div class="footer-logo">
-                    <a href="">
-                        <img src="{% static 'assets/images/logo_icon/logo.png' %}" alt="images">
-                    </a>
-                </div>
-                <p>Krysline Agency Ltd is a complete multilevel matrix solution designed for network marketers. Easily manage referrals, track earnings, and process payments securely. Start your journey today with our ready-to-go platform and expert support.</p>
-                <ul class="social__icons">
-                                            <li>
-                            <a href="https://www.facebook.com" target="_blank"
-                                class="facebook"><i class="lab la-facebook-f"></i></a>
-                        </li>
-                                            <li>
-                            <a href="https://twitter.com" target="_blank"
-                                class="facebook"><i class="lab la-twitter"></i></a>
-                        </li>
-                                            <li>
-                            <a href="https://www.linkedin.com" target="_blank"
-                                class="facebook"><i class="lab la-linkedin-in"></i></a>
-                        </li>
-                                    </ul>
+<footer class="adminuiux-footer has-adminuiux-sidebar mt-auto">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 col-md col-lg py-2">
+                © <span id="year"></span> Krysline Agency Ltd
+                <span class="small">© <span id="year"></span> Krysline Agency Ltd
+                    <script>
+                        document.getElementById("year").textContent = new Date().getFullYear();
+                    </script>
+                </span>
             </div>
-            <ul class="footer-menu">
-                                    <li>
-                        <a href="policy/terms-of-service?43">Terms of Service</a>
-                    </li>
-                                    <li>
-                        <a href="policy/privacy-policy?42">Privacy Policy</a>
-                    </li>
-                            </ul>
+            <div class="col-12 col-md-auto col-lg-auto align-self-center">
+                <ul class="nav small">
+                    <li class="nav-item"><a class="nav-link" href="help-center.html">Help</a></li>
+                    <li class="nav-item">|</li>
+                    <li class="nav-item"><a class="nav-link" href="terms-of-use.html">Terms of Use</a></li>
+                    <li class="nav-item">|</li>
+                    <li class="nav-item"><a class="nav-link" href="privacy-policy.html">Privacy Policy</a></li>
+                </ul>
+            </div>
         </div>
     </div>
-    <div class="footer-bottom">
-        <div class="container">
-            <p>&copy; All Right Reserved By <a href="/">Krysline Agency Ltd</a></p>
-        </div>
-    </div>
-
-
 </footer>
 
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="{% static 'assets/global/js/jquery-3.7.1.min.js' %}"></script>
-    <script src="{% static 'assets/global/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'assets/templates/basic/js/magnific-popup.min.js' %}"></script>
-    <script src="{% static 'assets/templates/basic/js/wow.min.js' %}"></script>
-    <script src="{% static 'assets/templates/basic/js/owl.min.js' %}"></script>
-    <script src="{% static 'assets/templates/basic/js/odometer.min.js' %}"></script>
-    <script src="{% static 'assets/templates/basic/js/viewport.jquery.js' %}"></script>
-    <script src="{% static 'assets/templates/basic/js/nice-select.js' %}"></script>
-    <script src="{% static 'assets/templates/basic/js/app.js' %}"></script>
+<!-- theming action-->
+<div class="position-fixed bottom-0 end-0 m-3 z-index-5">
+    <button class="btn btn-square btn-theme shadow" type="button" data-bs-toggle="offcanvas" data-bs-target="#theming" aria-controls="theming"><i class="bi bi-palette"></i></button>
+    <br>
+    <button class="btn btn-theme btn-square rounded-circle shadow mt-2 d-none" id="backtotop"><i class="bi bi-arrow-up"></i></button>
+</div>
+                <!-- theming offcanvas-->
+<div class="offcanvas offcanvas-end shadow border-0" tabindex="-1" id="theming" data-bs-scroll="true" data-bs-backdrop="false" aria-labelledby="theminglabel">
+    <div class="offcanvas-header border-bottom">
+        <div>
+            <h5 class="offcanvas-title" id="theminglabel">Personalize</h5>
+            <p class="text-secondary small">Make it more like your own</p>
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <h6 class="offcanvas-title">Colors</h6>
+        <p class="text-secondary small mb-4">Change colors of templates</p>
 
-    <script src="{% static 'assets/global/js/select2.min.js' %}"></script>
+        <div class="row mb-4 theme-select">
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-default">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-blue">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-blue"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-indigo">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-indigo"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-purple">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-purple"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-pink">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-pink"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-red">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-red"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-orange">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-orange"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-yellow">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-yellow"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-green">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-green"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-teal">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-teal"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-cyan">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-cyan"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-grey">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-grey"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-brown">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-brown"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-chocolate">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-chocolate"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="theme-black">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-dark"></span>
+                </div>
+            </div>
+        </div>
 
-    
-    <link href="{% static 'assets/global/css/iziToast.min.css' %}" rel="stylesheet">
-    <link href="{% static 'assets/global/css/iziToast_custom.css' %}" rel="stylesheet">
-    <script src="{% static 'assets/global/js/iziToast.min.js' %}"></script>
+        <h6 class="offcanvas-title">Backgrounds</h6>
+        <p class="text-secondary small mb-4">Change color for background</p>
+        <div class="row mb-4 theme-background">
+            <div class="col-auto">
+                <div class="gradient-box text-center mb-2" data-title="bg-default">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-default"><i class="bi bi-arrow-clockwise"></i></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="gradient-box text-center mb-2" data-title="bg-white">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-white"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="gradient-box text-center mb-2" data-title="bg-r-gradient">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-r-gradient"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="gradient-box text-center mb-2" data-title="bg-gradient-1">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-gradient-1"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="gradient-box text-center mb-2" data-title="bg-gradient-2">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-gradient-2"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="gradient-box text-center mb-2" data-title="bg-gradient-3">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-gradient-3"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="gradient-box text-center mb-2" data-title="bg-gradient-4">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-gradient-4"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="gradient-box text-center mb-2" data-title="bg-gradient-5">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-gradient-5"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="gradient-box text-center mb-2" data-title="bg-gradient-6">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-gradient-6"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="gradient-box text-center mb-2" data-title="bg-gradient-7">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-gradient-7"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="gradient-box text-center mb-2" data-title="bg-gradient-8">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-gradient-8"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="gradient-box text-center mb-2" data-title="bg-gradient-9">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-gradient-9"></span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="gradient-box text-center mb-2" data-title="bg-gradient-10">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-gradient-10"></span>
+                </div>
+            </div>
+        </div>
+
+        <h6 class="offcanvas-title">Sidebar Layout</h6>
+        <p class="text-secondary small mb-4">Change sidebar layout style</p>
+
+        <div class="row mb-4 sidebar-layout">
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="adminuiux-sidebar-standard" data-bs-toggle="tooltip" title="None">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-default">
+                        <i class="bi bi-arrow-clockwise"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="adminuiux-sidebar-iconic" data-bs-toggle="tooltip" title="Iconic">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-default">
+                        <i class="bi bi-bezier h4"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="adminuiux-sidebar-boxed" data-bs-toggle="tooltip" title="Boxed">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-default">
+                        <i class="bi bi-box h5"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="col-auto">
+                <div class="select-box text-center mb-2" data-title="adminuiux-sidebar-boxed adminuiux-sidebar-iconic" data-bs-toggle="tooltip" title="Iconic+Boxed">
+                    <span class="avatar avatar-40 rounded-circle mb-2 bg-default">
+                        <i class="bi bi-bounding-box h5"></i>
+                    </span>
+                </div>
+            </div>
+
+        </div>
+
+        {% comment %} <div class="text-center mb-4">
+            <a href="investment-personalization.html" class="btn btn-sm btn-outline-theme">More options <i class="bi bi-arrow-right-short"></i></a>
+        </div> {% endcomment %}
+    </div>
+</div>
+
+                    <!-- Page Level js -->
+<script src="{% static 'assets/js/investment/investment-wallet.js' %}"></script>
+
+
+
 
 <script>
-    "use strict";
-    const colors = {
-        success: '#28c76f',
-        error: '#eb2222',
-        warning: '#ff9f43',
-        info: '#1e9ff2',
-    }
+    (function() {
+        "use strict";
+        const copyBtn = document.getElementById('copyBoard');
+        const copyInput = document.querySelector('.referralURL');
 
-    const icons = {
-        success: 'fas fa-check-circle',
-        error: 'fas fa-times-circle',
-        warning: 'fas fa-exclamation-triangle',
-        info: 'fas fa-exclamation-circle',
-    }
+        if (copyBtn && copyInput) {
+            copyBtn.addEventListener('click', function() {
+                // 1. Modern Secure Copy
+                navigator.clipboard.writeText(copyInput.value).then(() => {
+                    // 2. Visual Feedback
+                    const icon = this.querySelector('i');
+                    const originalClass = icon.className;
+                    
+                    // Change icon to checkmark
+                    icon.className = 'bi bi-check2-all';
+                    this.classList.add('btn-success');
+                    this.classList.remove('btn-outline-theme');
 
-    const notifications = [];
-    const errors = [];
+                    // 3. Reset after 1.5 seconds
+                    setTimeout(() => {
+                        icon.className = originalClass;
+                        this.classList.remove('btn-success');
+                        this.classList.add('btn-outline-theme');
+                    }, 1500);
 
-
-    const triggerToaster = (status, message) => {
-        iziToast[status]({
-            title: status.charAt(0).toUpperCase() + status.slice(1),
-            message: message,
-            position: "topRight",
-            backgroundColor: '#fff',
-            icon: icons[status],
-            iconColor: colors[status],
-            progressBarColor: colors[status],
-            titleSize: '1rem',
-            messageSize: '1rem',
-            titleColor: '#474747',
-            messageColor: '#a2a2a2',
-            transitionIn: 'obunceInLeft'
-        });
-    }
-
-    if (notifications.length) {
-        notifications.forEach(element => {
-            triggerToaster(element[0], element[1]);
-        });
-    }
-
-    if (errors.length) {
-        errors.forEach(error => {
-            triggerToaster('error', error);
-        });
-    }
-
-    function notify(status, message) {
-        if (typeof message == 'string') {
-            triggerToaster(status, message);
-        } else {
-            $.each(message, (i, val) => triggerToaster(status, val));
+                }).catch(err => {
+                    // Fallback for older browsers
+                    copyInput.select();
+                    document.execCommand("copy");
+                    console.log("Copied via fallback");
+                });
+            });
         }
-    }
-</script>
-
-            <script>
-        (function($) {
-            "use strict";
-            $('#copyBoard').click(function() {
-                var copyText = document.getElementsByClassName("referralURL");
-                copyText = copyText[0];
-                copyText.select();
-                copyText.setSelectionRange(0, 99999);
-                /*For mobile devices*/
-                document.execCommand("copy");
-                copyText.blur();
-                this.classList.add('copied');
-                setTimeout(() => this.classList.remove('copied'), 1500);
-            });
-        })(jQuery);
-    </script>
-    <script>
-        (function($) {
-            "use strict";
-
-            function formatState(state) {
-                if (!state.id) return state.text;
-                let gatewayData = $(state.element).data();
-                return $(`<div class="d-flex gap-2">${gatewayData.imageSrc ? `<div class="select2-image-wrapper"><img class="select2-image" src="{% static '${gatewayData.imageSrc}' %}"></div>` : '' }<div class="select2-content"> <p class="select2-title">${gatewayData.title}</p><p class="select2-subtitle">${gatewayData.subtitle}</p></div></div>`);
-            }
-
-            $('.select2').each(function(index, element) {
-                $(element).select2({
-                    templateResult: formatState,
-                    minimumResultsForSearch: "-1"
-                });
-            });
-
-            $('.select2-searchable').each(function(index, element) {
-                $(element).select2({
-                    templateResult: formatState,
-                    minimumResultsForSearch: "1"
-                });
-            });
-
-            $('.select2-basic').each(function(index, element) {
-                $(element).select2({
-                    dropdownParent: $(element).closest('.select2-parent')
-                });
-            });
-
-            $.each($('.select2'), function() {
-                $(this)
-                    .wrap(`<div class="position-relative"></div>`)
-                    .select2({
-                        dropdownParent: $(this).parent()
-                    });
-            });
-
-            $.each($('.select2-auto-tokenize'), function() {
-                $(this)
-                    .wrap(`<div class="position-relative"></div>`)
-                    .select2({
-                        tags: true,
-                        tokenSeparators: [','],
-                        dropdownParent: $(this).parent()
-                    });
-            });
-            
-            $('.showFilterBtn').on('click',function(){
-                $('.responsive-filter-card').slideToggle();
-            });
-
-            Array.from(document.querySelectorAll('table')).forEach(table => {
-                let heading = table.querySelectorAll('thead tr th');
-                Array.from(table.querySelectorAll('tbody tr')).forEach((row) => {
-                    Array.from(row.querySelectorAll('td')).forEach((colum, i) => {
-                        colum.setAttribute('data-label', heading[i].innerText)
-                    });
-                });
-            });
-
-        })(jQuery);
-    </script>
-
-    {% comment %} <script>
-        (function($) {
-            "use strict";
-
-            $(".langSel").on("click", function() {
-                var code = $(this).data('code');
-                window.location.href = "change/" + code;
-            });
-
-            var inputElements = $('[type=text],[type=password],select,textarea');
-            $.each(inputElements, function(index, element) {
-                element = $(element);
-                element.closest('.form-group').find('label').attr('for', element.attr('name'));
-                element.attr('id', element.attr('name'))
-            });
-
-            $.each($('input, select, textarea'), function(i, element) {
-                var elementType = $(element);
-                if (elementType.attr('type') != 'checkbox') {
-                    if (element.hasAttribute('required')) {
-                        $(element).closest('.form-group').find('label').addClass('required');
-                    }
-                }
-            });
-
-            $.each($('input:not([type=checkbox]):not([type=hidden]), select, textarea'), function(i, element) {
-                if (element.hasAttribute('required')) {
-                    $(element).closest('.form-group').find('label').addClass('required');
-                }
-
-            });
-
-            let disableSubmission = false;
-            $('.disableSubmission').on('submit', function(e) {
-                if (disableSubmission) {
-                    e.preventDefault()
-                } else {
-                    disableSubmission = true;
-                }
-            });
-
-        })(jQuery);
-    </script> {% endcomment %}
-
-
-
-
-
-
-<script>
-if (window.top != window.self) {
-    document.body.innerHTML += '<div style="position:fixed;top:0;width:100%;z-index:9999999;background:#f8d7da;color:#721c24;text-align:center; padding: 20px;"><p style="font-size:20px; font-weight: bold;">You are using this website under an external iframe!!</p><p style="font-size:16px; margin-top: 20px;">for a better experience, please browse directly instead of an external iframe.</p><a href="'+window.self.location+'" target="_blank" style=" margin-top:20px; color: #fff;background-color: #dc3545; padding: 5px 10px; border-radius: 5px; text-decoration: none;">Browse Directly</a></div>';
-}
+    })();
 </script>
 
 
-{% comment %} <script>
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    const csrftoken = getCookie('csrftoken');
-
-
-    document.body.addEventListener('htmx:configRequest', function(evt) {
-        evt.detail.headers['X-CSRFToken'] = csrftoken; // add a new header into the request
-    });
-</script> {% endcomment %}
-
-
-
-<!-- Google tag (gtag.js) -->
-{% comment %} <script async src="https://www.googletagmanager.com/gtag/js?id=G-1ME4K0RD7K"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-1ME4K0RD7K');
-</script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"0542d18bc5a94bf6b5460f8530f5a523","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script> {% endcomment %}
-</body>
+    </body>
 
 </html>

@@ -1,0 +1,480 @@
+/*======================*/
+/* bg radial gradient */
+.bg-r-gradient {
+    background-color: var(--adminuiux-bg-1);
+    background-image: radial-gradient(circle at 20% 15%, var(--adminuiux-bg-1) 15%, var(--adminuiux-bg-2) 100%) !important;
+}
+
+/* theme colors */
+.bg-theme-1,
+.bg-theme-1-space {
+    background-color: var(--adminuiux-theme-1) !important;
+    color: var(--adminuiux-theme-1-text) !important;
+}
+
+/* theme linear gradient */
+.bg-theme-l-gradient {
+    background: var(--adminuiux-theme-1);
+    background-image: linear-gradient(225deg, var(--adminuiux-theme-2) 0%, var(--adminuiux-theme-1) 100%) !important;
+    color: var(--adminuiux-theme-accent-1-text);
+}
+
+/* theme light linear gradient */
+.bg-theme-l-gradient-light {
+    background-color: #ffffff;
+    background-image: linear-gradient(225deg, rgba(var(--adminuiux-theme-2-rgb), 0.1) 0%, rgba(var(--adminuiux-theme-2-rgb), 0.3) 100%) !important;
+}
+
+/* theme radial gradient */
+.bg-theme-r-gradient {
+    background: var(--adminuiux-theme-1);
+    background-image: radial-gradient(circle at 30% 30%, var(--adminuiux-theme-2) 0%, var(--adminuiux-theme-1) 95%) !important;
+    color: var(--adminuiux-theme-1-text);
+}
+
+/*======================*/
+/* theme accent colors */
+.bg-theme-accent-1 {
+    background-color: var(--adminuiux-theme-accent-1) !important;
+    color: var(--adminuiux-theme-accent-1-text) !important;
+}
+
+/* theme linear gradient */
+.bg-theme-accent-l-gradient {
+    background: var(--adminuiux-theme-accent-1);
+    background-image: linear-gradient(225deg, var(--adminuiux-theme-accent-2) 0%, var(--adminuiux-theme-accent-1) 100%) !important;
+    color: var(--adminuiux-theme-accent-1-text) !important;
+}
+
+/* theme light linear gradient */
+.bg-theme-accent-l-gradient-light {
+    background: var(--adminuiux-theme-accent-2);
+    background-image: linear-gradient(225deg, rgba(var(--adminuiux-theme-accent-2-rgb), 0.1) 0%, rgba(var(--adminuiux-theme-accent-2-rgb), 0.3) 100%) !important;
+}
+
+/* theme radial gradient */
+.bg-theme-accent-r-gradient {
+    background: var(--adminuiux-theme-accent-1);
+    background-image: radial-gradient(circle at 30% 30%, var(--adminuiux-theme-accent-2) 0%, var(--adminuiux-theme-accent-1) 95%) !important;
+    color: var(--adminuiux-theme-accent-1-text);
+}
+
+/* other static gradient */
+.bg-gradient-1 {
+    background-image: radial-gradient(circle at 30% 30%, rgb(246, 247, 237) 0%, rgb(205, 237, 248) 50%, rgb(245, 200, 241) 100%);
+}
+
+.bg-gradient-2 {
+    background-image: radial-gradient(circle at 30% 30%, rgb(255, 246, 236) 0%, rgb(251, 226, 252) 100%);
+}
+
+.bg-gradient-3 {
+    background-image: radial-gradient(circle at 30% 30%, rgb(248, 243, 227) 0%, rgb(219, 247, 245) 100%);
+}
+
+.bg-gradient-4 {
+    background-image: radial-gradient(circle at 30% 30%, rgb(236, 247, 250) 0%, rgb(243, 242, 216) 50%, rgb(245, 222, 205) 100%);
+}
+
+.bg-gradient-5 {
+    background-image: radial-gradient(circle at 30% 30%, rgb(224, 248, 248) 0%, rgb(252, 230, 248) 50%, rgb(223, 215, 245) 100%);
+}
+
+.bg-gradient-6 {
+    background-image: radial-gradient(circle at 30% 30%, rgb(250, 234, 227) 0%, rgb(200, 229, 247) 100%);
+}
+
+.bg-gradient-7 {
+    background-image: radial-gradient(circle at 30% 30%, rgb(230, 248, 240)2%, rgb(211, 236, 245) 93.6%);
+}
+
+.bg-gradient-8 {
+    background-image: radial-gradient(circle at 30% 30%, rgb(248, 245, 225) 0%, rgb(244, 227, 245) 46.4%, rgb(218, 231, 245) 100%);
+}
+
+.bg-gradient-9 {
+    background-image: radial-gradient(circle at 30% 30%, rgb(244, 245, 230) 11.2%, rgb(236, 226, 216) 100%);
+}
+
+.bg-gradient-10 {
+    background-image: radial-gradient(circle at 30% 30%, rgb(253, 231, 243) 0%, rgb(234, 233, 255) 46%, rgb(223, 255, 238) 100%);
+}
+
+/* text colors */
+.text-theme-accent-1 {
+    color: var(--adminuiux-theme-accent-1) !important;
+}
+
+.text-theme-accent-2 {
+    color: var(--adminuiux-theme-accent-2) !important;
+}
+
+.text-theme-1 {
+    color: var(--adminuiux-theme-1) !important;
+}
+
+.text-theme-2 {
+    color: var(--adminuiux-theme-2) !important;
+}
+
+.text-success {
+
+    i,
+    svg {
+        color: var(--bs-success) !important;
+        stroke: var(--bs-success) !important;
+    }
+
+    &.btn-link {
+
+        &:hover,
+        &:focus {
+            background-color: rgba(var(--bs-success-rgb), 0.15);
+        }
+    }
+}
+
+.text-blue-emphasis {
+    color: var(--bs-blue-emphasis) !important;
+}
+
+.text-indigo-emphasis {
+    color: var(--bs-indigo-emphasis) !important;
+}
+
+.text-purple-emphasis {
+    color: var(--bs-purple-emphasis) !important;
+}
+
+.text-pink-emphasis {
+    color: var(--bs-pink-emphasis) !important;
+}
+
+.text-red-emphasis {
+    color: var(--bs-red-emphasis) !important;
+}
+
+.text-orange-emphasis {
+    color: var(--bs-orange-emphasis) !important;
+}
+
+.text-yellow-emphasis {
+    color: var(--bs-yellow-emphasis) !important;
+}
+
+.text-green-emphasis {
+    color: var(--bs-green-emphasis) !important;
+}
+
+.text-teal-emphasis {
+    color: var(--bs-teal-emphasis) !important;
+}
+
+.text-cyan-emphasis {
+    color: var(--bs-cyan-emphasis) !important;
+}
+
+.text-blue {
+    color: var(--bs-blue) !important;
+}
+
+.text-indigo {
+    color: var(--bs-indigo) !important;
+}
+
+.text-purple {
+    color: var(--bs-purple) !important;
+}
+
+.text-pink {
+    color: var(--bs-pink) !important;
+}
+
+.text-red {
+    color: var(--bs-red) !important;
+}
+
+.text-orange {
+    color: var(--bs-orange) !important;
+}
+
+.text-yellow {
+    color: var(--bs-yellow) !important;
+}
+
+.text-green {
+    color: var(--bs-green) !important;
+}
+
+.text-teal {
+    color: var(--bs-teal) !important;
+}
+
+.text-cyan {
+    background-color: var(--bs-cyan) !important;
+}
+
+.text-white {
+    .text-secondary {
+        color: rgba(255, 255, 255, 0.65) !important;
+    }
+}
+
+/* background colors */
+.bg-body-1 {
+    background-color: var(--adminuiux-bg-1);
+}
+
+.bg-card {
+    background-color: var(--bs-card-bg)
+}
+
+.bg-blue {
+    background-color: var(--bs-blue);
+}
+
+.bg-indigo {
+    background-color: var(--bs-indigo);
+}
+
+.bg-purple {
+    background-color: var(--bs-purple);
+}
+
+.bg-pink {
+    background-color: var(--bs-pink);
+}
+
+.bg-red {
+    background-color: var(--bs-red);
+}
+
+.bg-orange {
+    background-color: var(--bs-orange);
+}
+
+.bg-yellow {
+    background-color: var(--bs-yellow);
+}
+
+.bg-green {
+    background-color: var(--bs-green);
+}
+
+.bg-teal {
+    background-color: var(--bs-teal);
+}
+
+.bg-cyan {
+    background-color: var(--bs-cyan);
+}
+
+.bg-chocolate {
+    background-color: var(--bs-chocolate);
+}
+
+.bg-brown {
+    background-color: var(--bs-brown);
+}
+
+.bg-grey {
+    background-color: var(--bs-grey);
+}
+
+.bg-white-opacity {
+    background-color: rgba(255, 255, 255, 0.25);
+}
+
+.border-theme-1 {
+    border-color: var(--adminuiux-theme-1) !important;
+}
+
+.border-accent-1 {
+    border-color: var(--adminuiux-theme-accent-1) !important;
+}
+
+.bg-theme-accent-subtle {
+    background-color: rgba(var(--adminuiux-theme-accent-1-rgb), 0.065);
+}
+
+.bg-theme-accent-1-subtle {
+    background-color: rgba(var(--adminuiux-theme-accent-1-rgb), 0.15);
+}
+
+.bg-theme-accent-2-subtle {
+    background-color: rgba(var(--adminuiux-theme-accent-2-rgb), 0.15);
+}
+
+.bg-theme-1-subtle {
+    background-color: rgba(var(--adminuiux-theme-1-rgb), 0.10) !important
+}
+
+.bg-theme-2-subtle {
+    background-color: rgba(var(--adminuiux-theme-2-rgb), 0.15);
+}
+
+.bg-blue-subtle {
+    background-color: var(--bs-blue-subtle);
+}
+
+.bg-indigo-subtle {
+    background-color: var(--bs-indigo-subtle);
+}
+
+.bg-purple-subtle {
+    background-color: var(--bs-purple-subtle);
+}
+
+.bg-pink-subtle {
+    background-color: var(--bs-pink-subtle);
+}
+
+.bg-red-subtle {
+    background-color: var(--bs-red-subtle);
+}
+
+.bg-orange-subtle {
+    background-color: var(--bs-orange-subtle);
+}
+
+.bg-yellow-subtle {
+    background-color: var(--bs-yellow-subtle);
+}
+
+.bg-green-subtle {
+    background-color: var(--bs-green-subtle);
+}
+
+.bg-teal-subtle {
+    background-color: var(--bs-teal-subtle);
+}
+
+.bg-cyan-subtle {
+    background-color: var(--bs-cyan-subtle);
+}
+
+/* overlay*/
+.overlay-option {
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+
+    &.dark {
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(10px);
+
+    }
+}
+
+.bg-theme-accent-1-blur {
+    background-color: rgba(var(--adminuiux-theme-accent-1-rgb), 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.bg-theme-accent-1-blur {
+    background-color: rgba(var(--adminuiux-theme-accent-1-rgb), 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.bg-white-blur {
+    background-color: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.bg-dark-blur {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.blur {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+body.bg-white,
+.borderedui {
+    --bs-border-width: 1px;
+
+    .accordion.adminuiux-accordion {
+        --bs-accordion-border-width: 1px;
+
+        .accordion-item:not(:first-of-type) {
+            border: var(--bs-accordion-border-width) solid var(--bs-accordion-border-color);
+        }
+    }
+
+    .adminuiux-card {
+        border-width: 1px;
+    }
+
+    .search-wrap {
+        .border-0 {
+            border: var(--bs-border-width) solid var(--bs-border-color) !important;
+        }
+    }
+}
+
+.white {
+    --swiper-theme-color: #ffffff;
+    --swiper-pagination-bullet-inactive-color: #ffffff;
+    --swiper-pagination-bullet-inactive-opacity: 0.4;
+}
+
+/* dark mode */
+[data-bs-theme=dark] {
+    .bg-theme-accent-1-subtle {
+        background-color: rgba(var(--adminuiux-theme-accent-1-rgb), 0.25);
+    }
+
+    .bg-r-gradient {
+        background-color: var(--adminuiux-bg-1);
+        background-image: radial-gradient(circle at 30% 5%, rgba(var(--adminuiux-theme-1-rgb), 0.25) 15%, var(--adminuiux-bg-1) 100%) !important;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+
+    /* other static gradient */
+    .bg-gradient-1 {
+        background-image: radial-gradient(circle at 30% 30%, rgb(33, 37, 2) 0%, rgb(2, 23, 31) 50%, rgb(26, 0, 23) 100%);
+    }
+
+    .bg-gradient-2 {
+        background-image: radial-gradient(circle at 30% 30%, rgb(37, 21, 2) 0%, rgb(25, 0, 26) 100%);
+    }
+
+    .bg-gradient-3 {
+        background-image: radial-gradient(circle at 30% 30%, rgb(36, 28, 2) 0%, rgb(0, 24, 22) 100%);
+    }
+
+    .bg-gradient-4 {
+        background-image: radial-gradient(circle at 30% 30%, rgb(1, 29, 37) 0%, rgb(31, 29, 1) 50%, rgb(19, 8, 0) 100%);
+    }
+
+    .bg-gradient-5 {
+        background-image: radial-gradient(circle at 30% 30%, rgb(0, 46, 46) 0%, rgb(41, 0, 33) 50%, rgb(8, 0, 29) 100%);
+    }
+
+    .bg-gradient-6 {
+        background-image: radial-gradient(circle at 30% 30%, rgb(44, 13, 0) 0%, rgb(0, 21, 34) 100%);
+    }
+
+    .bg-gradient-7 {
+        background-image: radial-gradient(circle at 30% 30%, rgb(0, 44, 24)2%, rgb(0, 19, 26) 93.6%);
+    }
+
+    .bg-gradient-8 {
+        background-image: radial-gradient(circle at 30% 30%, rgb(43, 37, 0) 0%, rgb(37, 0, 39) 46.4%, rgb(0, 11, 24) 100%);
+    }
+
+    .bg-gradient-9 {
+        background-image: radial-gradient(circle at 30% 30%, rgb(32, 34, 2) 11.2%, rgb(20, 10, 0) 100%);
+    }
+
+    .bg-gradient-10 {
+        background-image: radial-gradient(circle at 30% 30%, rgb(39, 0, 21) 0%, rgb(2, 0, 41) 46%, rgb(0, 29, 13) 100%);
+    }
+
+    body.bg-white {
+        --bs-body-bg: #000000;
+        background-color: var(--bs-body-bg) !important;
+    }
+}

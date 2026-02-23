@@ -102,13 +102,15 @@ MY_APPS = [
     'security',
     'affiliation',
     'users',
-    'monnify_verification'
+    'monnify_verification',
+    'krysline_admin'
 ]
 
 THIRD_PARTY_APPS = [
     'corsheaders',
     'auditlog',
     'mathfilters',
+    'widget_tweaks',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MY_APPS
@@ -195,7 +197,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'statics')]
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'statics'),
+    # os.path.join(BASE_DIR, 'statics/admin')
+]
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 # Media

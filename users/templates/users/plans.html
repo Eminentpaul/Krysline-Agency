@@ -1,137 +1,145 @@
-{% extends "user_nav.html" %}
+{% extends "user_dash_nav.html" %}
 {% load static %}
 {% load humanize %}
 {% load mathfilters %}
 
 {% block content %}
 
+<main class="adminuiux-content has-sidebar" onclick="contentClick()">
+    <!-- body content of pages -->
 
-            <section class="hero-section primary-overlay oh bg_img"
-    data-background="assets/images/frontend/breadcrumb/636781d83acec1667727832.jpg">
-    <div class="container">
-        <div class="hero-content">
-            <h1 class="title">Plan Subscribe</h1>
-            <ul class="breadcrumb">
-                <li>
-                    <a href="https://script.viserlab.com/Krysline Agence Ltd">Home</a>
-                </li>
-                <li>
-                    Plan Subscribe
-                </li>
-            </ul>
-        </div>
-    </div>
-</section>
-    
-        <section class="plan-section padding-top padding-bottom oh">
-        <div class="container">
-            <div class="row justify-content-center">
-                    {% for package in packages %}
-                    
-                    {% if user_package.package.name == package.name or user_package.package.price > package.price %}
-                        <div class="col-md-6 col-lg-4">
-                        <div class="plan-item">
-                            <div class="plan-header">
-                                <span class="plan-badge">
-                                    {{package.name}}
-                                </span>
-                                <div class="icon">
-                                    <i class="fas fa-piggy-bank"></i>
-                                </div>
-                                <h3 class="title">₦{{package.price | intcomma}}</h3>
-                            </div>
-                            <ul class="plan-info">
-                                {% for level, percent in package.commissions.items %}
-                                    <li>
-                                        Gen. {{ level }} : 
-                                        <strong class="profit">
-                                            <!-- Secure Math: (Price * Percent) / 100 -->
-                                            {% comment %} ₦{{ package.price|mul:percent|div:100|floatformat:2|intcomma}} {% endcomment %}
-                                        </strong> 
-                                        ({{ percent }}%)
-                                    </li>
-                                {% endfor %}
-                                                            </ul>
-                            
-
-                             <div class="invest-now py-3">
-                                <button class="btn btn--base btn-lg confirmationBtn" type="button" disabled> Subscribe </button>
-                            </div> 
-                           {% comment %} <div class="invest-now py-3">
-                                <button class="btn btn--base btn-lg confirmationBtn" data-question="Are you sure you want to subscribe this plan {{package.id}}" data-action="user/subscribe/plan/order/1" type="button">Invest Now                                </button>
-                            </div>  {% endcomment %}
-                        </div>
-                    </div>
-                    {% else %}
-                        <div class="col-md-6 col-lg-4">
-                        <div class="plan-item">
-                            <div class="plan-header">
-                                <span class="plan-badge">
-                                    {{package.name}}
-                                </span>
-                                <div class="icon">
-                                    <i class="fas fa-piggy-bank"></i>
-                                </div>
-                                <h3 class="title">₦{{package.price | intcomma}}</h3>
-                            </div>
-                            <ul class="plan-info">
-                                {% for level, percent in package.commissions.items %}
-                                    <li>
-                                        Gen. {{ level }} : 
-                                        <strong class="profit">
-                                            <!-- Secure Math: (Price * Percent) / 100 -->
-                                            {% comment %} ₦{{ package.price|mul:percent|div:100|floatformat:2|intcomma}} {% endcomment %}
-                                        </strong> 
-                                        ({{ percent }}%)
-                                    </li>
-                                {% endfor %}
-                                                            </ul>
-                            
-
-                             <div class="invest-now py-3">
-                                <a href="{{package.url}}" class="btn btn--base btn-lg confirmationBtn" type="button">Subscribe                                 </a>
-                            </div> 
-                           {% comment %} <div class="invest-now py-3">
-                                <button class="btn btn--base btn-lg confirmationBtn" data-question="Are you sure you want to subscribe this plan {{package.id}}" data-action="user/subscribe/plan/order/1" type="button">Invest Now                                </button>
-                            </div>  {% endcomment %}
-                        </div>
-                    </div>
-                    {% endif %}
-
-                    {% empty %}
-                        <p>No active packages available at the moment. Check back later!</p>
-                    {% endfor %}
-                    
+    <!-- breadcrumb -->
+    <div class="container-fluid mt-4">
+        <div class="row gx-3 align-items-center">
+            <div class="col-12 col-sm">
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item bi"><a href="{% url "dashboard" %}">Home</a></li>
+                        <li class="breadcrumb-item active bi" aria-current="page">Subscription Plan</li>
+                    </ol>
+                </nav>
+                <h5>Subscription Plan</h5>
             </div>
         </div>
-    </section>
-
-{% comment %} <div id="confirmationModal" class="modal fade  custom--modal " tabindex="-1" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Confirmation Alert!</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="las la-times"></i>
-                </button>
-            </div>
-            <form method="POST" action="">
-                <input type="hidden" name="package_id" value="{{pad}}" autocomplete="off">                
-                <input type="hidden" name="confirm" autocomplete="off">                
-                <div class="modal-body">
-                    <p class="question"></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn--dark" data-bs-dismiss="modal">No</button>
-                    <button type="submit" class="btn btn--primary">Yes</button>
-                </div>
-            </form>
-        </div>
     </div>
-</div> {% endcomment %}
+
+    <!-- Content  -->
+    <div class="container mt-4" id="main-content">
+
+        
+        <br>
+            <!-- content -->
+        <div class="container" id="main-content">
+            <!-- filter area -->
+            
+
+            <!-- appointment grid view list datatable-->
+            <div class="card adminuiux-card mt-4 mb-0">
+                <div class="card-body">
+                    
+                    <div class="row">
+                        {% for package in packages %}
+                    
+                            {% if user_package.package.name == package.name or user_package.package.price > package.price %}
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="card adminuiux-card bg-r-gradient border border-theme-1 mb-4">
+                                        <div class="card-body px-xl-4">
+                                            <div class="text-center mb-4">
+                                            <span class="badge badge-light text-bg-theme-1">{{package.name}}</span>
+                                            </div>
+                                            <div class="row mb-4">
+                                            <div class="col-auto">
+                                                <i class="avatar avatar-60 rounded bg-theme-1-subtle text-theme-1 h4 bi bi-people vm"></i>
+                                            </div>
+                                            <div class="col">
+                                                <h4 class="mb-1">{{package.get_name_display}}</h4>
+                                                {% comment %} <p class="text-secondary">Multiple team & customer</p> {% endcomment %}
+                                            </div>
+                                            </div>
+                                            <div class="row align-items-center mb-4">
+                                            <div class="col-auto">
+                                                <h1 class="display-4"><span class="text-secondary">₦</span>{{package.price|floatformat:2|intcomma}}</h1>
+                                            </div>
+                                            <div class="col">
+                                                <p class="text-secondary">per year</p>
+                                            </div>
+                                            </div>
+                                            <h6>{{package.name|title}} includes:</h6>
+                                            <ul class="list-group adminuiux-list-group">
+                                                {{package.description|safe|linebreaks}}
+                                                
+                                                <li class="list-group-item text-secondary"><i class="bi bi-check-circle vm me-1"></i> 24/7 Customer Support</li>
+                                            </ul>
+                                        </div>
+                                        {% if user.user_type == "manager" or user.user_type == "admin" %}
+                                            <div class="card-footer text-center">
+                                                <button class="btn btn-theme" >Edit Package</button>
+                                                <!-- TODO: Update the url for the plan-->
+                                            </div>
+                                        {% else %}
+                                            <div class="card-footer text-center">
+                                                <button class="btn btn-theme" disabled>Buy Now!</button>
+                                                <!-- TODO: Update the url for the plan-->
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="card adminuiux-card bg-r-gradient border border-theme-1 mb-4">
+                                        <div class="card-body px-xl-4">
+                                            <div class="text-center mb-4">
+                                            <span class="badge badge-light text-bg-theme-1">{{package.name}}</span>
+                                            </div>
+                                            <div class="row mb-4">
+                                            <div class="col-auto">
+                                                <i class="avatar avatar-60 rounded bg-theme-1-subtle text-theme-1 h4 bi bi-people vm"></i>
+                                            </div>
+                                            <div class="col">
+                                                <h4 class="mb-1">{{package.get_name_display}}</h4>
+                                                {% comment %} <p class="text-secondary">Multiple team & customer</p> {% endcomment %}
+                                            </div>
+                                            </div>
+                                            <div class="row align-items-center mb-4">
+                                            <div class="col-auto">
+                                                <h1 class="display-4"><span class="text-secondary">₦</span>{{package.price|floatformat:2|intcomma}}</h1>
+                                            </div>
+                                            <div class="col">
+                                                <p class="text-secondary">per year</p>
+                                            </div>
+                                            </div>
+                                            <h6>{{package.name|title}} includes:</h6>
+                                            <ul class="list-group adminuiux-list-group">
+                                                {{package.description|safe|linebreaks}}
+                                                
+                                                <li class="list-group-item text-secondary"><i class="bi bi-check-circle vm me-1"></i> 24/7 Customer Support</li>
+                                            </ul>
+                                        </div>
+                                        <div class="card-footer text-center">
+                                            <button class="btn btn-theme">Buy Now!</button>
+                                            <!-- TODO: Update the url for the plan-->
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        
+                            
+                        {% empty %}
+                            <p>No active packages available at the moment. Check back later!</p>
+                        {% endfor %}
+                        
+                    </div>
+                                        
+                </div>
+            </div>
 
 
+        </div>
+        <br>
+        
+    </div>
+</main>
 
-
+</div>
 
 {% endblock content %}

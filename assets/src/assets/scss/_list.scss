@@ -1,0 +1,225 @@
+/* list group */
+.list-group {
+
+    .list-group-item:not([class*='list-group-item-primary']):not([class*='list-group-item-secondary']):not([class*='list-group-item-success']):not([class*='list-group-item-danger']):not([class*='list-group-item-info']):not([class*='list-group-item-dark']):not([class*='list-group-item-light']):not([class*='list-group-item-warning']) {
+        --bs-list-group-active-bg: var(--adminuiux-theme-1);
+        --bs-list-group-active-border-color: var(--adminuiux-theme-1);
+        --bs-list-group-active-color: var(--adminuiux-theme-1-text);
+        --bs-list-group-hover-bg: rgba(var(--adminuiux-theme-1-rgb), 0.12);
+        --bs-list-group-action-hover-bg: rgba(var(--adminuiux-theme-1-rgb), 0.12);
+        --bs-list-group-action-active-bg: var(--adminuiux-theme-1);
+        --bs-list-group-action-active-color: var(--adminuiux-theme-1-text);
+        cursor: pointer;
+
+        &:hover,
+        &:focus {
+            --bs-list-group-bg: rgba(var(--adminuiux-theme-1-rgb), 0.1);
+        }
+
+        &.new {
+            --bs-list-group-bg: rgba(255, 255, 255, .65);
+
+            &:hover,
+            &:focus {
+                --bs-list-group-bg: rgba(255, 255, 255, 1);
+            }
+        }
+    }
+
+    &.adminuiux-list-group {
+        --bs-list-group-bg: transparent;
+
+        .list-group-item {
+            border-width: 0;
+            border-radius: var(--bs-border-radius);
+            margin-bottom: 4px;
+        }
+    }
+
+    &.bg-none {
+        --bs-list-group-bg: transparent
+    }
+
+    &.border-0 {
+        --bs-list-group-border-width: 0
+    }
+}
+
+/* chat-list */
+.chat-list-contacts {
+    .list-group-item {
+        border: 0;
+
+        &>.row {
+            .col-9 {
+                width: calc(100% - 40px - var(--bs-gutter-x));
+                max-width: calc(100% - 40px - var(--bs-gutter-x));
+            }
+        }
+    }
+}
+
+.chat-list {
+    margin: 0;
+
+    .figure,
+    figure,
+    iframe,
+    video,
+    img {
+        border-radius: var(--bs-border-radius);
+        overflow: hidden;
+        display: block;
+        max-width: 240px;
+        margin: 5px 0;
+    }
+
+    a {
+        font-weight: 500;
+        color: var(--adminuiux-theme-1);
+    }
+
+    .left-chat {
+        margin-bottom: 15px;
+
+        .chat-block {
+            background-color: rgba(var(--adminuiux-theme-1-rgb), 0.08);
+            padding: 10px 15px;
+            border-radius: var(--bs-border-radius) var(--bs-border-radius) var(--bs-border-radius) 0px;
+            margin-right: 3px;
+            position: relative;
+            width: auto;
+            display: inline-block;
+            margin-bottom: 5px;
+            max-width: 90%;
+
+            &:before {
+                content: "";
+                position: absolute;
+                left: 0px;
+                bottom: -16px;
+                height: 8px;
+                width: 8px;
+                border-radius: 0;
+                border-color: transparent;
+                border-style: solid;
+                border-width: 8px;
+                z-index: 1;
+                border-top-color: rgba(var(--adminuiux-theme-1-rgb), 0.08);
+                border-left-color: rgba(var(--adminuiux-theme-1-rgb), 0.08);
+            }
+        }
+
+        &.first {
+            margin-bottom: 0;
+
+            .chat-block {
+                border-radius: var(--bs-border-radius);
+
+                &::before {
+                    display: none;
+                }
+            }
+        }
+
+        .time {
+            padding-left: 15px;
+        }
+    }
+
+    .right-chat {
+        margin-bottom: 15px;
+        text-align: right;
+
+        .chat-block {
+            text-align: left;
+            background-color: var(--adminuiux-theme-1);
+            color: var(--adminuiux-theme-1-text);
+            padding: 10px 15px;
+            border-radius: var(--bs-border-radius) var(--bs-border-radius) 0px var(--bs-border-radius);
+            margin-left: 3px;
+            position: relative;
+            width: auto;
+            display: inline-block;
+            margin-bottom: 5px;
+            max-width: 90%;
+
+            &:before {
+                content: "";
+                position: absolute;
+                right: 0px;
+                bottom: -16px;
+                height: 8px;
+                width: 8px;
+                border-radius: 0;
+                border-color: transparent;
+                border-style: solid;
+                border-width: 8px;
+                border-right-color: var(--adminuiux-theme-1);
+                border-top-color: var(--adminuiux-theme-1);
+                z-index: 0;
+            }
+        }
+
+        &.first {
+            margin-bottom: 0;
+
+            .chat-block {
+                border-radius: var(--bs-border-radius);
+
+                &::before {
+                    display: none;
+                }
+            }
+        }
+
+        .time {
+            padding-right: 15px;
+        }
+    }
+
+    &.chat-list-squared {
+
+        .figure,
+        figure,
+        iframe,
+        video {
+            border-radius: 0px;
+        }
+
+        .left-chat,
+        .right-chat {
+            .chat-block {
+                border-radius: 0px;
+            }
+        }
+    }
+
+    &.bg-none {
+        background-color: transparent !important;
+    }
+}
+
+/* dark mode style */
+[data-bs-theme=dark] {
+    .list-unstyled {
+        .text-dark {
+            color: #ffffff !important;
+        }
+    }
+
+    .list-group {
+
+        .list-group-item:not([class*='list-group-item-primary']):not([class*='list-group-item-secondary']):not([class*='list-group-item-success']):not([class*='list-group-item-danger']):not([class*='list-group-item-info']):not([class*='list-group-item-dark']):not([class*='list-group-item-light']):not([class*='list-group-item-warning']) {
+
+            &.new {
+                --bs-list-group-bg: rgba(var(--adminuiux-theme-1-rgb), .5);
+
+                &:hover,
+                &:focus {
+                    --bs-list-group-bg: rgba(var(--adminuiux-theme-1-rgb), 1);
+                }
+            }
+        }
+    }
+}

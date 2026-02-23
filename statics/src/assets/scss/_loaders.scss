@@ -1,0 +1,729 @@
+/* full page loaders */
+.pageloader {
+    height: 100%;
+    width: 100%;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(18px);
+    z-index: 9999;
+}
+
+/* loader plus  */
+.loaderplus {
+    width: 20px;
+    height: 20px;
+    margin: 0 auto;
+    position: relative;
+    --cubes: no-repeat linear-gradient(var(--adminuiux-theme-1) 0 0);
+    background: var(--cubes) center/100% 4px, var(--cubes) center/4px 100%;
+
+    &:before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: var(--cubes) 0 0, var(--cubes) 100% 0, var(--cubes) 0 100%, var(--cubes) 100% 100%;
+        background-size: 6px 6px;
+        animation: loaderplusan 1.5s infinite cubic-bezier(0.2, 1, 0, 1);
+    }
+}
+
+@keyframes loaderplusan {
+    33% {
+        inset: -6px;
+        transform: rotate(0deg)
+    }
+
+    66% {
+        inset: -6px;
+        transform: rotate(90deg)
+    }
+
+    100% {
+        inset: 0;
+        transform: rotate(90deg)
+    }
+}
+
+.loader1 {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    position: relative;
+    animation: loader1anim1 1s linear infinite;
+
+    &::before,
+    &::after {
+        content: "";
+        box-sizing: border-box;
+        position: absolute;
+        inset: 0px;
+        border-radius: 50%;
+        border: 5px solid var(--adminuiux-theme-accent-1);
+        animation: loader1anim2 2s linear infinite;
+    }
+
+    &::after {
+        transform: rotate3d(90, 90, 0, 180deg);
+        border-color: var(--adminuiux-theme-1);
+    }
+}
+
+@keyframes loader1anim1 {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+@keyframes loader1anim2 {
+    0% {
+        clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0)
+    }
+
+    50% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0)
+    }
+
+    75%,
+    100% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%)
+    }
+}
+
+.loader2 {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    position: relative;
+    animation: loader2anim1 1s linear infinite;
+
+    &::before,
+    &::after {
+        content: "";
+        box-sizing: border-box;
+        position: absolute;
+        inset: 0px;
+        border-radius: 50%;
+        border: 5px solid var(--adminuiux-theme-accent-1);
+        animation: loader2anim2 2s linear infinite;
+    }
+
+    .loader::after {
+        inset: 8px;
+        transform: rotate3d(90, 90, 0, 180deg);
+        border-color: var(--adminuiux-theme-1);
+    }
+}
+
+@keyframes loader2anim1 {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+@keyframes loader2anim2 {
+    0% {
+        clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0)
+    }
+
+    50% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0)
+    }
+
+    75%,
+    100% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%)
+    }
+}
+
+.loader3 {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    position: relative;
+    animation: loader3anim1 1s linear infinite;
+
+    &::before,
+    &::after {
+        content: "";
+        box-sizing: border-box;
+        position: absolute;
+        inset: 0px;
+        border-radius: 50%;
+        border: 5px solid var(--adminuiux-theme-accent-1);
+        animation: loader3anim2 2s linear infinite;
+    }
+
+    &::after {
+        border-color: var(--adminuiux-theme-1);
+        animation: loader1anim2 2s linear infinite, loader3anim1 0.5s linear infinite reverse;
+        inset: 6px;
+    }
+}
+
+@keyframes loader3anim1 {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+@keyframes loader3anim2 {
+    0% {
+        clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0)
+    }
+
+    25% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0)
+    }
+
+    50% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%)
+    }
+
+    75% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%)
+    }
+
+    100% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0)
+    }
+}
+
+.loader4 {
+    width: 48px;
+    height: 48px;
+    border: 3px solid var(--adminuiux-theme-accent-1);
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    animation: loader4anim1 1s linear infinite;
+
+    &::after {
+        content: '';
+        box-sizing: border-box;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        border: 3px solid;
+        border-color: var(--adminuiux-theme-1) transparent;
+    }
+}
+
+@keyframes loader4anim1 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loader5 {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    border: 3px solid;
+    border-color: var(--adminuiux-theme-accent-1) #FFF transparent;
+    box-sizing: border-box;
+    animation: loader5anim1 1s linear infinite;
+
+    &::after {
+        content: '';
+        box-sizing: border-box;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        border: 3px solid;
+        border-color: transparent var(--adminuiux-theme-1) var(--adminuiux-theme-1);
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        animation: loader5anim2 0.5s linear infinite;
+        transform-origin: center center;
+    }
+}
+
+@keyframes loader5anim1 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes loader5anim2 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(-360deg);
+    }
+}
+
+.loader6 {
+    width: 48px;
+    height: 48px;
+    border: 3px dotted var(--adminuiux-theme-accent-1);
+    border-style: solid solid dotted dotted;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    animation: loader6anim1 2s linear infinite;
+
+    &::after {
+        content: '';
+        box-sizing: border-box;
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: auto;
+        border: 3px dotted var(--adminuiux-theme-1);
+        border-style: solid solid dotted;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        animation: loader6anim2 1s linear infinite;
+        transform-origin: center center;
+    }
+}
+
+@keyframes loader6anim1 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes loader6anim2 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(-360deg);
+    }
+}
+
+.loader7 {
+    width: 48px;
+    height: 48px;
+    border: 5px dotted var(--adminuiux-theme-1);
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    box-sizing: border-box;
+    animation: loader7anim1 2s linear infinite;
+}
+
+@keyframes loader7anim1 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loader8 {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    background: linear-gradient(0deg, rgba(var(--adminuiux-theme-1-rgb), 0.2) 33%, var(--adminuiux-theme-1) 100%);
+    box-sizing: border-box;
+    animation: loader8anim1 1s linear infinite;
+
+    &::after {
+        content: '';
+        box-sizing: border-box;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--bs-body-bg);
+    }
+}
+
+@keyframes loader8anim1 {
+    0% {
+        transform: rotate(0deg)
+    }
+
+    100% {
+        transform: rotate(360deg)
+    }
+}
+
+.loader9 {
+    width: 48px;
+    height: 48px;
+    border: 10px solid var(--adminuiux-theme-accent-1);
+    border-radius: 50%;
+    position: relative;
+    transform: rotate(45deg);
+    box-sizing: border-box;
+
+    &::before {
+        content: "";
+        position: absolute;
+        box-sizing: border-box;
+        inset: -10px;
+        border-radius: 50%;
+        border: 10px solid var(--adminuiux-theme-1);
+        animation: loader9anim1 2s infinite linear;
+    }
+}
+
+@keyframes loader9anim1 {
+    0% {
+        clip-path: polygon(50% 50%, 0 0, 0 0, 0 0, 0 0, 0 0)
+    }
+
+    25% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 0, 100% 0, 100% 0)
+    }
+
+    50% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 100% 100%, 100% 100%)
+    }
+
+    75% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 100%)
+    }
+
+    100% {
+        clip-path: polygon(50% 50%, 0 0, 100% 0, 100% 100%, 0 100%, 0 0)
+    }
+}
+
+.loader10,
+.loader10:before,
+.loader10:after {
+    border-radius: 50%;
+    width: 16px;
+    height: 16px;
+    animation-fill-mode: both;
+    animation: loader110anim1 1.8s infinite ease-in-out;
+}
+
+.loader10 {
+    color: var(--adminuiux-theme-accent-1);
+    font-size: 7px;
+    position: relative;
+    text-indent: -9999em;
+    transform: translateZ(0);
+    animation-delay: -0.16s;
+
+    &:before,
+    &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+    }
+
+    &:before {
+        left: -3.5em;
+        animation-delay: -0.32s;
+    }
+
+    &:after {
+        left: 3.5em;
+    }
+}
+
+@keyframes loader110anim1 {
+
+    0%,
+    80%,
+    100% {
+        box-shadow: 0 2.5em 0 -1.3em
+    }
+
+    40% {
+        box-shadow: 0 2.5em 0 0
+    }
+}
+
+.loader11 {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    left: -32px;
+    border-radius: 50%;
+    color: var(--adminuiux-theme-accent-1);
+    background: currentColor;
+    box-shadow: 32px 0, -32px 0, 64px 0;
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: -32px;
+        top: 0;
+        width: 16px;
+        height: 16px;
+        border-radius: 10px;
+        background: var(--adminuiux-theme-1);
+        animation: loader11anim1 3s linear infinite alternate;
+    }
+}
+
+@keyframes loader11anim1 {
+
+    0%,
+    5% {
+        left: -32px;
+        width: 16px;
+    }
+
+    15%,
+    20% {
+        left: -32px;
+        width: 48px;
+    }
+
+    30%,
+    35% {
+        left: 0px;
+        width: 16px;
+    }
+
+    45%,
+    50% {
+        left: 0px;
+        width: 48px;
+    }
+
+    60%,
+    65% {
+        left: 32px;
+        width: 16px;
+    }
+
+    75%,
+    80% {
+        left: 32px;
+        width: 48px;
+    }
+
+    95%,
+    100% {
+        left: 64px;
+        width: 16px;
+    }
+}
+
+.loader12 {
+    width: 48px;
+    height: 48px;
+    display: inline-block;
+    position: relative;
+
+    &::after,
+    &::before {
+        content: '';
+        width: 48px;
+        height: 48px;
+        border: 2px solid var(--adminuiux-theme-accent-1);
+        position: absolute;
+        left: 0;
+        top: 0;
+        box-sizing: border-box;
+        animation: loader12anim1 2s ease-in-out infinite;
+    }
+
+    &::after {
+        border-color: var(--adminuiux-theme-1);
+        animation-delay: 1s;
+    }
+}
+
+@keyframes loader12anim1 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loader13 {
+    position: relative;
+    width: 48px;
+    height: 48px;
+    background: var(--adminuiux-theme-1);
+    transform: rotateX(65deg) rotate(45deg);
+    // remove bellows command for perspective change
+    //transform: perspective(200px) rotateX(65deg) rotate(45deg); 
+    color: var(--adminuiux-theme-accent-1);
+    animation: loader13anim1 1s linear infinite alternate;
+
+    &:after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: rgba(var(--adminuiux-theme-accent-1-rgb), 0.7);
+        animation: loader13anim2 1s linear infinite alternate;
+    }
+}
+
+@keyframes loader13anim1 {
+    0% {
+        box-shadow: 0px 0px 0 0px
+    }
+
+    90%,
+    100% {
+        box-shadow: 20px 20px 0 -4px
+    }
+}
+
+@keyframes loader13anim2 {
+    0% {
+        transform: translate(0, 0) scale(1)
+    }
+
+    100% {
+        transform: translate(-25px, -25px) scale(1)
+    }
+}
+
+.loader14 {
+    height: 30px;
+    width: 10px;
+    border-radius: 4px;
+    color: var(--adminuiux-theme-1);
+    background: currentColor;
+    position: relative;
+    animation: loader14anim1 1s ease-in infinite alternate;
+    box-shadow: 15px 0 0 -1px, -15px 0 0 -1px, 30px 0 0 -2px, -30px 0 0 -2px, 45px 0 0 -3px, -45px 0 0 -3px;
+}
+
+@keyframes loader14anim1 {
+    100% {
+        height: 0px
+    }
+}
+
+.loader15 {
+    display: inline-block;
+    font-size: 48px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    color: var(--adminuiux-theme-accent-1);
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 34px;
+        bottom: 18px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        border: 7px solid var(--adminuiux-theme-accent-1);
+        border-bottom-color: var(--adminuiux-theme-1);
+        box-sizing: border-box;
+        animation: loader15anim1 0.6s linear infinite;
+    }
+}
+
+@keyframes loader15anim1 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loader16 {
+    transform: translateZ(1px);
+
+    &:after {
+        content: '$';
+        display: inline-block;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 40px;
+        font-size: 32px;
+        font-weight: bold;
+        background: #FFD700;
+        color: #DAA520;
+        border: 4px double;
+        box-sizing: border-box;
+        box-shadow: 2px 2px 2px 1px rgba(0, 0, 0, .1);
+        animation: coin-flip 4s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+}
+
+@keyframes coin-flip {
+
+    0%,
+    100% {
+        animation-timing-function: cubic-bezier(0.5, 0, 1, 0.5);
+    }
+
+    0% {
+        transform: rotateY(0deg);
+    }
+
+    50% {
+        transform: rotateY(1800deg);
+        animation-timing-function: cubic-bezier(0, 0.5, 0.5, 1);
+    }
+
+    100% {
+        transform: rotateY(3600deg);
+    }
+}
+
+/* dark mode */
+[data-bs-theme=dark] {
+    .pageloader {
+        background-color: rgba(0, 0, 0, 0.85);
+    }
+}

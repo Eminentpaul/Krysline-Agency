@@ -1,10 +1,11 @@
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User, UserProfile
+from .models import User, UserProfile, BlacklistedIP
 
 # Register your models here.
 
+admin.site.register(BlacklistedIP)
 @admin.register(User)
 class CustomUserAdmin(BaseUserAdmin):
     # 1. Columns shown in the main list

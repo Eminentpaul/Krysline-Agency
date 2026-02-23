@@ -1,0 +1,165 @@
+{% extends "krysline_nav.html" %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+{% load custom_tags %}
+
+
+
+{% block content %}
+<main class="adminuiux-content has-sidebar" onclick="contentClick()">
+
+   
+    
+
+    <!-- content -->
+    <div class="container">
+        
+
+
+        <div class="row gx-3 gx-lg-4">
+            <!-- Transactions -->
+            <div class="col-12 col-md-12 position-relative">
+                <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                    <div class="card-header">
+                        <div class="row gx-3">
+                            <div class="col-auto">
+                                <i class="bi bi-shop h5 avatar avatar-40 bg-theme-1-subtle text-theme-1 rounded"></i>
+                            </div>
+                            <div class="col-auto align-self-center">
+                                <h6 class="mb-0">Active Users</h6>
+                                
+                            </div>
+                            
+
+                        </div>
+                    </div>
+                    <div class="card-body py-0">
+                        <table class="table table-borderless" id="dataTable" data-show-toggle="true">
+                            <thead>
+                                <tr>
+                                    <th class="width-10"></th>
+                                    <th class="all">First Name</th>
+                                    <th class="xs">Last Name</th>
+                                    <th class="desktop">username</th>
+                                    <th class="tablet desktop">Email</th>
+                                    <th class="dektop">State</th>
+                                    <th class="none">Country</th>
+                                    <th class="all">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if active %}
+                                    {% for iuser in active_users %}
+                                    
+                                        <tr>
+                                            <td></td>
+                                            <td>
+                                                <div class="row gx-3 gx-lg-4 align-items-center">
+                                                    <div class="col-auto">
+                                                        <div class="avatar avatar-40 mb-0 coverimg rounded-circle bg-theme-1 theme-orange">
+                                                            <i class="bi bi-person-fill"></i>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col">
+                                                        <p class="mb-0">{{iuser.first_name|title}}</p>
+                                                        <p class="text-secondary small">{{iuser.date_joined|date:"M d, Y"}}</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <p class="mb-0">{{iuser.last_name|title}}</p>
+                                                {% comment %} <p class="text-secondary small">BTC</p> {% endcomment %}
+                                            </td>
+                                            <td>
+                                                <p class="mb-0">{{iuser.username|title}}</p>
+                                                {% comment %} <p class="text-secondary small">Work</p> {% endcomment %}
+                                            </td>
+                                            <td>
+                                                <span class="badge badge-sm badge-light text-bg-success">{{iuser.email|mask_email}}</span>
+                                            </td>
+                                            <td>
+                                                {{iuser.profile.state|title}}
+                                            </td>
+                                            <td>
+                                                {{iuser.profile.country|title}}
+                                            </td>
+                                            <td>
+                                                <div class="dropdown d-inline-block">
+                                                    <a class="text-secondary no-caret" data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static" role="button">
+                                                        <i class="bi bi-three-dots"></i>
+                                                    </a>
+                                                    <ul class="dropdown-menu dropdown-menu-end">
+                                                        <li><a class="dropdown-item" href="{% url "edit_user" iuser.id %}">Edit</a></li>
+                                                        {% comment %} <li><a class="dropdown-item" href="javascript:void(0)">Move</a></li> {% endcomment %}
+                                                        
+                                                        <li><a class="dropdown-item text-danger" href="{% url "delete_user" iuser.id %}">Delete</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    
+                                {% endfor %}
+                                {% else %}
+                                    {% for iuser in inactive_users %}
+                                    
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    <div class="row gx-3 gx-lg-4 align-items-center">
+                                                        <div class="col-auto">
+                                                            <div class="avatar avatar-40 mb-0 coverimg rounded-circle bg-theme-1 theme-orange">
+                                                                <i class="bi bi-person-fill"></i>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col">
+                                                            <p class="mb-0">{{iuser.first_name|title}}</p>
+                                                            <p class="text-secondary small">{{iuser.date_joined|date:"M d, Y"}}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0">{{iuser.last_name|title}}</p>
+                                                    {% comment %} <p class="text-secondary small">BTC</p> {% endcomment %}
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0">{{iuser.username|title}}</p>
+                                                    {% comment %} <p class="text-secondary small">Work</p> {% endcomment %}
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-sm badge-light text-bg-success">{{iuser.email|mask_email}}</span>
+                                                </td>
+                                                <td>
+                                                    {{iuser.profile.state|title}}
+                                                </td>
+                                                <td>
+                                                    {{iuser.profile.country|title}}
+                                                </td>
+                                                <td>
+                                                    <div class="dropdown d-inline-block">
+                                                        <a class="text-secondary no-caret" data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static" role="button">
+                                                            <i class="bi bi-three-dots"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            <li><a class="dropdown-item" href="{% url "edit_user" iuser.id %}">Edit</a></li>
+                                                            {% comment %} <li><a class="dropdown-item" href="javascript:void(0)">Move</a></li> {% endcomment %}
+                                                            
+                                                            <li><a class="dropdown-item text-danger" href="{% url "delete_user" iuser.id %}">Delete</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        
+                                    {% endfor %}
+                                {% endif %}
+                                
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</div>
+{% endblock %}

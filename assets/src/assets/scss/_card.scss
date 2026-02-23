@@ -1,0 +1,158 @@
+.card {
+    --bs-card-cap-padding-y: 0.75rem;
+
+    &.adminuiux-card {
+        --bs-card-cap-bg: transparent;
+        border-width: 0;
+
+        .card-header,
+        .card-footer {
+            border-width: 0;
+        }
+
+        &.blur {
+            background-color: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(15px);
+        }
+    }
+
+    &.selectable {
+        cursor: pointer;
+
+        &.active {
+            border-color: var(--adminuiux-theme-1);
+            box-shadow: inset 0 0 0px 1px var(--adminuiux-theme-1);
+        }
+    }
+}
+
+a.card {
+    cursor: pointer;
+
+    &:hover,
+    &:focus {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, .1), 0 1px 3px rgba(0, 0, 0, .05);
+    }
+}
+
+.accordion {
+    --bs-border-width: 1px;
+    --bs-accordion-active-color: var(--adminuiux-theme-1);
+    --bs-accordion-active-bg: rgba(var(--adminuiux-theme-1-rgb), 0.15);
+
+    .accordion-header {
+        .accordion-button {
+            outline: none;
+            box-shadow: none;
+        }
+    }
+
+    &.adminuiux-accordion {
+        --bs-card-cap-bg: transparent;
+        --bs-accordion-border-width: 0;
+        --bs-accordion-btn-padding-x: 1rem;
+        --bs-accordion-btn-padding-y: 0.75rem;
+        --bs-accordion-active-color: var(--adminuiux-theme-1);
+        --bs-accordion-active-bg: var(--bs-accordion-bg);
+
+        .accordion-item {
+            border-radius: var(--bs-border-radius);
+            margin-bottom: 0.5rem;
+
+            .accordion-header {
+                border-radius: var(--bs-border-radius);
+
+                .accordion-button {
+                    outline: 0;
+                    border-radius: var(--bs-border-radius);
+                    background-color: transparent;
+                    box-shadow: none;
+                }
+            }
+
+            .accordion-collapse {
+                border: 0;
+                border-radius: var(--bs-border-radius);
+            }
+        }
+
+        &.blur {
+            background-color: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(15px);
+        }
+    }
+}
+
+.alert {
+    &.alert-normal {
+        --bs-alert-color: #ffffff;
+        --bs-alert-border-color: rgba(0, 0, 0, 0.2);
+        --bs-alert-link-color: #ffffff;
+
+        &.alert-theme {
+            --bs-alert-bg: var(--adminuiux-theme-1);
+        }
+
+        &.alert-theme-accent {
+            --bs-alert-bg: var(--adminuiux-theme-accent-1);
+        }
+
+        &.alert-primary {
+            --bs-alert-bg: var(--bs-primary);
+        }
+
+        &.alert-secondary {
+            --bs-alert-bg: var(--bs-secondary);
+        }
+
+        &.alert-success {
+            --bs-alert-bg: var(--bs-success);
+        }
+
+        &.alert-info {
+            --bs-alert-bg: var(--bs-info);
+        }
+
+        &.alert-warning {
+            --bs-alert-bg: var(--bs-warning);
+        }
+
+        &.alert-danger {
+            --bs-alert-bg: var(--bs-danger);
+        }
+
+        &.alert-light {
+            --bs-alert-bg: var(--bs-light);
+            --bs-alert-color: #000000;
+            --bs-alert-link-color: var(--adminuiux-theme-1);
+        }
+
+        &.alert-dark {
+            --bs-alert-bg: var(--bs-dark);
+        }
+    }
+}
+
+/* dark mode style */
+[data-bs-theme=dark] {
+    .card {
+        --bs-card-bg: rgba(var(--adminuiux-theme-1-rgb), 0.15);
+        backdrop-filter: blur(15px);
+    }
+
+    .accordion {
+        &.adminuiux-accordion {
+            --bs-accordion-active-color: #ffffff;
+            --bs-accordion-active-bg: rgba(var(--adminuiux-theme-1-rgb), 0.15);
+            --bs-accordion-bg: rgba(var(--adminuiux-theme-1-rgb), 0.15);
+            backdrop-filter: blur(15px);
+        }
+    }
+}
+
+[dir=rtl] {
+    .accordion-button::after {
+        margin-right: auto;
+        margin-left: 0;
+    }
+}

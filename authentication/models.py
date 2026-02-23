@@ -14,7 +14,9 @@ class User(AbstractUser):
 
     USER_TYPE = (
         ('affiliate', 'affiliate'),
-        ('admin', 'admin')
+        ('admin', 'admin'),
+        ('manager', 'manager'),
+        ('secretary', 'secretary'),
     )
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)

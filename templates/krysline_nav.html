@@ -1,0 +1,1035 @@
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+<!DOCTYPE html>
+<html lang="en">
+    <!-- dir="rtl"-->
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport"
+              content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>Admin - Kryline Agency Ltd</title>
+        <link rel="icon" type="image/png" href="assets/img/favicon.png">
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300..800&family=SUSE:wght@100..800&display=swap"
+              rel="stylesheet">
+        <style>
+        :root {
+            --adminuiux-content-font: "Open Sans", sans-serif;
+            --adminuiux-content-font-weight: 400;
+            --adminuiux-title-font: "SUSE", sans-serif;
+            --adminuiux-title-font-weight: 600;
+        }
+        </style>
+        <script defer src="{% static 'assets/js/app.js' %}"></script>
+        <link href="{% static 'assets/css/app.css' %}" rel="stylesheet">
+        <!-- Bootstrap Icon -->
+        <link rel="stylesheet"
+              href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    </head>
+    <body class="main-bg main-bg-opac adminuiux-header-standard theme-blue adminuiux-header-transparent adminuiux-sidebar-fill-white adminuiux-sidebar-standard bg-r-gradient scrollup"
+          data-theme="theme-blue"
+          data-sidebarfill="adminuiux-sidebar-fill-white"
+          data-sidebarlayout="adminuiux-sidebar-standard"
+          data-bs-spy="scroll"
+          data-bs-target="#list-example"
+          data-bs-smooth-scroll="true"
+          tabindex="0"
+          data-headerlayout="adminuiux-header-standard"
+          data-bggradient="bg-r-gradient"
+          data-headerfill="adminuiux-header-transparent">
+        <!-- Pageloader -->
+        <div class="pageloader">
+            <div class="container h-100">
+                <div class="row justify-content-center align-items-center text-center h-100">
+                    <div class="col-12 mb-auto pt-4"></div>
+                    <div class="col-auto">
+                        <img src="{% static 'assets/img/logo.svg' %}"
+                             alt=""
+                             class="height-100 mb-3">
+                        <p class="h3 mb-0">
+                            <span class="text-gradient">AdminUX</span>
+                        </p>
+                        <p class="small text-secondary mb-3">
+                            <span class="">Admin Dashboard HTML Template</span>
+                        </p>
+                        <div class="loader6 mb-2 mx-auto"
+                             style="border-color: var(--adminuiux-theme-2)">
+                        </div>
+                    </div>
+                    <div class="col-12 mt-auto pb-4">
+                        <p class="text-secondary">
+                            Petal of flower being ready to <span class="text-gradient">blossom</span>...
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- standard header -->
+        <header class="adminuiux-header">
+            <!-- Fixed navbar -->
+            <nav class="navbar navbar-expand-lg fixed-top">
+                <div class="container-fluid">
+                    <!-- main sidebar toggle -->
+                    <button class="btn btn-link btn-square sidebar-toggler"
+                            type="button"
+                            onclick="initSidebar()">
+                        <i class="sidebar-svg" data-feather="menu"></i>
+                    </button>
+                    <!-- logo -->
+                    <a class="navbar-brand" href="adminux-dashboard.html">
+                        <img data-bs-img="light"
+                             src="{% static 'assets/img/logo-light.svg' %}"
+                             alt="">
+                        <img data-bs-img="dark" src="{% static 'assets/img/logo.svg' %}" alt="">
+                        <div class="">
+                            <span class="h4 text-gradient">Admin<span class="fw-bold">UX</span></span>
+                            <p class="company-tagline">Best HTML template</p>
+                        </div>
+                    </a>
+                    <!-- search -->
+                    <div class="px-3 justify-content-center d-none d-lg-flex">
+                        <div class="input-group input-group-md rounded search-wrap width-300 mx-auto">
+                            <span class="input-group-text border-0 bg-none">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input class="form-control border-0 bg-none"
+                                   type="search"
+                                   placeholder="Search here..."
+                                   id="searchglobal">
+                            <div class="dropdown input-group-text border-0 px-2">
+                                <button class="dropdown-toggle btn btn-sm btn-link btn-square no-caret"
+                                        type="button"
+                                        id="searchfilter"
+                                        data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                    <i class="bi bi-sliders fs-6"></i>
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-end dropdown-dontclose width-300"
+                                     aria-labelledby="searchfilter"
+                                     style="">
+                                    <ul class="nav nav-underline" id="searchtab" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active"
+                                                    id="searchall-tab"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#searchall"
+                                                    type="button"
+                                                    role="tab"
+                                                    aria-controls="searchall"
+                                                    aria-selected="true">All</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link"
+                                                    id="searchorders-tab"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#searchorders"
+                                                    type="button"
+                                                    role="tab"
+                                                    aria-controls="searchorders"
+                                                    aria-selected="false"
+                                                    tabindex="-1">Orders</button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link"
+                                                    id="searchcontacts-tab"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#searchcontacts"
+                                                    type="button"
+                                                    role="tab"
+                                                    aria-controls="searchcontacts"
+                                                    aria-selected="false"
+                                                    tabindex="-1">Contacts</button>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content py-3" id="searchtabContent">
+                                        <div class="tab-pane fade active show"
+                                             id="searchall"
+                                             role="tabpanel"
+                                             aria-labelledby="searchall-tab">
+                                            <ul class="list-group adminuiux-list-group list-group-flush bg-none show">
+                                                <li class="list-group-item">
+                                                    <div class="row gx-3 gx-lg-4">
+                                                        <div class="col">Search apps</div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input"
+                                                                       type="checkbox"
+                                                                       role="switch"
+                                                                       id="isearchswitch1">
+                                                                <label class="form-check-label" for="isearchswitch1"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="row gx-3 gx-lg-4">
+                                                        <div class="col">Include Pages</div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input"
+                                                                       type="checkbox"
+                                                                       role="switch"
+                                                                       id="isearchswitch2"
+                                                                       checked="">
+                                                                <label class="form-check-label" for="isearchswitch2"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="row gx-3 gx-lg-4">
+                                                        <div class="col">Internet resource</div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input"
+                                                                       type="checkbox"
+                                                                       role="switch"
+                                                                       id="isearchswitch3"
+                                                                       checked="">
+                                                                <label class="form-check-label" for="isearchswitch3"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="row gx-3 gx-lg-4">
+                                                        <div class="col">News and Blogs</div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input"
+                                                                       type="checkbox"
+                                                                       role="switch"
+                                                                       id="isearchswitch4">
+                                                                <label class="form-check-label" for="isearchswitch4"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="tab-pane fade"
+                                             id="searchorders"
+                                             role="tabpanel"
+                                             aria-labelledby="searchorders-tab">
+                                            <ul class="list-group adminuiux-list-group list-group-flush bg-none show">
+                                                <li class="list-group-item">
+                                                    <div class="row gx-3 gx-lg-4">
+                                                        <div class="col">Show order ID</div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input"
+                                                                       type="checkbox"
+                                                                       role="switch"
+                                                                       id="isearchswitch5">
+                                                                <label class="form-check-label" for="isearchswitch5"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="row gx-3 gx-lg-4">
+                                                        <div class="col">International Order</div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input"
+                                                                       type="checkbox"
+                                                                       role="switch"
+                                                                       id="isearchswitch6"
+                                                                       checked="">
+                                                                <label class="form-check-label" for="isearchswitch6"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="row gx-3 gx-lg-4">
+                                                        <div class="col">Taxable Product</div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input"
+                                                                       type="checkbox"
+                                                                       role="switch"
+                                                                       id="isearchswitch7"
+                                                                       checked="">
+                                                                <label class="form-check-label" for="isearchswitch7"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="row gx-3 gx-lg-4">
+                                                        <div class="col">Published Product</div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input"
+                                                                       type="checkbox"
+                                                                       role="switch"
+                                                                       id="isearchswitch8">
+                                                                <label class="form-check-label" for="isearchswitch8"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="tab-pane fade"
+                                             id="searchcontacts"
+                                             role="tabpanel"
+                                             aria-labelledby="searchcontacts-tab">
+                                            <ul class="list-group adminuiux-list-group list-group-flush bg-none show">
+                                                <li class="list-group-item">
+                                                    <div class="row gx-3 gx-lg-4">
+                                                        <div class="col">Have email ID</div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input"
+                                                                       type="checkbox"
+                                                                       role="switch"
+                                                                       id="isearchswitch9">
+                                                                <label class="form-check-label" for="isearchswitch9"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="row gx-3 gx-lg-4">
+                                                        <div class="col">Have phone number</div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input"
+                                                                       type="checkbox"
+                                                                       role="switch"
+                                                                       id="isearchswitch10"
+                                                                       checked="">
+                                                                <label class="form-check-label" for="isearchswitch10"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="row gx-3 gx-lg-4">
+                                                        <div class="col">Photo available</div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input"
+                                                                       type="checkbox"
+                                                                       role="switch"
+                                                                       id="isearchswitch11"
+                                                                       checked="">
+                                                                <label class="form-check-label" for="isearchswitch11"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                                <li class="list-group-item">
+                                                    <div class="row gx-3 gx-lg-4">
+                                                        <div class="col">Referral</div>
+                                                        <div class="col-auto">
+                                                            <div class="form-check form-switch">
+                                                                <input class="form-check-input"
+                                                                       type="checkbox"
+                                                                       role="switch"
+                                                                       id="isearchswitch12">
+                                                                <label class="form-check-label" for="isearchswitch12"></label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="">
+                                        <div class="row gx-3 gx-lg-4">
+                                            <div class="col">
+                                                <button class="btn btn-link">Reset</button>
+                                            </div>
+                                            <div class="col-auto">
+                                                <button class="btn btn-theme">Apply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- menu -->
+                    <div class="navbar-expand-xl d-none d-xl-block ms-3">
+                        <div class="collapse navbar-collapse" id="mainheaderNavbar">
+                            <ul class="navbar-nav">
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle no-caret"
+                                       data-bs-toggle="dropdown"
+                                       href="#"
+                                       role="button"
+                                       aria-expanded="false"
+                                       data-bs-auto-close="outside">Pages</a>
+                                    <div class="dropdown-menu">
+                                        <div>
+                                            <a class="dropdown-item" href="adminux-profile-professional.html">Profile</a>
+                                        </div>
+                                        <div class="dropend">
+                                            <a class="dropdown-item"
+                                               data-bs-toggle="dropdown"
+                                               aria-expanded="false"
+                                               role="button"
+                                               data-bs-auto-close="outside">
+                                                Company <span class="arrow bi bi-chevron-right"></span>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <div>
+                                                    <a class="dropdown-item active" href="adminux-company-profile.html">Company Profile</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="adminux-company-user-roles.html">User Roles</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="adminux-company-resource.html">Resources</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <a class="dropdown-item" href="adminux-company-management.html">Management</a>
+                                        </div>
+                                        <div>
+                                            <a class="dropdown-item" href="adminux-company-career.html">Career</a>
+                                        </div>
+                                        <div>
+                                            <a class="dropdown-item" href="adminux-forum.html">Forum</a>
+                                        </div>
+                                        <div>
+                                            <hr class="dropdown-divider">
+                                        </div>
+                                        <div>
+                                            <a class="dropdown-item" href="adminux-company-help-center.html">Help Center</a>
+                                        </div>
+                                        <div>
+                                            <a class="dropdown-item" href="adminux-onboarding.html">Onboarding</a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle no-caret"
+                                       data-bs-toggle="dropdown"
+                                       href="#"
+                                       role="button"
+                                       aria-expanded="false">Components</a>
+                                    <div class="dropdown-menu width-300">
+                                        <div class="dropdown-title mb-3 p-2">
+                                            <p>Creative &amp; Unique Components</p>
+                                            <p class="text-secondary small">
+                                                Our components are flexible to adopt. Use these to create new page, make UI template design unique and consistent.
+                                            </p>
+                                        </div>
+                                        <div class="row g-0">
+                                            <div class="col-12 col-md-12 col-lg-6">
+                                                <div>
+                                                    <a class="dropdown-item" href="component-cards.html"><i class="bi bi-card-heading me-2"></i>Cards</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="component-chartjs.html"><i class="bi bi-bar-chart me-2"></i>Chartjs</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="component-daterangepicker.html"><i class="bi bi-calendar-event me-2"></i>Datepicker</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="component-full-calendar.html"><i class="bi bi-calendar-week me-2"></i>Calendar</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="component-progress.html"><i class="bi bi-clock-history me-2"></i>Progress</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-12 col-lg-6">
+                                                <div>
+                                                    <a class="dropdown-item" href="component-collapse.html"><i class="bi bi-card-text me-2"></i>Collapse</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="component-pricing.html"><i class="bi bi-newspaper me-2"></i>Pricing</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="component-modal-dialogues.html"><i class="bi bi-star me-2"></i>Modal Box</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="component-avatar.html"><i class="bi bi-person-circle me-2"></i>Avatar</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="component-progressbar-js.html"><i class="bi bi-kanban-fill me-2"></i>ProgressBar js</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle no-caret"
+                                       data-bs-toggle="dropdown"
+                                       href="#"
+                                       role="button"
+                                       aria-expanded="false">Supportive</a>
+                                    <div class="dropdown-menu width-300">
+                                        <div class="dropdown-title mb-3 p-2">
+                                            <p>Supportive &amp; Helpful Pages</p>
+                                            <p class="text-secondary small">
+                                                Do not make your user lost somewhere else from where they can't come back. Make important journey flawless.
+                                            </p>
+                                        </div>
+                                        <div class="row g-0">
+                                            <div class="col-12 col-md-12 col-lg-6">
+                                                <div>
+                                                    <a class="dropdown-item" href="adminux-login.html"><i class="bi bi-person me-2 text-theme-1"></i>Sign in</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="adminux-signup.html"><i class="bi bi-person-plus me-2 text-theme-1"></i>Sign up</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="adminux-forgot-password.html"><i class="bi bi-key me-2 text-theme-1"></i>Password</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="adminux-maintenance.html"><i class="bi bi-gear me-2"></i>Maintenance</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="adminux-comingsoon.html"><i class="bi bi-alarm me-2"></i>Coming Soon</a>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 col-md-12 col-lg-6">
+                                                <div>
+                                                    <a class="dropdown-item" href="adminux-page-not-found-2.html"><i class="bi bi-bug me-2"></i>Error</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="adminux-onboarding.html"><i class="bi bi-emoji-smile me-2"></i>Onboarding</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="adminux-contact-us.html"><i class="bi bi-envelope me-2"></i>Contact</a>
+                                                </div>
+                                                <div>
+                                                    <a class="dropdown-item" href="adminux-timeline.html"><i class="bi bi-calendar-week me-2"></i>Timeline</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!-- right icons button -->
+                    <div class="ms-auto">
+                        <!-- global search toggle -->
+                        <button class="btn btn-link btn-square btn-icon btn-link-header d-lg-none"
+                                type="button"
+                                onclick="openSearch()">
+                            <i data-feather="search"></i>
+                        </button>
+                        <!-- dark mode -->
+                        <button class="btn btn-link btn-square btnsunmoon btn-link-header"
+                                id="btn-layout-modes-dark-page">
+                            <i class="sun mx-auto" data-feather="sun"></i>
+                            <i class="moon mx-auto" data-feather="moon"></i>
+                        </button>
+                        <!-- application list dropdown -->
+                        {% comment %} <div class="dropdown d-none d-sm-inline-block">
+                            <button class="btn btn-link btn-square btn-icon btn-link-header dropdown-toggle no-caret"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                <i data-feather="grid"></i>
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-end width-300 pt-0 px-0 overflow-hidden">
+                                <div class="p-3 bg-r-gradient rounded mb-2">
+                                    <h5 class="mb-0">Applications</h5>
+                                    <p class="text-secondary small">Make your app innovative</p>
+                                </div>
+                                <div class="px-2">
+                                    <div class="row g-2 text-center mb-2">
+                                        <div class="col-4">
+                                            <a class="dropdown-item square-item position-relative"
+                                               href="adminux-finance-dashboard.html">
+                                                <div class="avatar avatar-40 rounded mb-2">
+                                                    <i class="bi bi-bank fs-4 mx-0"></i>
+                                                </div>
+                                                <p class="mb-0">Finance</p>
+                                                <p class="fs-12 opacity-50 mb-2">Accounting</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-4">
+                                            <a class="dropdown-item square-item position-relative"
+                                               href="adminux-network-dashboard.html">
+                                                <div class="avatar avatar-40 rounded mb-2">
+                                                    <i class="bi bi-globe fs-4 mx-0"></i>
+                                                </div>
+                                                <p class="mb-0">Network</p>
+                                                <p class="fs-12 opacity-50 mb-2">Stabilize</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-4">
+                                            <a class="dropdown-item square-item position-relative"
+                                               href="adminux-inventory-dashboard.html">
+                                                <div class="avatar avatar-40 rounded mb-2">
+                                                    <i class="bi bi-box fs-4 mx-0"></i>
+                                                </div>
+                                                <p class="mb-0">Inventory</p>
+                                                <p class="fs-12 opacity-50 mb-2">Assuring</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-4">
+                                            <a class="dropdown-item square-item position-relative"
+                                               href="adminux-project-dashboard.html">
+                                                <div class="avatar avatar-40 rounded mb-2">
+                                                    <i class="bi bi-folder fs-4 mx-0"></i>
+                                                </div>
+                                                <p class="mb-0">Project</p>
+                                                <p class="fs-12 opacity-50 mb-2">Management</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-4">
+                                            <a class="dropdown-item square-item position-relative"
+                                               href="adminux-social-dashboard.html">
+                                                <div class="avatar avatar-40 rounded mb-2">
+                                                    <i class="bi bi-people fs-4 mx-0"></i>
+                                                </div>
+                                                <p class="mb-0">Social</p>
+                                                <p class="fs-12 opacity-50 mb-2">Tracking</p>
+                                            </a>
+                                        </div>
+                                        <div class="col-4">
+                                            <a class="dropdown-item square-item position-relative"
+                                               href="adminux-learning-dashboard.html">
+                                                <div class="avatar avatar-40 rounded mb-2">
+                                                    <i class="bi bi-journal-bookmark fs-4 mx-0"></i>
+                                                </div>
+                                                <p class="mb-0">Learning</p>
+                                                <p class="fs-12 opacity-50 mb-2">Make-easy</p>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <a class="btn btn-link text-center" href="adminux-dashboard.html">View all
+                                        <i class="bi bi-arrow-right fs-14"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div> {% endcomment %}
+                        <!-- language dropdown -->
+                        {% comment %} <div class="dropdown d-none d-sm-inline-block">
+                            <button class="btn btn-link btn-square btn-icon btn-link-header dropdown-toggle no-caret"
+                                    type="button"
+                                    data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                <i class="bi bi-translate"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item active" data-value="EN">EN - English</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" data-value="FR">FR - French</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" data-value="CH">CH - Chinese</a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" data-value="HI">HI - Hindi</a>
+                                </li>
+                            </ul>
+                        </div> {% endcomment %}
+                        <!-- notification dropdown -->
+                        {% comment %} <button class="btn btn-link btn-square btn-icon btn-link-header dropdown-toggle position-relative no-caret"
+                                type="button"
+                                data-bs-toggle="offcanvas"
+                                data-bs-target="#view-notification"
+                                aria-expanded="false">
+                            <i data-feather="bell"></i>
+                            <span class="position-absolute top-0 end-0 badge rounded-pill bg-danger p-1">
+                                <small>9+</small>
+                                <span class="visually-hidden">unread messages</span>
+                            </span>
+                        </button> {% endcomment %}
+                        <!-- profile dropdown -->
+                        <div class="dropdown d-inline-block">
+                            <a class="dropdown-toggle btn btn-link btn-square btn-link-header style-none no-caret px-0"
+                               id="userprofiledd"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false"
+                               role="button">
+                                <div class="row gx-0 d-inline-flex">
+                                    <div class="col-auto align-self-center">
+                                        <figure class="avatar avatar-28 rounded-circle coverimg align-middle">
+                                            <img src="{% static 'assets/img/modern-ai-image/user-6.jpg' %}"
+                                                 alt=""
+                                                 id="userphotoonboarding2">
+                                        </figure>
+                                    </div>
+                                </div>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end width-300 px-0 pt-0"
+                                 aria-labelledby="userprofiledd">
+                                <div class="p-3 bg-r-gradient rounded mb-2">
+                                    <a href="adminux-myprofile.html" class="dropdown-item">
+                                        <div class="row gx-3">
+                                            <div class="col-auto ">
+                                                <figure class="avatar avatar-50 rounded-circle coverimg align-middle">
+                                                    <img src="{% static 'assets/img/modern-ai-image/user-6.jpg' %}" alt="">
+                                                </figure>
+                                            </div>
+                                            <div class="col align-self-center ">
+                                                <h5 class="mb-1">Krysline Agency Ltd.</h5>
+                                                <p class="small">
+                                                    {% comment %} <i class="bi bi-trophy me-2"></i> 3 Courses {% endcomment %}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <div class="px-2">
+                                    <div>
+                                        <a class="dropdown-item" href="{% url "profile_update" %}"><i data-feather="user" class="avatar avatar-18 me-1"></i> Profile Profile</a>
+                                    </div>
+                                    <div>
+                                        <a class="dropdown-item" href="{% url "krysline_admin" %}">
+                                            <div class="row g-0">
+                                                <div class="col align-self-center">
+                                                    <i data-feather="layout" class="avatar avatar-18 me-1"></i>
+                                                    My Dashboard
+                                                </div>
+                                                
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a class="dropdown-item" href="{% url "active_user" %}">
+                                            <i data-feather="user" class="avatar avatar-18 me-1"></i> All Active Users
+                                            <!--TODO aplly the url-->
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a class="dropdown-item" href="{% url "choose_package" %}">
+                                            <div class="row gx-3 gx-lg-4">
+                                                <div class="col">
+                                                    <i data-feather="gift" class="avatar avatar-18 me-1"></i>
+                                                    All Packages
+                                                </div>
+                                                <!--TODO aplly the url-->
+                                                {% comment %} <div class="col-auto">
+                                                    <p class="small text-success">Upgrade</p>
+                                                </div> {% endcomment %}
+                                            </div>
+                                        </a>
+                                    </div>
+                                    <div>
+                                        <a class="dropdown-item" href="adminux-statement.html">
+                                            <i data-feather="clipboard" class="avatar avatar-18 me-1"></i> Transactions
+                                            <!--TODO UPDATE URLS-->
+                                        </a>
+                                    </div>
+                                    {% comment %} <div class="dropdown open-left dropdown-dontclose">
+                                        <a class="dropdown-item"
+                                           data-bs-toggle="dropdown"
+                                           aria-expanded="false"
+                                           role="button">
+                                            <div class="row gx-3 gx-lg-4">
+                                                <div class="col">
+                                                    <i class="bi bi-translate avatar avatar-18 me-1"></i> Language
+                                                </div>
+                                                <div class="col-auto">
+                                                    <small class="vm">EN - English</small> <i class="bi bi-translate"></i>
+                                                </div>
+                                                <div class="col-auto">
+                                                    <span class="arrow bi bi-chevron-right"></span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                        <div class="dropdown-menu dropdown-menu-end">
+                                            <div>
+                                                <a class="dropdown-item active" data-value="EN">EN - English</a>
+                                            </div>
+                                            <div>
+                                                <a class="dropdown-item" data-value="FR">FR - French</a>
+                                            </div>
+                                            <div>
+                                                <a class="dropdown-item" data-value="CH">CH - Chinese</a>
+                                            </div>
+                                            <div>
+                                                <a class="dropdown-item" data-value="HI">HI - Hindi</a>
+                                            </div>
+                                        </div>
+                                    </div> {% endcomment %}
+                                    {% comment %} <div>
+                                        <a class="dropdown-item" href="adminux-account-setting.html">
+                                            <i data-feather="settings" class="avatar avatar-18 me-1"></i> Account Setting
+                                        </a>
+                                    </div> {% endcomment %}
+                                    <div>
+                                        <a class="dropdown-item theme-red" href="{% url "logout" %}">
+                                            <i data-feather="power" class="avatar avatar-18 me-1"></i> Logout
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+        </header>
+        <div class="adminuiux-wrap">
+            <!-- Standard sidebar -->
+            <!-- Standard sidebar -->
+            <div class="adminuiux-sidebar shadow-sm">
+                <div class="adminuiux-sidebar-inner">
+                    <div class="px-3 not-iconic mt-2">
+                        <div class="row gx-3 gx-lg-4">
+                            <div class="col align-self-center menu-name">
+                                <h6>Main navigation</h6>
+                            </div>
+                            <div class="col-auto">
+                                <a class="collapsed btn btn-link btn-square"
+                                   data-bs-toggle="collapse"
+                                   data-bs-target="#usersidebarprofile"
+                                   aria-expanded="false"
+                                   role="button"
+                                   aria-controls="usersidebarprofile">
+                                    <i class="bi bi-person-circle"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- user information -->
+                    <div class="px-3 text-center not-iconic collapse" id="usersidebarprofile">
+                        <div class="avatar avatar-100 rounded-circle shadow-sm my-3 bg-white">
+                            <figure class="avatar avatar-90 rounded-circle coverimg">
+                                <img src="{% static 'assets/img/modern-ai-image/user-4.jpg' %}"
+                                     alt=""
+                                     id="userphotoonboarding"
+                                     style="display: none">
+                            </figure>
+                        </div>
+                        <h5 class="mb-0" id="usernamedisplay">Krysline Agency Ltd.</h5>
+                        <p class="text-secondary small mb-3">Enugu State Nigeria</p>
+                    </div>
+                    <!-- user menu navigation -->
+                    <ul class="nav flex-column menu-active-line">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="{% url "krysline_admin" %}">
+                                <i class="menu-icon bi bi-house-door"></i>
+                                <div class="col menu-name">Home</div>
+                            </a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false"
+                               role="button">
+                                <i class="menu-icon bi bi-people-fill"></i>
+                                <div class="col menu-name">Manage Users</div>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url "active_user" %}">
+                                        <i class="menu-icon bi bi-person-fill-check"></i>
+                                        <div class="col align-self-center menu-name">Active Users</div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url "inactive_user" %}">
+                                        <i class="menu-icon bi bi-person-x-fill"></i>
+                                        <div class="col align-self-center menu-name">Inactive User</div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <i class="menu-icon bi bi-radar"></i>
+                                        <div class="col align-self-center menu-name">Blocked IPs</div>
+                                    </a>
+                                </li>
+                                {% comment %} <li class="nav-item">
+                                    <a class="nav-link" href="adminux-finance-wallet.html">
+                                        <i class="menu-icon bi bi-wallet2"></i>
+                                        <div class="col align-self-center menu-name">Wallet</div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="adminux-finance-rewards.html">
+                                        <i class="menu-icon bi bi-award"></i>
+                                        <div class="col align-self-center menu-name">Rewards</div>
+                                    </a>
+                                </li> {% endcomment %}
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false"
+                               role="button">
+                                <i class="menu-icon bi bi-cash-coin"></i>
+                                <div class="col menu-name">Transactions</div>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <i class="menu-icon bi bi-bank"></i>
+                                        <div class="col align-self-center menu-name">Transaction History</div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <i class="menu-icon bi bi-cash-stack"></i>
+                                        <div class="col align-self-center menu-name">Withdrawals</div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <i class="menu-icon bi bi-currency-exchange"></i>
+                                        <div class="col align-self-center menu-name">Pending Withdrawals</div>
+                                    </a>
+                                </li>
+                                {% comment %} <li class="nav-item">
+                                    <a class="nav-link" href="adminux-finance-wallet.html">
+                                        <i class="menu-icon bi bi-wallet2"></i>
+                                        <div class="col align-self-center menu-name">Wallet</div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="adminux-finance-rewards.html">
+                                        <i class="menu-icon bi bi-award"></i>
+                                        <div class="col align-self-center menu-name">Rewards</div>
+                                    </a>
+                                </li> {% endcomment %}
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false"
+                               role="button">
+                                <i class="menu-icon bi bi-gift"></i>
+                                <div class="col menu-name">Affiliate Packages</div>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url "choose_package" %}">
+                                        <i class="menu-icon bi bi-gift"></i>
+                                        <div class="col align-self-center menu-name">View All Package</div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="adminux-network-performance.html">
+                                        <i class="menu-icon bi bi-bag-plus-fill"></i>
+                                        <div class="col align-self-center menu-name">Add Package</div>
+                                    </a>
+                                </li>
+                                {% comment %} <li class="nav-item">
+                                    <a class="nav-link" href="adminux-network-devices.html">
+                                        <i class="menu-icon bi bi-pc-display-horizontal"></i>
+                                        <div class="col align-self-center menu-name">Smart Home</div>
+                                    </a>
+                                </li> {% endcomment %}
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false"
+                               role="button">
+                                <i class="menu-icon bi bi-list"></i>
+                                <div class="col menu-name">Properties</div>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="adminux-social-dashboard.html">
+                                        <i class="menu-icon bi bi-view-list"></i>
+                                        <div class="col align-self-center menu-name">View All Properties</div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="adminux-social-analytics.html">
+                                        <i class="menu-icon bi bi-bar-chart"></i>
+                                        <div class="col align-self-center menu-name">Add Properties</div>
+                                    </a>
+                                </li>
+                                
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle"
+                               data-bs-toggle="dropdown"
+                               aria-expanded="false"
+                               role="button">
+                                <i class="menu-icon bi bi-boxes"></i>
+                                <div class="col menu-name">Inventory</div>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li class="nav-item">
+                                    <a class="nav-link" href="adminux-inventory-dashboard.html">
+                                        <i class="menu-icon bi bi-box"></i>
+                                        <div class="col align-self-center menu-name">Inventory Dashboard</div>
+                                    </a>
+                                </li>
+                                {% comment %} <li class="nav-item">
+                                    <a class="nav-link" href="adminux-inventory-stock.html">
+                                        <i class="menu-icon bi bi-clipboard-check"></i>
+                                        <div class="col align-self-center menu-name">Stock</div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="adminux-inventory-orders.html">
+                                        <i class="menu-icon bi bi-bag-check"></i>
+                                        <div class="col align-self-center menu-name">Orders</div>
+                                    </a>
+                                </li> {% endcomment %}
+                            </ul>
+                        </li>
+                        
+                    </ul>
+                    
+                </div>
+            </div>
+            {% block content %}
+
+            {% endblock content %}
+            <!-- standard footer -->
+            <footer class="adminuiux-footer has-adminuiux-sidebar mt-auto bg-theme-1">
+                <div class="container-fluid">
+                    <div class="row gx-3 gx-lg-4">
+                        <div class="col-12 col-md col-lg py-2">
+                            <span class="small">Copyright @<script>document.write(new Date().getFullYear());</script> Krysline Agency Ltd.
+                                
+                            </span>
+                        </div>
+                        <div class="col-12 col-md-auto col-lg-auto align-self-center">
+                            <ul class="nav small">
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="">Help</a>
+                                </li>
+                                <li class="nav-item opacity-50">|</li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="">Terms of Use</a>
+                                </li>
+                                <li class="nav-item opacity-50">|</li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-white" href="">Privacy Policy</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            <!-- theming action-->
+            <div class="position-fixed bottom-0 end-0 m-3 z-index-5">
+                <button class="btn btn-square btn-theme shadow rounded-circle"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#theming"
+                        aria-controls="theming">
+                    <i class="bi bi-palette"></i>
+                </button>
+                <br>
+                <button class="btn btn-theme btn-square shadow mt-2 d-none rounded-circle"
+                        id="backtotop">
+                    <i class="bi bi-arrow-up"></i>
+                </button>
+            </div>
+            <!-- Page Level js -->
+            <script src="{% static 'assets/js/adminux/adminux-finance-dashboard.js' %}"></script>
+    </body>
+</html>

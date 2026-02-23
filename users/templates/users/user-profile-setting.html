@@ -1,4 +1,4 @@
-{% extends "user_nav.html" %}
+{% extends "user_dash_nav.html" %}
 {% load static %}
 {% load humanize %}
 {% load mathfilters %}
@@ -6,147 +6,165 @@
 
 {% block content %}
 
-    <section class="hero-section primary-overlay oh bg_img"
-    data-background="{% static "assets/images/frontend/breadcrumb/636781d83acec1667727832.jpg" %}">
-    <div class="container">
-        <div class="hero-content">
-            <h1 class="title">Profile Setting</h1>
-            <ul class="breadcrumb">
-                <li>
-                    <a href="https://script.viserlab.com/Krysline Agency Ltd">Home</a>
-                </li>
-                <li>
-                    Profile Setting
-                </li>
-            </ul>
+<main class="adminuiux-content has-sidebar" onclick="contentClick()">
+                    <!-- body content of pages -->
+
+                    <!-- breadcrumb -->
+    <div class="container-fluid mt-4">
+        <div class="row gx-3 align-items-center">
+            <div class="col-12 col-sm">
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item bi"><a href="{% url "dashboard" %}">Home</a></li>
+                        <li class="breadcrumb-item active bi" aria-current="page">Settings</li>
+                    </ol>
+                </nav>
+                <h5>Settings Basic</h5>
+            </div>
         </div>
     </div>
-</section>
-    <div class="padding-top padding-bottom">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-md-8">
-                    <div class="card custom--card primary-bg profile-wrapper">
-                        <div class="card-body">
-                            <form class="register" action="" method="post" enctype="multipart/form-data">
-                                {% csrf_token %}
-                                {% include "message.html" %}                            <div class="row">
-                                    <div class="form-group col-sm-6">
-                                        <label class="form-label">First Name</label>
-                                        <input type="text" name="first_name" value="{{ user.first_name }}" required>
-                                    </div>
-                                    <div class="form-group col-sm-6">
-                                        <label class="form-label">Last Name</label>
-                                        <input type="text" name="last_name" value="{{ user.last_name }}" required>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-sm-6">
-                                        <label class="form-label">E-mail Address</label>
-                                        <input value="{{user.email }}" readonly>
-                                    </div>
-                                    <div class="form-group col-sm-6">
-                                        <label class="form-label">Username</label>
-                                        <input value="{{ user.username }}" readonly>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="form-group col-sm-6">
-                                        <label class="form-label">Address</label>
-                                        <input type="text" name="address" {% if user.profile.address %}value="{{user.profile.address|title}}" {% endif %} required>
-                                    </div>
-                                    <div class="form-group col-sm-6">
-                                        <label class="form-label">State </label>
-                                        <input type="text" name="state" {% if user.profile.state %}value="{{user.profile.state|title}}"{% endif %}  required>
-                                    </div>
-                                </div>
 
+    <!-- content -->
+    <div class="container mt-4" id="main-content">
 
-                                <div class="row">
-                                    <div class="form-group col-sm-4">
-                                        <label class="form-label"> Zip Code </label>
-                                        <input type="text" name="zip_code" {% if user.profile.zip_code %}value="{{user.profile.zip_code|title}}"{% endif %}  required>
-                                    </div>
+        <!-- cover -->
+        {% comment %} <div class="card adminuiux-card overflow-hidden mb-4 pt-5">
+            <figure class="coverimg start-0 top-0 w-100 h-100 z-index-0 position-absolute overlay-gradiant">
+                <div class="position-absolute top-0 end-0 m-2">
+                    <button class="btn btn-theme" onclick="$(this).next().click()">
+                        <i class="bi bi-camera"></i> Change Cover
+                    </button>
+                    <input type="file" class="d-none">
+                </div>
+                <img src="assets/img/modern-ai-image/flamingo-3.jpg" class="mw-100" alt="">
+            </figure>
 
-                                    <div class="form-group col-sm-4">
-                                        <label class="form-label">City</label>
-                                        <input type="text" name="city" {% if user.profile.city %}value="{{user.profile.city|title}}"{% endif %}   required>
-                                    </div>
-                                    
-                                    <div class="form-group col-sm-4">
-                                        <label class="form-label">Country</label>
-                                        <input type="text" name="country" {% if user.profile.country %}value="{{user.profile.country|title}}"{% endif %}  required>
-                                        
-                                    </div>
-
-                                </div>
-
-
-                                <div class="row">
-                                    <div class="form-group col-sm-4">
-                                        <label class="form-label">Account Number</label>
-                                        <!-- Added id="account_number" for HTMX targeting -->
-                                        <input type="text" name="account_number" id="account_number" 
-                                            {% if user.profile.account_number %}value="{{user.profile.account_number}}"{% endif %} 
-                                            required>
-                                    </div>
-
-                                    <div class="form-group col-sm-4">
-                                        <label class="form-label">Bank Name</label>
-                                        <select name="bank" id="bank" class="form-control form-select text-info" required
-                                            hx-post="{% url 'verify_bank_account' %}"
-                                            hx-trigger="change"
-                                            hx-target="#account_name_container"
-                                            hx-include="#account_number"
-                                            hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'
-                                        >
-                                            <option value="" disabled selected>-- Choose Bank --</option>
-                                            {% if user.profile.bank %}
-                                                <option value="{{user.profile.bank}}" selected>{{user.profile.bank}}</option>
-                                            {% endif %}
-                                            <option value="044-Access Bank">Access Bank</option>
-                                            <option value="063-Access Bank (Diamond)">Access Bank (Diamond)</option>
-                                            <option value="070-Fidelity Bank">Fidelity Bank</option>
-                                            <option value="011-First Bank of Nigeria">First Bank</option>
-                                            <option value="214-First City Monument Bank">FCMB</option>
-                                            <option value="058-Guaranty Trust Bank">GTB</option>
-                                            <option value="50515-Moniepoint MFB">Moniepoint MFB</option>
-                                            <option value="999992-OPay Digital Services Limited (OPay)">OPay</option>
-                                            <option value="232-Sterling Bank">Sterling Bank</option>
-                                            <option value="033-United Bank For Africa">UBA</option>
-                                            <option value="035-Wema Bank">Wema Bank</option>
-                                            <option value="057-Zenith Bank">Zenith Bank</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="form-group col-sm-4" id="account_name_container">
-                                        <label class="form-label">Account Name</label>
-                                        <!-- This entire input area will be replaced by the HTMX response -->
-                                        <input type="text" name="account_name" id="account_name" 
-                                            {% if user.profile.account_name %}value="{{user.profile.account_name}}"{% endif %} 
-                                            readonly class="form-control bg-light">
-                                        </div>
-                                        <div id="bank_error_msg" class="text-danger small mt-1"></div>
-                                
-                                    </div>
-
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn--base w-100">Submit</button>
-                                    </div>
-                                
-                            </form>
-
-                            
-                        </div>
+            <div class="card-body text-center text-white z-index-1">
+                <div class="d-inline-block position-relative w-auto mx-auto my-3">
+                    <figure class="avatar avatar-150 coverimg rounded-circle">
+                        <img src="assets/img/modern-ai-image/user-6.jpg" alt="">
+                    </figure>
+                    <div class="position-absolute bottom-0 end-0 z-index-1 h-auto">
+                        <button class="btn btn-lg btn-theme btn-square" onclick="$(this).next().click()">
+                            <i class="bi bi-camera"></i>
+                        </button>
+                        <input type="file" class="d-none">
                     </div>
+                </div>
+                <h4>AdminUIUX</h4>
+                <p class="opacity-75 mb-3">guest@adminuiux.com</p>
+            </div>
+        </div> {% endcomment %}
+
+        <!-- settings -->
+        <div class="row">
+            {% include "users/setting-option.html" %}
+            <div class="col">
+                <div class="card adminuiux-card overflow-hidden mb-4">
+                    <div class="card-body">
+                        <form action="" method="POST" >
+                            {% csrf_token %}
+                            {% include "message.html" %}
+                                <h6 class="mb-3">Basic Details</h6>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="fist_name" placeholder="First Name" value="{{ user.first_name }}" required class="form-control is-valid">
+                                            <label>First Name</label>
+                                        </div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="last_name" placeholder="Last Name" value="{{ user.last_name }}" required="" class="form-control">
+                                            <label>Last Name</label>
+                                        </div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                        <div class="form-floating">
+                                            <input type="email" name="email" placeholder="Email Address" value="{{ user.email }}" disabled="" required class="form-control">
+                                            <label>Email Address</label>
+                                        </div>
+                                        <div class="invalid-feedback mb-3">Add .com at last to insert valid data </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-6">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="username" placeholder="Birth Date" value="{{ user.username }}" required disabled class="form-control datepicker">
+                                            <label>Username</label>
+                                        </div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
+                                    </div>
+                                    
+                                </div>
+                                <h6 class="mb-3">Address Details</h6>
+                                <div class="row mb-2">
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="address" placeholder="Residential Address" {% if user.profile.address %}value="{{user.profile.address|title}}" {% endif %} required class="form-control">
+                                            <label>Address Line 1</label>
+                                        </div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
+                                    </div>
+                                    
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="state" {% if user.profile.state %}value="{{user.profile.state|title}}"{% endif %} placeholder="Enter Your State" required class="form-control">
+                                            <label>State</label>
+                                        </div>
+                                        <div class="invalid-feedback mb-3">Add insert valid data </div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="zip_code" placeholder="Pincode" {% if user.profile.zip_code %}value="{{user.profile.zip_code|title}}"{% endif %} class="form-control">
+                                            <label>Zip Code</label>
+                                        </div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="city" placeholder="State" {% if user.profile.city %}value="{{user.profile.city|title}}"{% endif %} required="" class="form-control">
+                                            <label>City</label>
+                                        </div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
+                                    </div>
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <div class="form-floating mb-3">
+                                            <input type="text" name="country" placeholder="Country" {% if user.profile.country %}value="{{user.profile.country|title}}"{% endif %} required="" class="form-control">
+                                            <label>Country</label>
+                                        </div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
+                                    </div>
+                                    
+                                </div>
+
+                                
+                            </div>
+                            <div class="card-footer">
+                                <div class="row">
+                                    <div class="col">
+                                        <button class="btn btn-theme">Save</button>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a href="{% url "dashboard" %}" class="btn btn-link">Cancel</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                 </div>
             </div>
         </div>
     </div>
+</main>
+
+</div>
+
+<!-- page footer -->
+<!-- standard footer -->
    
    
     {% comment %} <script src="{% static 'assets/global/js/fixi.js' %}"></script> {% endcomment %}
-    <script src="{% static 'assets/templates/basic/js/htmx.min.js' %}"></script>
+ 
 
    
     {% endblock %}

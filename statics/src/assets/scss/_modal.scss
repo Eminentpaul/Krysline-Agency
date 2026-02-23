@@ -1,0 +1,122 @@
+.modal {
+
+    &.adminuiux-modal {
+        .modal-dialog {
+            --bs-modal-header-border-width: 0;
+            --bs-modal-footer-border-width: 0;
+
+            &.blur {
+                background-color: rgba(255, 255, 255, 0.75);
+                backdrop-filter: blur(15px);
+
+                .modal-content {
+                    background-color: transparent;
+                }
+            }
+        }
+    }
+}
+
+.popover {
+    --bs-popover-font-size: 1rem;
+}
+
+.adminuiux-theme-popover {
+    --bs-popover-border-color: var(--adminuiux-theme-1);
+    --bs-popover-header-bg: var(--adminuiux-theme-1);
+    --bs-popover-header-color: var(--adminuiux-theme-1-text);
+}
+
+.adminuiux-accent-popover {
+    --bs-popover-border-color: var(--adminuiux-theme-accent-1);
+    --bs-popover-header-bg: var(--adminuiux-theme-accent-1);
+    --bs-popover-header-color: var(--adminuiux-theme-accent-1-text);
+}
+
+.adminuiux-primary-popover {
+    --bs-popover-border-color: var(--bs-primary);
+    --bs-popover-header-bg: var(--bs-primary);
+    --bs-popover-header-color: var(--bs-white);
+}
+
+.adminuiux-success-popover {
+    --bs-popover-border-color: var(--bs-success);
+    --bs-popover-header-bg: var(--bs-success);
+    --bs-popover-header-color: var(--bs-white);
+}
+
+.adminuiux-secondary-popover {
+    --bs-popover-border-color: var(--bs-secondary);
+    --bs-popover-header-bg: var(--bs-secondary);
+    --bs-popover-header-color: var(--bs-white);
+}
+
+.adminuiux-warning-popover {
+    --bs-popover-border-color: var(--bs-warning);
+    --bs-popover-header-bg: var(--bs-warning);
+    --bs-popover-header-color: var(--bs-white);
+}
+
+.adminuiux-info-popover {
+    --bs-popover-border-color: var(--bs-info);
+    --bs-popover-header-bg: var(--bs-info);
+    --bs-popover-header-color: var(--bs-white);
+}
+
+.adminuiux-danger-popover {
+    --bs-popover-border-color: var(--bs-danger);
+    --bs-popover-header-bg: var(--bs-danger);
+    --bs-popover-header-color: var(--bs-white);
+}
+
+.adminuiux-dark-popover {
+    --bs-popover-border-color: var(--bs-dark);
+    --bs-popover-header-bg: var(--bs-dark);
+    --bs-popover-header-color: var(--bs-white);
+}
+
+/* tooltip */
+.adminuiux-theme-tooltip {
+    --bs-tooltip-bg: var(--adminuiux-theme-1);
+    --bs-tooltip-color: var(--bs-white);
+}
+
+.adminuiux-accent-tooltip {
+    --bs-tooltip-bg: var(--adminuiux-theme-accent-1);
+    --bs-tooltip-color: var(--bs-white);
+}
+
+.adminuiux-success-tooltip {
+    --bs-tooltip-bg: var(--bs-success);
+    --bs-tooltip-color: var(--bs-white);
+}
+
+.adminuiux-danger-tooltip {
+    --bs-tooltip-bg: var(--bs-danger);
+    --bs-tooltip-color: var(--bs-white);
+}
+
+.adminuiux-primary-tooltip {
+    --bs-tooltip-bg: var(--bs-primary);
+    --bs-tooltip-color: var(--bs-white);
+}
+
+.adminuiux-info-tooltip {
+    --bs-tooltip-bg: var(--bs-info);
+    --bs-tooltip-color: var(--bs-white);
+}
+
+.adminuiux-secondary-tooltip {
+    --bs-tooltip-bg: var(--bs-secondary);
+    --bs-tooltip-color: var(--bs-white);
+}
+
+.adminuiux-warning-tooltip {
+    --bs-tooltip-bg: var(--bs-warning);
+    --bs-tooltip-color: var(--bs-white);
+}
+
+.adminuiux-light-tooltip {
+    --bs-tooltip-bg: var(--bs-light);
+    --bs-tooltip-color: var(--bs-dark);
+}

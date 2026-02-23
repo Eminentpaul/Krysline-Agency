@@ -18,8 +18,9 @@ from django.contrib import admin
 from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('developer/eminent/account/', admin.site.urls),
     path('user/', include("authentication.urls")),
     path('Dashboard/', include("users.urls")), 
-    path('api', include("monnify_verification.urls"))
+    path('api', include("monnify_verification.urls")),
+    path('kryline/agency/ltd/', include("krysline_admin.urls"))
 ]

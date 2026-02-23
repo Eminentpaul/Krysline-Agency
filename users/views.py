@@ -8,12 +8,13 @@ from django.views.decorators.http import require_POST, require_GET
 from affiliation.models import AffiliatePackage, CommissionLog, PropertyTransaction, Affiliate
 from affiliation.services import *
 from dotenv import load_dotenv
+from django.urls import reverse
 import os
 import paystack
 from monnify_verification.monnify_api import *
 from .models import Withdrawal, Transaction
 from authentication.models import UserProfile
-from .forms import UserUpdateForm
+from .forms import UserUpdateForm, PaymentUpdate
 from django.db.models import Sum
 
 load_dotenv()
@@ -24,7 +25,7 @@ load_dotenv()
 @login_required(login_url='login')
 @two_factor_required
 # @kyc_required  # Optional: Only if you want to block dashboard until KYC is done
-@rate_limit(rate='60/minute')
+@rate_limit(rate='6/minute')
 @login_required
 def dashboard(request):
     user = request.user
@@ -86,7 +87,7 @@ def dashboard(request):
         'plan_name': plan_name,
         'rank_msg': rank_msg,
         'latest_commissions': latest_commissions,
-        'referral_url': f"{request.scheme}://{request.get_host()}/user/register/?ref={affiliate.referral_code}",
+
     }
 
     return render(request, 'users/user-dashboard.html', context)
@@ -208,8 +209,8 @@ def payments(request):
 
 @login_required(login_url='login')
 @transaction.atomic
-@rate_limit(rate='5/hour')  # Prevent script-kiddies from spamming packages
-@log_security_event(action='WITHDRAWAL')
+@rate_limit(rate='5/minute')  # Prevent script-kiddies from spamming packages
+@log_security_event(action='TRANSACTION_CREATE')
 def withdraw_funds(request):
     """
     Secure withdrawal logic for KAL Affiliates.
@@ -218,7 +219,10 @@ def withdraw_funds(request):
     profile = request.user.profile
 
     if not profile.account_number:
-        return redirect("profile_update")
+        messages.warning(request, "Please update your bank details to enable withdrawals.")
+        # Build the URL: /user/profile/update/?next=/user/withdraw/
+        dest_url = reverse('payment_update') 
+        return redirect(f"{dest_url}?next={request.path}")
 
     package_price = int(request.user.affiliate_record.package.price)
 
@@ -226,7 +230,7 @@ def withdraw_funds(request):
         try:
             # 1. Get amount and sanitize
             amount = Decimal(request.POST.get('amount', 0))
-            MIN_WITHDRAWAL = Decimal('100.00')  # KAL Policy: Min ₦2k
+            MIN_WITHDRAWAL = Decimal('2000.00')  # KAL Policy: Min ₦2k
 
             # 2. SECURITY CHECKS
             # A. Check if they have enough commission balance
@@ -261,8 +265,12 @@ def withdraw_funds(request):
 
         except ValueError:
             messages.error(request, "Invalid amount entered.")
+    context = {
+        'balance': profile.balance,
+        'withdraw': True
+    }
 
-    return render(request, 'users/user-withdraw.html', {'balance': profile.balance})
+    return render(request, 'users/user-withdraw.html', context)
 
 
 @login_required(login_url="login")
@@ -287,6 +295,10 @@ def referral_list(request):
     Displays the list of users directly referred by the current user (Gen 1).
     """
     user_profile = request.user.profile
+    user = request.user
+
+    # 1. Fetch Affiliate Record Safely
+    affiliate = getattr(user, 'affiliate_record', None)
 
     # Fetch all profiles where 'referrer' points to me
     # We use select_related to get the User and Affiliate data in one query (Performance)
@@ -300,25 +312,30 @@ def referral_list(request):
         user__affiliate_record__is_active=True).count()
     pending_referrals = total_referrals - active_referrals
 
+    commissions = CommissionLog.objects.filter(recipient_profile=user_profile)
+    total_commission = commissions.aggregate(total=Sum('amount'))['total'] or 0
+
     context = {
         'referrals': referrals,
         'total_referrals': total_referrals,
         'active_referrals': active_referrals,
         'pending_referrals': pending_referrals,
+        'referral_url': f"{request.scheme}://{request.get_host()}/user/register/?ref={affiliate.referral_code}",
+        'total_commission': total_commission
     }
 
     return render(request, 'users/user-referal.html', context)
 
 
 @login_required(login_url="login")
-@rate_limit(rate='10/hour')  # Prevent script-kiddies from spamming packages
+@rate_limit(rate='100/hour')  # Prevent script-kiddies from spamming packages
 @log_security_event(action='PROFILE_UPDATE')
 def profile_update(request):
 
     error_msg = None
     profile = get_object_or_404(UserProfile, user=request.user)
 
-    print(profile.user.email)
+    # print(profile.user.email)
 
     if request.method == 'POST':
         form = UserUpdateForm(request.POST, instance=request.user.profile)
@@ -329,9 +346,6 @@ def profile_update(request):
             zip_code = form.cleaned_data.get('zip_code')
             city = form.cleaned_data.get('city')
             country = form.cleaned_data.get('country')
-            account_number = form.cleaned_data.get('account_number')
-            bank = form.cleaned_data.get('bank')
-            account_name = form.cleaned_data.get('account_name')
 
             # Initialize User for updating
             first_name = request.POST.get('first_name')
@@ -343,9 +357,6 @@ def profile_update(request):
             profile.zip_code = zip_code
             profile.city = city
             profile.country = country
-            profile.account_number = account_number
-            profile.bank = bank
-            profile.account_name = account_name
 
             profile.save()
 
@@ -353,7 +364,8 @@ def profile_update(request):
             profile.user.last_name = last_name
             profile.user.save()
 
-            return redirect('dashboard')
+            messages.success(request, 'Profile Updated Successfully!')
+            return redirect('profile_update')
         else:
             errors = form.errors.get_json_data(escape_html=True)
             for error in errors:
@@ -362,12 +374,48 @@ def profile_update(request):
             messages.error(request, error_msg)
 
     context = {
-
+        'update': True
     }
 
     return render(request, 'users/user-profile-setting.html', context)
 
 
+@log_security_event(action="PROFILE_UPDATE")
+@login_required(login_url="login")
+@rate_limit('10/minute')
+def payment_update(request):
+    profile = request.user.profile
+
+    url = request.META.get("HTTP_REFERER")
+
+    if request.method == 'POST':
+        form = PaymentUpdate(request.POST, instance=profile)
+        if form.is_valid():
+            bank = form.cleaned_data.get('bank')
+            account_name = form.cleaned_data.get('account_name')
+            account_number = form.cleaned_data.get('account_number')
+
+            # Updating the Profile Bank Details
+            profile.account_name = account_name
+            profile.account_number = account_number
+            profile.bank = bank
+            profile.save()
+
+            messages.success(request, 'Payment System Updated Successfully!')
+
+            try:
+                query = requests.utils.urlparse(url).query
+                params = dict(x.split('=') for x in query.split('&'))
+                if 'next' in params:
+                    nextPage = params['next']
+                    return redirect(nextPage)
+            except:
+                return redirect("payment_update")
+
+    context = {
+        'payment': True
+    }
+    return render(request, 'users/user-payment.html', context)
 
 
 def verify_bank_account(request):
@@ -378,16 +426,9 @@ def verify_bank_account(request):
 
     details, valid = bank_verification(accountNumber, bankName)
 
-    if valid:
-
-        context = {
-            'accountName': details["accountName"],
-            'fetched': valid
-        }
-    else:
-        context = {
-            # 'accountName': details["accountName"],
-            'fetched': valid
-        }
+    context = {
+        'accountName': details["accountName"],
+        'fetched': valid
+    }
 
     return render(request, 'users/account.html', context)

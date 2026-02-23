@@ -1,98 +1,212 @@
-{% extends "user_nav.html" %}
+{% extends "user_dash_nav.html" %}
 {% load static %}
 {% load humanize %}
 {% load mathfilters %}
 
 {% block content %}
-    <section class="hero-section primary-overlay oh bg_img"
-    data-background="assets/images/frontend/breadcrumb/636781d83acec1667727832.jpg">
-    <div class="container">
-        <div class="hero-content">
-            <h1 class="title">My Referred Users</h1>
-            <ul class="breadcrumb">
-                <li>
-                    <a href="https://script.viserlab.com/matrixlab">Home</a>
-                </li>
-                <li>
-                    My Referred Users
-                </li>
-            </ul>
+<main class="adminuiux-content has-sidebar" onclick="contentClick()">
+    <!-- body content of pages -->
+
+    <!-- breadcrumb -->
+    <div class="container-fluid mt-4">
+        <div class="row gx-3 align-items-center">
+            <div class="col-12 col-sm">
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item bi"><a href="{% url "dashboard" %}">Home</a></li>
+                        <li class="breadcrumb-item active bi" aria-current="page">Referral</li>
+                    </ol>
+                </nav>
+                <h5>Referral</h5>
+            </div>
         </div>
     </div>
-</section>
-    <div class="transaction-section padding-top padding-bottom">
-        {% comment %} <div class="container">
-            <div class="row">
-                {% for refer in referrals %}
-                
-                <div class="col-md-12 w-25">
-                    <div class="card primary-bg text-white">
-                        <div class="card-body">
-                            <div class="treeview-container">
-                                <ul class="treeview">
-                                    <li class="items-expanded"> 
-                                        <p>Name: {{ refer.user.get_full_name|title }}</p>
-                                        
-                                    </li>
-                                </ul>
+
+    <!-- Content  -->
+    <div class="container mt-4" id="main-content">
+
+        <div class="row align-items-center">
+            <!-- Welcome box -->
+            <div class="col-12 col-md-10 col-lg-8 mb-4">
+                <h3 class="fw-normal mb-0 text-secondary">Get at least 5% from each Referral</h3>
+                <h1>Just by referring your friends to join us.</h1>
+            </div>
+            <div class="col-12 py-2"></div>
+            <!-- copy code-->
+            <div class="col-12 col-md-8 col-lg-6 col-xxl-5 mb-4">
+                <p>Copy and Share your referral link with your network</p>
+                <div class="input-group mb-3">
+                    <input type="text" name="key" class="form-control referralURL form-control-lg border-theme-1" placeholder="Referral Code" aria-describedby="button-addon2" value="{{referral_url}}" readonly>
+                    <button class="btn btn-lg btn-outline-theme" type="button" id="copyBoard"><i class="bi bi-copy"></i></button>
+                </div>
+            </div>
+            <div class="col-12 py-2"></div>
+            <!-- registration -->
+            <div class="col-6 col-sm-6 col-lg-3 mb-4">
+                <div class="card adminuiux-card">
+                    <div class="card-body">
+                        <h2>{{total_referrals}}</h2>
+                        <p class="text-secondary small">Total Referral</p>
+                    </div>
+                </div>
+            </div>
+            <!-- trial completed -->
+            <div class="col-6 col-sm-6 col-lg-3 mb-4">
+                <div class="card adminuiux-card">
+                    <div class="card-body">
+                        <h2>{{active_referrals}}</h2>
+                        <p class="text-secondary small">Active Referral</p>
+                    </div>
+                </div>
+            </div>
+            <!-- purchased -->
+            <div class="col-12 col-sm-6 col-lg-3 mb-4">
+                <div class="card adminuiux-card">
+                    <div class="card-body">
+                        <h2>{{pending_referrals}}</h2>
+                        <p class="text-secondary small">Inactive Referral</p>
+                    </div>
+                </div>
+            </div>
+            <!-- referral earnings -->
+            <div class="col-12 col-sm-6 col-lg-3 mb-4">
+                <div class="card adminuiux-card position-relative overflow-hidden bg-theme-1 h-100">
+                    <div class="position-absolute top-0 start-0 h-100 w-100 z-index-0 coverimg opacity-50">
+                        <img src="{% static 'assets/img/modern-ai-image/flamingo-4.jpg' %}" alt="">
+                    </div>
+                    <div class="card-body z-index-1">
+                        <div class="row gx-3 align-items-center h-100">
+                            <div class="col-auto">
+                                <span class="avatar avatar-60 text-bg-warning rounded">
+                                    <i class="bi bi-cash-coin h4"></i>
+                                </span>
+                            </div>
+                            <div class="col">
+                                <h2>₦{{total_commission|floatformat:2|intcomma}}</h2>
+                                <p>Referral earning</p>
                             </div>
                         </div>
                     </div>
                 </div>
-                {% endfor %}
             </div>
-        </div> {% endcomment %}
-        
-    <div class="container">
-        <div class="card custom--card primary-bg">
-            <div class="card-header">
-                <h5 class="card-title">My Referred Users</h5>
+        </div>
+        <br>
+            <!-- content -->
+        <div class="container" id="main-content">
+            <!-- filter area -->
+            
+
+            <!-- appointment grid view list datatable-->
+            {% if referrals %}
+                <div class="card adminuiux-card mt-4 mb-0">
+                    <div class="card-body">
+                        <h3 class="text-center" >My Referrals</h3>
+                        <!-- data table -->
+                        <table id="dataTable" class="table w-100 nowrap">
+                            <thead>
+                                <tr>
+                                    
+                                    <th class="all">User</th>
+                                    <th data-breakpoints="xs sm">Email</th>
+                                    <th data-breakpoints="xs sm md">Joined Date</th>
+                                    <th data-breakpoints="xs sm">Plan</th>
+                                    <th data-breakpoints="xs sm">Status</th>
+                                    
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ref in referrals %}
+                                    <tr>
+                                        
+                                        <td>
+                                            <h6>{{ ref.user.get_full_name }}</h6>
+                            
+                                        </td>
+                                        <td>
+                                            <p class="mb-0">{{ ref.user.email }}</p>
+                                        </td>
+                                        <td>
+                                            <h6>{{ ref.user.date_joined|date:"d M, Y" }}</h6>
+
+                                        </td>
+                                        <td>
+                                            {% if ref.user.affiliate_record.package %}
+                                                {{ ref.user.affiliate_record.package.name }}
+                                            {% else %}
+                                                <span class="text-muted">No Plan</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if ref.user.affiliate_record.is_active %}
+                                                <span class="badge badge-light rounded-pill fw-bold text-bg-success">Active</span>
+                                            {% else %}
+                                                <span class="badge badge-light rounded-pill fw-bold text-bg-warning">Pending Payment</span>
+                                            {% endif %}
+                                        </td>
+
+                                        
+                                    </tr>
+                                {% empty %}
+                                    <tr>
+                                        <td colspan="100%" class="text-center py-4">
+                                            <img src="/static/assets/images/no-data.png" alt="" style="width: 50px; opacity: 0.5;"><br>
+                                            <span class="text-muted">No commissions earned yet. Start referring!</span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endif %}
+
+
+        </div>
+        <br>
+        <div class="row align-items-center jsutify-content-center">
+            <div class="col-12 mb-4">
+                <h5>Learn how it works!</h5>
             </div>
-            <div class="card-body p-0">
-                <table class="deposite-table">
-                    <thead class="custom--table">
-                        <tr>
-                            <th>User</th>
-                            <th>Email</th>
-                            <th>Joined Date</th>
-                            <th>Plan</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for ref in referrals %}
-                        <tr>
-                            <td><strong>{{ ref.user.get_full_name }}</strong></td>
-                            <td>{{ ref.user.email }}</td>
-                            <td>{{ ref.user.date_joined|date:"d M, Y" }}</td>
-                            <td>
-                                {% if ref.user.affiliate_record.package %}
-                                    {{ ref.user.affiliate_record.package.name }}
-                                {% else %}
-                                    <span class="text-muted">No Plan</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                {% if ref.user.affiliate_record.is_active %}
-                                    <span class="badge bg-success">Active</span>
-                                {% else %}
-                                    <span class="badge bg-warning">Pending Payment</span>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% empty %}
-                        <tr>
-                            <td colspan="100%" class="text-center py-4">You haven't referred anyone yet.</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <!-- step 1 -->
+            <div class="col-12 col-sm-6 col-lg-3 mb-4">
+                <i class="bi bi-link avatar avatar-60 bg-theme-1-subtle text-theme-1 rounded h4 mb-3"></i>
+                <br>
+                <h6>1. Invite</h6>
+                <p class="text-secondary">Invite unlimited network members by sharing referral link</p>
+            </div>
+            <!-- step 2 -->
+            <div class="col-12 col-sm-6 col-lg-3 mb-4">
+                <i class="bi bi-person avatar avatar-60 bg-theme-1-subtle text-theme-1 rounded h4 mb-3"></i>
+                <br>
+                <h6>2. Registration</h6>
+                <p class="text-secondary">Let your network member join our platform and track earning</p>
+            </div>
+            <!-- step 3 -->
+            <div class="col-12 col-sm-6 col-lg-3 mb-4">
+                <i class="bi bi-coin avatar avatar-60 bg-theme-1-subtle text-theme-1 rounded h4 mb-3"></i>
+                <br>
+                <h6>3. Trial Earning</h6>
+                <p class="text-secondary">Earn $ 1.50 on successful completion of trial period by your referring</p>
+            </div>
+            <!-- step 4 -->
+            <div class="col-12 col-sm-6 col-lg-3 mb-4">
+                <i class="bi bi-cash-stack avatar avatar-60 bg-theme-1-subtle text-theme-1 rounded h4 mb-3"></i>
+                <br>
+                <h6>4. Purchase Membership</h6>
+                <p class="text-secondary">Earn 10% on each purchase made by your referral members in lifetime</p>
             </div>
         </div>
     </div>
-    </div>
+</main>
+
+</div>
+
+<!-- page footer -->
+<!-- standard footer -->
     
-    
-    
+
     
     {% endblock %}
+
+

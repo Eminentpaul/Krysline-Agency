@@ -1,0 +1,169 @@
+{% extends "krysline_nav.html" %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+{% load custom_tags %}
+{% load widget_tweaks %}
+
+
+
+{% block content %}
+<main class="adminuiux-content has-sidebar" onclick="contentClick()">
+
+    <!-- page title -->
+    <div class="container-fluid py-3">
+        <div class="row align-items-center page-title">
+            <div class="col col-sm mb-3 mb-sm-0 order-1">
+                <h5 class="mb-0">{{edit_user.username|title}} Account Settings</h5>
+                <p class="text-secondary small">Make sure your profile is updated</p>
+            </div>
+            <div class="col-auto ps-0 position-relative order-2 order-sm-3 mb-3 mb-sm-0">
+                <div class="dropdown d-inline-block">
+                    <a class="btn btn-link btn-square no-caret dropdown-toggle" href="#" role="button" id="filterintitle" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                        <i class="bi bi-filter"></i>
+                    </a>
+                    <div class="dropdown-menu width-300" aria-labelledby="filterintitle">
+                        <div class="p-1 mb-2">
+                            <div class="input-group input-group-md rounded" style="--mw-dynamic:234px">
+                                <span class="input-group-text text-theme-1"><i class="bi bi-box"></i></span>
+                                <select class="form-control choices" id="titltfilterlist" multiple>
+                                    <option value="San Francisco">San Francisco</option>
+                                    <option value="New York">New York</option>
+                                    <option value="London">London</option>
+                                    <option value="Chicago">Chicago</option>
+                                    <option value="India" selected="">India</option>
+                                    <option value="Sydney">Sydney</option>
+                                    <option value="Seattle">Seattle</option>
+                                    <option value="Los Angeles">Los Angeles</option>
+                                    <option value="Indonesia">Indonesia</option>
+                                    <option value="Los Angeles">Los Angeles</option>
+                                    <option value="Chicago">Chicago</option>
+                                    <option value="India">India</option>
+                                </select>
+                            </div>
+                            <div class="invalid-feedback">You have already selected maximum option allowed. (This is Configurable)</div>
+                        </div>
+                        <div class="p-1">
+                            <h6 class="mb-0">Orders:</h6>
+                            <p class="text-secondary small">1256 orders last week</p>
+                        </div>
+                        <ul class="list-group list-group-flush bg-transparent border-0 mb-2">
+                            <li class="list-group-item">
+                                <div class="row gx-3 gx-lg-4">
+                                    <div class="col">Online Orders</div>
+                                    <div class="col-auto">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="titleswitch1">
+                                            <label class="form-check-label" for="titleswitch1"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="list-group-item">
+                                <div class="row gx-3 gx-lg-4">
+                                    <div class="col">Offline Orders</div>
+                                    <div class="col-auto">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" role="switch" id="titleswitch2" checked="">
+                                            <label class="form-check-label" for="titleswitch2"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="p-1">
+                            <div class="row gx-3 gx-lg-4">
+                                <div class="col"><button class="btn btn-outline-secondary border ddclose">cancel</button></div>
+                                <div class="col-auto">
+                                    <button class="btn btn-theme">Save</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="adminux-company-help-center.html" class="btn btn-link btn-square" data-bs-toggle="tooltip" data-bs-placement="top" id="stylise">
+                    <i class="bi bi-life-preserver"></i>
+                </a>
+                <a href="https://1.envato.market/7N7Br" target="_blank" class="btn btn-link btn-square" data-bs-toggle="tooltip" data-bs-placement="top">
+                    <span class="bi bi-basket position-relative">
+                        <span class="position-absolute top-0 start-100 p-1 bg-danger border border-light rounded-circle">
+                            <span class="visually-hidden">New alerts</span>
+                        </span>
+                    </span>
+                </a>
+            </div>
+        </div>
+        <nav aria-label="breadcrumb" class="breadcrumb-theme mt-3 rounded">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item bi"><a href="adminux-dashboard.html"><i class="bi bi-house-door me-2"></i> Krysline Agency Ltd.</a></li>
+                <li class="breadcrumb-item bi"><a href="adminux-myprofile.html"> {{edit_user.username|title}}</a></li>
+                <li class="breadcrumb-item bi active" aria-current="page"> Account Settings</li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- content -->
+    <div class="container mt-3 w-75" id="main-content">
+        <ul class="nav nav-pills overflow-x-auto text-nowrap flex-nowrap pb-3" id="myTab" role="tablist">
+            
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">{{edit_user.get_full_name|title}}</button>
+            </li>
+            
+        </ul>
+    
+
+            <!-- profile tab-->
+            <div  id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                    <div class="card-body">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            {% include "message.html" %}
+                            <h6 class="mb-3 mb-lg-4">Profile details</h6>
+                            <div class="row gx-3 gx-lg-4 mb-3">
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group mb-3 position-relative check-valid">
+                                        <div class="form-floating">
+                                            {% comment %} <input type="text" placeholder="UserName" value="Adminuiux" required class="form-control"> {% endcomment %}
+                                            {{form.user_type |add_class:"form-control"  }}
+                                            <label>User Accout Type</label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter valid input</div>
+                                </div>
+                                
+                            </div>
+                            <h6 class="mb-3 mb-lg-4">Public Visibility</h6>
+                            <div class="row mb-3 mb-lg-4">
+                                <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+                                    <div class="form-check form-switch">
+                                        {% comment %} <input class="form-check-input" type="checkbox" id="profileswitch1" > {% endcomment %}
+                                        {{form.is_active |add_class:"form-check-input"  }}
+                                        <label class="form-check-label" for="profileswitch1">Active</label>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+                            <div class="row gx-3">
+                                <div class="col">
+                                    <!-- submit button -->
+                                    <button class="btn btn-theme" type="submit">Update</button>
+                                </div>
+                                {% comment %} <div class="col-auto">
+                                    <button class="btn btn-link theme-red" type="button">Cancel</button>
+                                </div> {% endcomment %}
+                            </div>
+                        </div>
+                    <form>
+                </div>
+            </div>
+
+
+    </div>
+
+</main>
+</div>
+
+{% endblock %}

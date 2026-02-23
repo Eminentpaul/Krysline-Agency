@@ -5,6 +5,8 @@ from django.db import transaction
 from django.core.cache import cache
 from django.http import JsonResponse
 from django.utils.timezone import now
+from django.contrib import auth
+from django.shortcuts import redirect
 
 logger = structlog.get_logger(__name__)
 
@@ -44,12 +46,17 @@ def rate_limit(rate='100/hour', key_func=None):
             else:
                 current = cache.incr(key)
 
-            if current > num_requests:
-                logger.warning("rate_limit_exceeded", ip=ip, view=view_func.__name__)
-                return JsonResponse({
-                    'error': 'Too many requests. Please try again later.',
-                    'retry_after': f"{cache.ttl(key)}s"
-                }, status=429)
+            try:
+                if current > num_requests:
+                    logger.warning("rate_limit_exceeded", ip=ip, view=view_func.__name__)
+                    return JsonResponse({
+                        'error': 'Too many requests. Please try again later.',
+                        'retry_after': f"{cache.ttl(key)}s"
+                    }, status=429)
+            except:
+                # Logout the user 
+                auth.logout(request)
+                return redirect('login')
             
             return view_func(request, *args, **kwargs)
         return wrapped_view

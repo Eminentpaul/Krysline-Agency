@@ -31,7 +31,7 @@ class AffiliatePackage(models.Model):
     
     # Store percentages like: {"1": 20.0, "2": 10.0, "3": 5.0}
     commissions = models.JSONField(default=dict, help_text="Format: {'1': 20, '2': 10}")
-    
+    description = models.TextField(blank=True, null=True)
     has_spillover = models.BooleanField(default=False)
     url = models.URLField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
@@ -109,6 +109,7 @@ class Affiliate(models.Model):
     referral_code = models.CharField(max_length=15, unique=True, db_index=True)
     is_active = models.BooleanField(default=False)
     joined_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def save(self, *args, **kwargs):
         # Generate a secure, unique KAL referral code if it doesn't exist

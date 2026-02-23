@@ -1,0 +1,202 @@
+/* ======================================= */
+/*! style.css v1.0.0 | Adminuiux 2023-2024 */
+/* ======================================= */
+
+// third parties css
+@import '~bootstrap/scss/bootstrap.scss';
+@import 'node_modules/swiper/swiper.scss';
+@import 'node_modules/swiper/modules/navigation.scss';
+@import 'node_modules/swiper/modules/pagination.scss';
+@import '~bootstrap-daterangepicker/daterangepicker.css';
+@import '~datatables.net-dt/css/dataTables.dataTables.min.css';
+@import '~datatables.net-responsive-dt/css/responsive.dataTables.min.css';
+@import '~dragula/dist/dragula.min.css';
+@import '~dropzone/dist/dropzone.css';
+@import '~smartwizard/dist/css/smart_wizard_all.css';
+@import '~simplebar/dist/simplebar.min.css';
+@import '~froala-editor/css/froala_editor.pkgd.min.css';
+@import '~bootstrap-icons/font/bootstrap-icons.min.css';
+@import '~simplebar/dist/simplebar.css';
+
+/* theme variables */
+@import "_variables.scss";
+
+/* theme custom css */
+@import "_button.scss";
+@import "_breadcrumb.scss";
+@import "_card.scss";
+@import "_calendar.scss";
+@import "_colors.scss";
+@import "_dropdown.scss";
+@import "_footer.scss";
+@import "_form-elements.scss";
+@import "_header.scss";
+@import "_list.scss";
+@import "_modal.scss";
+@import "_nav.scss";
+@import "_sidebar.scss";
+@import "_table.scss";
+@import "_chart.scss";
+@import "_loaders.scss";
+@import "_utility.scss";
+@import "_personalize.scss";
+@import "_rtl.scss";
+
+
+/* theme general css */
+html {
+    min-height: 100vh;
+}
+
+body {
+    font-family: var(--adminuiux-content-font), sans-serif;
+    font-weight: var(--adminuiux-content-font-weight);
+    background-color: var(--adminuiux-bg-1);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+    color: var(--adminuiux-text);
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.h1,
+.h2,
+.h3,
+.h4,
+.h5,
+.h6 {
+    font-weight: 500;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: var(--adminuiux-title-font), sans-serif;
+    font-weight: var(--adminuiux-title-font-weight);
+}
+
+p {
+    &:last-child {
+        margin-bottom: 0;
+    }
+}
+
+hr {
+    border-color: var(--bs-border-color);
+    opacity: 1;
+}
+
+.adminuiux-wrap {
+    flex-grow: 1;
+
+    .adminuiux-content {
+        --bs-link-color-rgb: var(--adminuiux-theme-1-rgb);
+    }
+}
+
+.roundedui {
+    --bs-border-radius-lg: 2rem;
+    --bs-border-radius: 1.5rem;
+    --bs-border-radius-sm: 1rem;
+
+    .card {
+        --bs-card-cap-padding-y: 1rem;
+
+        .card-body {
+            --bs-border-radius-lg: 1.5rem;
+            --bs-border-radius: 1rem;
+            --bs-border-radius-sm: 0.5rem;
+
+            .btn,
+            .form-control,
+            .form-select {
+                --bs-border-radius-lg: 2rem;
+                --bs-border-radius: 1.5rem;
+                --bs-border-radius-sm: 1rem;
+            }
+        }
+
+        .card {
+            --bs-border-radius: 0.875rem;
+            --bs-border-radius-lg: 1rem;
+            --bs-border-radius-sm: 0.625rem;
+
+            .btn,
+            .form-control,
+            .form-select {
+                --bs-border-radius-lg: 2rem;
+                --bs-border-radius: 1.5rem;
+                --bs-border-radius-sm: 1rem;
+            }
+        }
+    }
+
+    .pagination li .page-link {
+        border-radius: var(--bs-border-radius) !important;
+    }
+
+    &.adminuiux-sidebar-boxed {
+        --bs-border-radius: 28px;
+    }
+}
+
+.sharpcornerui {
+    --bs-border-radius-lg: 0px;
+    --bs-border-radius: 0px;
+    --bs-border-radius-sm: 0px;
+}
+
+.login-box {
+    max-width: 450px;
+}
+
+/* scrollbar style */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0px 1px 0px rgba(0, 0, 0, 0.1);
+    background-color: rgba(0, 0, 0, 0.02);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: rgba(var(--adminuiux-theme-1-rgb), 0.1);
+}
+
+.adminuiux-in-iframe {
+    ::-webkit-scrollbar {
+        width: 0px;
+        height: 0px;
+    }
+}
+
+/* dark mode */
+[data-bs-theme=dark] {
+    .adminuiux-wrap {
+
+        .adminuiux-content {
+            --bs-link-color-rgb: 255, 255, 255;
+            --bs-link-color: #ffffff;
+        }
+    }
+}

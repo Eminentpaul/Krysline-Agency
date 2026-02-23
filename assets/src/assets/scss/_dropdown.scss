@@ -1,0 +1,170 @@
+.no-caret {
+    &:after {
+        display: none;
+    }
+}
+
+/* global dropdown */
+.dropdown {
+    .dropdown-menu {
+        --bs-dropdown-link-color: var(--bs-link-color);
+        --bs-dropdown-link-hover-color: var(--adminuiux-theme-1);
+        --bs-dropdown-link-hover-bg: rgba(var(--adminuiux-theme-1-rgb), 0.1);
+        --bs-dropdown-link-active-color: var(--adminuiux-theme-1-text);
+        --bs-dropdown-link-active-bg: var(--adminuiux-theme-1);
+        --bs-dropdown-padding-x: 0.5rem;
+        --bs-dropdown-item-padding-y: 0.45rem;
+        --bs-dropdown-item-padding-x: 0.5rem;
+        border: 0;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.1);
+
+        .dropdown-item {
+            border-radius: var(--bs-border-radius);
+
+            i,
+            svg {
+                color: var(--bs-dropdown-link-color);
+                stroke: var(--bs-dropdown-link-color);
+            }
+
+            svg {
+                margin-top: -3px;
+            }
+
+            &:hover,
+            &:focus {
+
+                i,
+                svg {
+                    color: var(--bs-dropdown-link-hover-color);
+                    stroke: var(--bs-dropdown-link-hover-color);
+                }
+            }
+
+            &:active,
+            &.active {
+
+                i,
+                svg {
+                    color: var(--bs-dropdown-link-active-color);
+                    stroke: var(--bs-dropdown-link-active-color);
+                }
+            }
+        }
+
+        [class*='theme-'] {
+            --bs-dropdown-link-color: var(--adminuiux-theme-1);
+            --bs-dropdown-link-hover-color: var(--adminuiux-theme-1);
+            --bs-dropdown-link-hover-bg: rgba(var(--adminuiux-theme-1-rgb), 0.1);
+            --bs-dropdown-link-active-color: var(--adminuiux-theme-1-text);
+            --bs-dropdown-link-active-bg: var(--adminuiux-theme-1);
+        }
+    }
+
+    .list-group {
+        --bs-list-group-item-padding-x: 0.5rem;
+    }
+
+    .dropdown.dropend {
+        &:hover {
+            [data-bs-trigger=hover] {
+                &~.dropdown-menu {
+                    display: block;
+                    top: 0;
+                    right: auto;
+                    left: 100%;
+                    margin-left: 0;
+                }
+            }
+        }
+
+        .dropdown-menu.show {
+            display: block;
+            top: 0;
+            right: auto;
+            left: 100%;
+            margin-left: 0 !important;
+        }
+    }
+
+}
+
+/* notification dropdown */
+.notification-dd {
+    width: 300px;
+
+    li {
+        border-bottom: 1px solid var(--border-color);
+
+        .dropdown-item {
+            white-space: normal;
+        }
+
+        &:last-child {
+            border-bottom: 0px;
+        }
+    }
+}
+
+/* global dropdown center */
+.dropdown-menu-center {
+    width: 300px;
+    margin-left: 50%;
+    left: -150px !important;
+}
+
+/* dropdown rtl */
+[dir=rtl] {
+
+    /* global dropdown rtl */
+    .dropdown {
+        .dropdown-menu {
+            text-align: right;
+
+            .dropdown-item {
+
+                i,
+                svg {
+                    &:first-child {
+                        margin-right: 0px;
+                        margin-left: 10px;
+                    }
+                }
+            }
+        }
+
+        .dropdown-menu-end {
+            right: auto;
+            left: 0;
+        }
+
+    }
+}
+
+/* dark mode */
+[data-bs-theme=dark] {
+    .dropdown {
+        .dropdown-menu {
+            --bs-dropdown-bg: var(--bs-dd-bg);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2), 0 1px 3px rgba(0, 0, 0, 0.1);
+
+            .dropdown-item {
+
+                &:hover,
+                &:focus {
+                    color: #ffffff;
+
+                    i,
+                    svg {
+                        color: #ffffff;
+                        stroke: #ffffff;
+                    }
+                }
+            }
+        }
+    }
+
+    .offcanvas {
+        --bs-offcanvas-bg: var(--bs-dd-bg);
+    }
+}

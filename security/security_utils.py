@@ -39,7 +39,7 @@ def increment_failed_attempts(username, ip_address):
     try:
         user = User.objects.get(username=username)
         if user_failures >= 5:
-            user.profile.account_locked_until = timezone.now() + timedelta(minutes=30)
+            user.profile.account_locked_until = timezone.now() + timedelta(minutes=60)
             user.profile.save()
             # Reset cache so they aren't locked 'forever' via the counter
             cache.delete(user_key)
@@ -47,7 +47,7 @@ def increment_failed_attempts(username, ip_address):
         pass
 
     # 2. Block IP (if IP keeps spamming different usernames)
-    if ip_failures >= 20:
+    if ip_failures >= 10:
         BlacklistedIP.objects.get_or_create(
             ip_address=ip_address, 
             reason="Exceeded 20 failed login attempts in 30 mins"
