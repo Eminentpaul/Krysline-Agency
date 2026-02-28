@@ -76,3 +76,84 @@
  'message': 'Verification successful',
  'status': True
 }
+
+
+
+
+
+
+
+
+
+
+{'requestSuccessful': True, 'responseMessage': 'success', 'responseCode': '0', 'responseBody': {'amount': 100, 'invoiceReference': '183891300182', 'invoiceStatus': 'PENDING', 'description': 'test invoice', 'accountReference': '', 'contractCode': '896762025964', 'customerEmail': 'johnsnow@gmail.com', 'customerName': 'John Snow', 'expiryDate': '2026-02-28 12:00:00', 'createdBy': 'MK_PROD_TLZ30FTEFF', 'createdOn': '2026-02-26 00:43:39', 'checkoutUrl': 'https://sdk.monnify.com/checkout/MNFY|14|20260226004339|281087', 'accountNumber': '6866413128', 'accountName': 'Monnify Checkout', 'bankName': 'Moniepoint Microfinance Bank', 'bankCode': '50515', 'redirectUrl': 'https://royal-dilemmatical-tartishly.ngrok-free.dev/Dashboard/payments/', 'transactionReference': 'MNFY|14|20260226004339|281087', 'metaData': {}}}
+
+
+
+
+
+
+{'amount': 100.0, 'invoiceReference': 'KAL-BASIC-trusted', 'invoiceStatus': 'PENDING', 'description': 'Subscription for the Basic Plan - ₦25,000 - 1 Generation', 'accountReference': '', 'contractCode': '896762025964', 'customerEmail': 'oshipaulinus@gmail.com', 'customerName': 'Ubanese PAULINUS', 'expiryDate': '2026-02-28 02:10:43', 'createdBy': 'MK_PROD_TLZ30FTEFF', 'createdOn': '2026-02-26 02:10:46', 'checkoutUrl': 'https://sdk.monnify.com/checkout/MNFY|00|20260226021046|068535', 'accountNumber': '6852600231', 'accountName': 'Monnify Checkout', 'bankName': 'Moniepoint Microfinance Bank', 'bankCode': '50515', 'redirectUrl': 'https://royal-dilemmatical-tartishly.ngrok-free.dev/Dashboard/payments/', 'transactionReference': 'MNFY|00|20260226021046|068535', 'metaData': {}}
+
+
+# {'amount': 100, 'invoiceReference': '11KAL-BASIC-trusted-2026', 'invoiceStatus': 'PENDING', 'description': 'Subscription for the Basic Plan - ₦25,000 - 1 Generation', 'accountReference': '', 'contractCode': '896762025964', 'customerEmail': 'oshipaulinus@gmail.com', 'customerName': 'Ubanese PAULINUS', 'expiryDate': '2026-02-27 11:28:25', 'createdBy': 'MK_PROD_TLZ30FTEFF', 'createdOn': '2026-02-27 11:23:43', 'checkoutUrl': 'https://sdk.monnify.com/checkout/MNFY|79|20260227112343|342966', 'accountNumber': '6590869031', 'accountName': 'Monnify Checkout', 'bankName': 'Moniepoint Microfinance Bank', 'bankCode': '50515', 'redirectUrl': 'https://royal-dilemmatical-tartishly.ngrok-free.dev/Dashboard/payments/', 'transactionReference': 'MNFY|79|20260227112343|342966', 'metaData': {}} Original Created
+
+# {'requestSuccessful': False, 'responseMessage': 'Invoice with this reference already exists', 'responseCode': '99'}
+# Get Invoice:  {'requestSuccessful': True, 'responseMessage': 'success', 'responseCode': '0', 'responseBody': {'amount': 100.0, 'invoiceReference': 'KAL-BASIC-trusted-2026', 'invoiceStatus': 'EXPIRED', 'description': 'Subscription for the Basic Plan - ₦25,000 - 1 Generation', 'accountReference': '', 'contractCode': '896762025964', 'customerEmail': 'oshipaulinus@gmail.com', 'customerName': 'Ubanese PAULINUS', 'expiryDate': '2026-02-27 11:48:55', 'createdBy': 'MK_PROD_TLZ30FTEFF', 'createdOn': '2026-02-27 11:44:10', 'checkoutUrl': 'https://sdk.monnify.com/checkout/MNFY|51|20260227114410|125064', 'accountNumber': '6862586240', 'bankName': 'Moniepoint Microfinance Bank', 'bankCode': '50515', 'redirectUrl': 'https://royal-dilemmatical-tartishly.ngrok-free.dev/Dashboard/payments/', 'transactionReference': 'MNFY|51|20260227114410|125064', 'metaData': {}}}
+# Cancle:  {'requestSuccessful': False, 'responseMessage': 'EXPIRED invoice cannot be cancelled', 'responseCode': '99'}
+
+
+
+
+
+
+
+# user = request.user
+
+#     try:
+#         paystack.api_key = os.environ.get('SECRET_KEY')
+
+#         # status = request.GET.get('status')
+#         tx_ref = request.GET.get('reference')
+
+#         response = paystack.Transaction.verify(tx_ref)
+
+#         if response.status and response.data["status"] == "success":
+
+#             amount = response.data["amount"]/100
+    #         with transaction.atomic():
+    #             package = get_object_or_404(
+    #                 AffiliatePackage, price=float(amount))
+    #             print("package: ", package)
+    #             try:
+    #                 affiliate = Affiliate.objects.select_for_update().get(
+    #                     referral_code=str(user.affiliate_record.referral_code))
+
+    #                 if not affiliate.package:
+    #                     affiliate.package = package
+    #                     affiliate.save()
+
+    #                 if float(amount) >= package.price:
+    #                     # SUCCESS: Activate user and trigger MLM Commissions
+    #                     affiliate.is_active = True
+    #                     affiliate.save()
+
+    #                     print("Normal", affiliate)
+    #                     # Trigger your MLM commission distribution logic
+    #                     # distribute_commissions(affiliate.user.profile)
+
+    #                     if distribute_commissions(affiliate):
+    #                         return redirect('dashboard')
+
+    #             except Affiliate.DoesNotExist:
+    #                 Affiliate.objects.create(
+    #                     user=user,
+    #                     package=package
+    #                 )
+
+    #     else:
+    #         messages.error(request, "Payment not successful")
+    #         return redirect('choose_package')
+
+    # except Exception as e:
+    #     print(f"Verification Error: {e}")

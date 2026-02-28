@@ -1,0 +1,117 @@
+{% extends "krysline_nav.html" %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+{% load custom_tags %}
+{% load widget_tweaks %}
+
+
+
+{% block content %}
+    <main class="adminuiux-content has-sidebar" onclick="contentClick()">
+
+        
+
+        <!-- content -->
+        <div class="container mt-3" id="main-content">
+            
+
+            <div class="row gx-3 gx-lg-4">
+                <!-- Orders -->
+                <div class="col-12 col-md-12 position-relative">
+                    <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                        <div class="card-header">
+                            <div class="row gx-3">
+                                <div class="col-auto">
+                                    <i class="bi bi-shop h5 avatar avatar-40 bg-theme-1-subtle text-theme-1 rounded"></i>
+                                </div>
+                                <div class="col-auto align-self-center">
+                                    <h6 class="mb-0">All Transactions</h6>
+                                    {% comment %} <p class="text-secondary small">All in orders items</p> {% endcomment %}
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="card-body py-0">
+                            <table class="table" id="dataTable">
+                                <thead>
+                                    <tr class="text-muted">
+                                        <th class="all">#</th>
+                                        <th class="w-12"></th>
+                                        <th class="all">User</th>
+                                        <th class="tablet desktop">Amount</th>
+                                        <th class="desktop">Date/Time</th>
+                                        {% comment %} <th class="tablet desktop">Status</th> {% endcomment %}
+                                        <th class="tablet desktop">Transaction Type</th>
+                                        {% comment %} <th class="all">Action</th> {% endcomment %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for trans in transactions %}
+                                    
+                                    <tr>
+                                        <td>#{{forloop.counter}}</td>
+                                        <td></td>
+                                        <td>
+                                            <div class="row gx-3 align-items-center">
+                                                <div class="col-auto">
+                                                    <figure class="avatar avatar-50 border mb-0 coverimg rounded">
+                                                        <li class="bi bi-coin fs-3"></li>
+                                                    </figure>
+                                                </div>
+                                                <div class="col">
+                                                    <p class="mb-0">{{trans.user.get_full_name|title}}</p>
+                                                    <p class="text-secondary small">{{trans.user.username|title}}</p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            ₦{{trans.amount|intcomma}}
+                                        </td>
+                                        
+                                        
+                                        
+                                        <td>
+                                            <p class="mb-0">{{trans.timestamp|date:"M d, Y"}}</p>
+                                            <p class="text-secondary small">{{trans.timestamp|date:"H:i A"}}</p>
+                                        </td>
+                                        <td>
+                                            {% if trans.transaction_type == 'deposit' %}
+                                                <span class="badge badge-sm bg-green">{{trans.get_transaction_type_display|upper}}</span>
+                                            {% elif trans.transaction_type == 'package_purchase' %}
+                                                <span class="badge badge-sm bg-info">{{trans.get_transaction_type_display|upper}}</span>
+                                            {% elif trans.transaction_type == 'commision' %}
+                                                <span class="badge badge-sm bg-waring">{{trans.get_transaction_type_display|upper}}</span>
+                                            {% else %}
+                                                <span class="badge badge-sm bg-danger">{{trans.get_transaction_type_display|upper}}</span>
+                                            {% endif %}
+                                        </td>
+                                        
+                                        {% comment %} <td>
+                                            <div class="dropdown d-inline-block">
+                                                <a class="text-secondary no-caret" data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static" role="button">
+                                                    <i class="bi bi-three-dots"></i>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-end">
+                                                    <li><a class="dropdown-item" href="javascript:void(0)">Edit</a></li>
+                                                    <li><a class="dropdown-item" href="javascript:void(0)">Move</a></li>
+                                                    <li><a class="dropdown-item text-danger" href="javascript:void(0)">Delete</a></li>
+                                                </ul>
+                                            </div>
+                                        </td> {% endcomment %}
+                                    </tr>
+                                    {% endfor %}
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+        </div>
+    </main>
+</div>
+
+{% endblock %}

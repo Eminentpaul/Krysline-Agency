@@ -9,6 +9,7 @@ import hashlib, secrets, string
 from authentication.models import UserProfile
 # from datetime import timezone
 from django.utils import timezone
+import uuid
 from auditlog.registry import auditlog
 
 
@@ -33,7 +34,6 @@ class AffiliatePackage(models.Model):
     commissions = models.JSONField(default=dict, help_text="Format: {'1': 20, '2': 10}")
     description = models.TextField(blank=True, null=True)
     has_spillover = models.BooleanField(default=False)
-    url = models.URLField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(default=timezone.now, editable=False)
     updated_at = models.DateTimeField(auto_now=True)
@@ -108,6 +108,7 @@ class Affiliate(models.Model):
 
     referral_code = models.CharField(max_length=15, unique=True, db_index=True)
     is_active = models.BooleanField(default=False)
+    duration = models.DateTimeField(blank=True, null=True)
     joined_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -126,7 +127,16 @@ class Affiliate(models.Model):
         return f"{self.user.email} ({self.referral_code})"
     
 
-    
+
+class UserInvoice(models.Model):
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        related_name='invoice'
+    )
+
+    inovoice_reference = models.CharField(max_length=50, blank=True, null=True)
+
 
 
 class PropertyTransaction(models.Model):

@@ -5,7 +5,7 @@ from .models import User, UserProfile, BlacklistedIP
 
 # Register your models here.
 
-admin.site.register(BlacklistedIP)
+# admin.site.register(BlacklistedIP)
 @admin.register(User)
 class CustomUserAdmin(BaseUserAdmin):
     # 1. Columns shown in the main list
@@ -117,3 +117,17 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 
 
+@admin.register(BlacklistedIP)
+class BlacklistedIPAdmin(admin.ModelAdmin):
+    list_display = ('ip_address', 'reason', 'blocked_at')
+    search_fields = ('ip_address', 'reason')
+    list_filter = ('blocked_at',)
+    
+    # Custom action to unblock in bulk
+    actions = ['remove_from_blacklist']
+
+    @admin.action(description="Unblock selected IP addresses")
+    def remove_from_blacklist(self, request, queryset):
+        count = queryset.count()
+        queryset.delete()
+        self.message_user(request, f"Successfully unblocked {count} IP addresses.")

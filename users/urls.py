@@ -13,5 +13,6 @@ urlpatterns = [
     path('profile_update', views.profile_update, name="profile_update"),
     path('payment_update', views.payment_update, name="payment_update"),
     path('verify_bank_account', views.verify_bank_account, name="verify_bank_account"),
+    path('Package/<str:pk>/payment', views.package_payment, name="package_payment"),
 ]
 

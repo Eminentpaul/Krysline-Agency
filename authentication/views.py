@@ -52,7 +52,7 @@ def login(request):
     form = SecureLoginForm(request.POST or None)
     ip_address = get_client_ip(request)
 
-    username = ""
+    email = ""
 
     if request.method == 'POST' and form.is_valid():
         email = form.cleaned_data.get('email')
@@ -73,11 +73,11 @@ def login(request):
             # Account Status Check
             if profile.account_locked_until and profile.account_locked_until > timezone.now():
                 mg.error(request, 'Account temporarily locked, Try later')
-                # return redirect('login')
+                return redirect('login')
             
             if not user.is_active:
                 mg.error(request, 'Account Disabled')
-                # return render(request, 'authenticate/login.html')
+                return redirect('login')
 
             if not user.verified_email:
                 return render(request, 'authentication/verify_email_sent.html')
@@ -88,7 +88,7 @@ def login(request):
             profile.last_login_ip_address = ip_address
             profile.save()
 
-            username = user.username
+            user_email = user.email
 
             SecurityAuditLog.objects.create(
                 user = user,
@@ -130,7 +130,7 @@ def login(request):
                         return redirect('login')
                 
         else:
-            increment_failed_attempts(username, ip_address)
+            increment_failed_attempts(email, ip_address)
             mg.error(request, 'Invalid Username or Password')
 
     return render(request, 'authentication/login.html')

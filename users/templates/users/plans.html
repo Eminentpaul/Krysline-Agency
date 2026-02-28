@@ -32,7 +32,7 @@
         <div class="container" id="main-content">
             <!-- filter area -->
             
-
+            {% include "message.html" %}
             <!-- appointment grid view list datatable-->
             <div class="card adminuiux-card mt-4 mb-0">
                 <div class="card-body">
@@ -40,7 +40,7 @@
                     <div class="row">
                         {% for package in packages %}
                     
-                            {% if user_package.package.name == package.name or user_package.package.price > package.price %}
+                            {% if is_active and user_package.package.name == package.name or user_package.package.price >= package.price and is_active %}
                                 <div class="col-12 col-md-6 col-lg-4">
                                     <div class="card adminuiux-card bg-r-gradient border border-theme-1 mb-4">
                                         <div class="card-body px-xl-4">
@@ -69,19 +69,27 @@
                                                 {{package.description|safe|linebreaks}}
                                                 
                                                 <li class="list-group-item text-secondary"><i class="bi bi-check-circle vm me-1"></i> 24/7 Customer Support</li>
+                                                
+                                                {% if not package.is_active %}
+                                                    <li class="list-group-item text-white bg-danger"><i class="bi bi-check-circle vm me-1"></i> INACTIVE</li>
+                                                {% endif %}
                                             </ul>
                                         </div>
-                                        {% if user.user_type == "manager" or user.user_type == "admin" %}
+
+                                        {% if user.user_type == 'manager' %}
                                             <div class="card-footer text-center">
-                                                <button class="btn btn-theme" >Edit Package</button>
-                                                <!-- TODO: Update the url for the plan-->
+                                                <a href="{% url "package_update" package.id %}" class="btn btn-theme" >Edit Plan</a>
+                                                
                                             </div>
                                         {% else %}
                                             <div class="card-footer text-center">
-                                                <button class="btn btn-theme" disabled>Buy Now!</button>
-                                                <!-- TODO: Update the url for the plan-->
+                                                <button class="btn btn-theme" disabled>Subscribe Now</button>
+                                                
                                             </div>
                                         {% endif %}
+                                        
+                                            
+                                        
                                     </div>
                                 </div>
                             {% else %}
@@ -113,12 +121,29 @@
                                                 {{package.description|safe|linebreaks}}
                                                 
                                                 <li class="list-group-item text-secondary"><i class="bi bi-check-circle vm me-1"></i> 24/7 Customer Support</li>
+
+                                                {% if not package.is_active %}
+                                                    <li class="list-group-item text-white bg-danger"><i class="bi bi-check-circle vm me-1"></i> INACTIVE</li>
+                                                {% endif %}
                                             </ul>
                                         </div>
-                                        <div class="card-footer text-center">
-                                            <button class="btn btn-theme">Buy Now!</button>
-                                            <!-- TODO: Update the url for the plan-->
-                                        </div>
+                                        {% if user.user_type == 'manager' %}
+                                            <div class="card-footer text-center">
+                                                <a href="{% url "package_update" package.id %}" class="btn btn-theme" >Edit Plan</a>
+                                                
+                                            </div>
+                                        {% else %}
+                                            {% if not package.is_active %}
+                                                    <div class="card-footer text-center">
+                                                        <button class="btn btn-theme" disabled>Subscribe Now</button>
+                                                        
+                                                    </div>
+                                            {% else %}
+                                                <div class="card-footer text-center">
+                                                    <a href="{% url "package_payment" package.id %}" class="btn btn-theme" >Subscribe Now</a>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
                                     </div>
                                 </div>
                             {% endif %}

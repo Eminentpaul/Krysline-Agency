@@ -1,7 +1,11 @@
 from django.core.cache import cache
 from django.utils import timezone
+import structlog
 from datetime import timedelta
 from authentication.models import BlacklistedIP, User  # Assuming User is your custom user
+
+
+logger = structlog.get_logger(__name__)
 
 def is_ip_blocked(ip_address):
     """
@@ -20,13 +24,14 @@ def is_ip_blocked(ip_address):
     
     return False
 
-def increment_failed_attempts(username, ip_address):
+def increment_failed_attempts(user_email, ip_address):
     """
     Tracks failures and triggers account/IP lockout.
     """
     # Keys for tracking
-    user_key = f"failed_user:{username}"
+    user_key = f"failed_user:{user_email}"
     ip_key = f"failed_ip:{ip_address}"
+
     
     # Increment counts in cache (valid for 30 mins)
     user_failures = cache.get(user_key, 0) + 1
@@ -35,9 +40,10 @@ def increment_failed_attempts(username, ip_address):
     cache.set(user_key, user_failures, 1800)
     cache.set(ip_key, ip_failures, 1800)
 
+
     # 1. Lock User Account (if they exist)
     try:
-        user = User.objects.get(username=username)
+        user = User.objects.get(email=user_email)
         if user_failures >= 5:
             user.profile.account_locked_until = timezone.now() + timedelta(minutes=60)
             user.profile.save()
@@ -47,9 +53,10 @@ def increment_failed_attempts(username, ip_address):
         pass
 
     # 2. Block IP (if IP keeps spamming different usernames)
-    if ip_failures >= 10:
-        BlacklistedIP.objects.get_or_create(
+    if ip_failures >= 5:
+        BlacklistedIP.objects.update_or_create(
             ip_address=ip_address, 
-            reason="Exceeded 20 failed login attempts in 30 mins"
+            reason="Exceeded 5 failed login attempts in 30 mins"
         )
+        logger.warning(f"IP {ip_address} has been blacklisted.")
         cache.set(f"block:{ip_address}", True, 3600)

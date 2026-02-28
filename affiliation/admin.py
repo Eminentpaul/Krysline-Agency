@@ -1,14 +1,17 @@
 # admin.py
 from django.contrib import admin
 from django.utils import timezone
-from .models import PropertyTransaction, AffiliatePackage, Affiliate, CommissionLog
+from .models import PropertyTransaction, AffiliatePackage, Affiliate, CommissionLog, UserInvoice
 from django.utils.html import format_html
-from .services import distribute_commissions # The math logic
+from .services import distribute_commissions  # The math logic
+
+
+admin.site.register(UserInvoice)
 
 @admin.register(PropertyTransaction)
 class PropertyTransactionAdmin(admin.ModelAdmin):
     list_display = ['transaction_id', 'affiliate', 'amount', 'is_verified']
-    actions = ['approve_sales'] # This adds a dropdown menu
+    actions = ['approve_sales']  # This adds a dropdown menu
 
     @admin.action(description="Verify selected sales and pay commissions")
     def approve_sales(self, request, queryset):
@@ -18,30 +21,30 @@ class PropertyTransactionAdmin(admin.ModelAdmin):
                 tx.verified_by = request.user
                 tx.verification_date = timezone.now()
                 tx.save()
-                
+
                 # Triggers the MLM math
-                distribute_commissions(tx)
-        
-        self.message_user(request, "Selected sales verified and commissions paid.")
+                
+                distribute_commissions(property=tx)
 
-
+        self.message_user(
+            request, "Selected sales verified and commissions paid.")
 
 
 @admin.register(AffiliatePackage)
 class AffiliatePackageAdmin(admin.ModelAdmin):
     # Updated to match the fields actually present in your Model
     list_display = (
-        'name', 
-        'price_formatted', 
-        'generations', 
-        'is_active', 
-        'has_spillover', 
+        'name',
+        'price_formatted',
+        'generations',
+        'is_active',
+        'has_spillover',
         'created_at'
     )
-    
+
     list_filter = ('is_active', 'has_spillover', 'generations')
     list_display_links = ('name',)
-    
+
     fieldsets = (
         ('Basic Information', {
             # Removed 'description' because it's not in the model
@@ -71,30 +74,30 @@ class AffiliatePackageAdmin(admin.ModelAdmin):
         if obj and not request.user.is_superuser:
             return ('price', 'generations', 'name')
         return super().get_readonly_fields(request, obj)
-    
 
 
 @admin.register(Affiliate)
 class AffiliateAdmin(admin.ModelAdmin):
     # 1. Columns shown in the main list
     list_display = (
-        'get_email', 
-        'referral_code', 
-        'get_upline', 
-        'package', 
-        'is_active', 
-        'joined_at'
+        'get_email',
+        'referral_code',
+        'get_upline',
+        'package',
+        'is_active',
+        'joined_at',
+        'duration'
     )
-    
+
     # 2. Filters on the right sidebar
     list_filter = ('is_active', 'package', 'joined_at')
-    
+
     # 3. Search functionality (Search by email, username, or KAL code)
     search_fields = ('user__email', 'user__username', 'referral_code')
-    
+
     # 4. Security: Prevent manual editing of codes and dates
     readonly_fields = ('referral_code', 'joined_at', 'updated_at')
-    
+
     # 5. Searchable dropdown for Upline (Essential for large MLM trees)
     raw_id_fields = ('upline', 'user')
 
@@ -111,8 +114,8 @@ class AffiliateAdmin(admin.ModelAdmin):
             'description': 'The Upline is the person who referred this affiliate.'
         }),
         ('System Info', {
-            'fields': ('joined_at',),
-            'classes': ('collapse',) # Hidden by default
+            'fields': ('joined_at', 'duration',),
+            'classes': ('collapse',)  # Hidden by default
         }),
     )
 
@@ -133,52 +136,50 @@ class AffiliateAdmin(admin.ModelAdmin):
     def has_delete_permission(self, request, obj=None):
         if request.user.user_type == 'admin' or request.user.user_type == 'manager':
             return True
-        else: return False
-    
-
-
-
+        else:
+            return False
 
 
 @admin.register(CommissionLog)
 class CommissionLogAdmin(admin.ModelAdmin):
     # 1. Main Table View
     list_display = [
-        'id', 
-        'recipient_email', 
-        'amount_display', 
-        'generation_label', 
-        'source_user_email', 
-        'security_check', # Verification of the hash
+        'id',
+        'recipient_email',
+        'amount_display',
+        'generation_label',
+        'source_user_email',
+        'security_check',  # Verification of the hash
         'created_at'
     ]
 
     list_display_links = [
-        'id', 
-        'recipient_email', 
-        'amount_display', 
-        'generation_label', 
-        'source_user_email', 
-        'security_check', # Verification of the hash
+        'id',
+        'recipient_email',
+        'amount_display',
+        'generation_label',
+        'source_user_email',
+        'security_check',  # Verification of the hash
         'created_at'
     ]
-    
+
     # 2. Filters
     list_filter = ('generation', 'created_at')
-    
+
     # 3. Search (Search by recipient, source, or amount)
-    search_fields = ('recipient_profile__user__email', 'source_user__email', 'amount')
-    
+    search_fields = ('recipient_profile__user__email',
+                     'source_user__email', 'amount')
+
     # 4. SECURITY: Make everything Read-Only
     # We do not want ANY admin to change historical money records
     def get_readonly_fields(self, request, obj=None):
         return [f.name for f in self.model._meta.fields]
 
     def has_add_permission(self, request):
-        return False # Commissions are created by the Webhook/Service only
+        return False  # Commissions are created by the Webhook/Service only
 
     def has_delete_permission(self, request, obj=None):
-        return request.user.is_superuser # Only the Top Boss can delete
+        return request.user.is_superuser  # Only the Top Boss can delete
 
     # --- Helper & Security Display Methods ---
 
@@ -195,7 +196,6 @@ class CommissionLogAdmin(admin.ModelAdmin):
         # Format the number first, then wrap it in HTML
         formatted_number = "{:,.2f}".format(obj.amount)
         return format_html('<b style="color: #28a745;">₦{}</b>', formatted_number)
-
 
     @admin.display(description='Gen.')
     def generation_label(self, obj):

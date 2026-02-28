@@ -1,7 +1,6 @@
 import requests
 from monnify.monnify import Monnify
 from base64 import b64encode
-import base64
 import os
 import json
 from datetime import datetime
@@ -33,11 +32,16 @@ secret_key = os.environ.get("Mon_Secret_key")
 contract_code = os.environ.get("Contract_Code")
 
 
-apKey_Secret = 'TUtfVEVTVF9HQzNCOFhHMlhYOkE2NjNOUlpBNTQ0RERQRU03S0RON1o4SFJWNllYRDhT'
+# BaseUrls
+base_url="https://api.monnify.com"
+
+data = f"{api_key}:{secret_key}".encode()
+apKey_Secret = b64encode(data).decode("ascii")
+
 
 def access_token(apKeySecretKey):
     response = requests.post(
-        "https://sandbox.monnify.com/api/v1/auth/login",
+        f"{base_url}/api/v1/auth/login",
         headers={
         "Authorization": f"Basic {apKeySecretKey}"
         }
@@ -59,6 +63,8 @@ headers={
       "Authorization": f"Bearer {accessTonken}",
       "Content-Type": "application/json"
     }
+
+
 
 
 
@@ -89,7 +95,7 @@ def bank_verification(accountNumber, bankName):
 
     
     response = requests.get(
-        "https://sandbox.monnify.com/api/v1/disbursements/account/validate",
+        f"{base_url}/api/v1/disbursements/account/validate",
         headers=headers,
 
         params={
@@ -116,7 +122,94 @@ def maskAccountNumber(number):
 
 
 
-def initiate_transfer(accountNumber, bankName):
+
+
+
+def create_invoice(amount, user, description, reference, expirydate):
+
+        response = requests.post(
+                    f"{base_url}/api/v1/invoice/create",
+                    headers=headers,
+                    json={
+                    "amount": amount,
+                    "currencyCode": "NGN",
+                    "invoiceReference": reference,
+                    "customerName": user.get_full_name(),
+                    "customerEmail": user.email,
+                    "contractCode": contract_code,
+                    "description": description,
+                    "expiryDate": expirydate,
+                    
+                    "redirectUrl": "https://royal-dilemmatical-tartishly.ngrok-free.dev/Dashboard/payments/",
+                    "accountReference": ""
+                    }
+                )
+        data = json.loads(response.content)
+        print(data)
+        if data["requestSuccessful"] == True and data["responseMessage"] == 'success':
+            return data['responseBody'], True
+        else:
+            return data['responseMessage'], False
+
+
+
+def get_invoice(reference):
+    response = requests.get(
+            f"{base_url}/api/v1/invoice/{reference}/details",
+            headers={
+            "Authorization": f"Bearer {accessTonken}"
+            }
+        )
+    
+    data = json.loads(response.content)
+
+    print("Get Invoice: ", data)
+
+    if data["requestSuccessful"] == True and data["responseMessage"] == 'success':
+        return data['responseBody'], True
+    else:
+        return data['responseMessage'], False
+
+
+
+
+def cancle_invoice(reference):
+    response = requests.delete(
+            f"{base_url}/api/v1/invoice/{reference}/cancel",
+            headers={
+            "Authorization": f"Bearer {accessTonken}"
+            }
+        )
+    
+    data = json.loads(response.content)
+    print("Cancle: ", data)
+
+    if data["requestSuccessful"] == True and data["responseMessage"] == 'success':
+        return data['responseBody'], True
+    else:
+        return data['responseMessage'], False
+
+
+
+
+# def get_transaction(reference):
+#     response = requests.get(
+#             f"{base_url}/api/v2/transactions/{reference}",
+#             headers={
+#             "Authorization": f"Bearer {accessTonken}"
+#             }
+#         )
+    
+#     data = json.loads(response.content)
+
+#     if data["requestSuccessful"] == True and data["responseMessage"] == 'success':
+#         return data['responseBody'], True
+#     else:
+#         return data['responseMessage'], False
+
+
+
+def initiate_transdfer(accountNumber, bankName):
 
     # {'accountNumber': '0570385531', 'accountName': 'OSHI PAULINUS OFFORBUIKE', 'bankCode': '058', 'currencyCode': 'NGN'}
 
@@ -124,36 +217,39 @@ def initiate_transfer(accountNumber, bankName):
     # admin_bank = bank_verification(admin_account_number, admin_bank_name)
     destinationDetails, valid = bank_verification(accountNumber, bankName)
 
-    # if valid:
-    #     print(admin_account_number)
+    if valid:
+        bcode = str(destinationDetails['bankCode'])
+        anumber = str(destinationDetails['accountNumber'])
+        cname = str(destinationDetails['accountName'])
 
 
 
-    response = requests.post(
-            "https://sandbox.monnify.com/api/v2/disbursements/single",
-            headers,
-            json={
-            "amount": 200,
-            "reference": "refesdafsdfrence---1290034",
-            "narration": "911 Tradasfasdfnsaction",
-            # TODO: Correct Narration and The Reference number 
-            "destinationBankCode": "033", # destinationDetails['bankCode'],
-            "destinationAccountNumber": "2102830178", #destinationDetails['accountNumber'],
-            "currency": "NGN",
-            "sourceAccountNumber": "8961455898", #admin_account_number,
-            # "senderInfo": {
-            #     "sourceAccountNumber": maskAccountNumber(admin_account_number),
-            #     "sourceAccountName": admin_account_number,
-            #     # "sourceAccountBvn": "1234567890",
-            #     # "senderBankCode": "50515"
-            # },
-            #   "async": false
-            }
-        )
-    
-    print(response)
-    data = json.loads(response.content)
-    print(data)
+        response = requests.post(
+                f"{base_url}/api/v2/disbursements/single",
+                headers=headers,
+                json={
+                "amount": 200,
+                "reference": "reference---1290034",
+                "narration": "911 Transaction",
+                "destinationBankCode": "50515",
+                "destinationAccountNumber": "2085886393",
+                "currency": "NGN",
+                "sourceAccountNumber": "3934178936",
+                "senderInfo": {
+                    "sourceAccountNumber": "3934178936",
+                    "sourceAccountName": "Marvelous Benji",
+                    "sourceAccountBvn": "1234567890",
+                    "senderBankCode": "50515"
+                },
+                # "async": false
+                }
+            )
+        
+        print(response)
+        data = json.loads(response.content)
+        print(data)
+
+
 
 
 

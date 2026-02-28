@@ -651,7 +651,7 @@
                                                 <th class="all">User</th>
                                                 <th class="xs">Amount</th>
                                                 <th class="desktop">Transactions Type</th>
-                                                <th class="tablet">Date</th>
+                                                <th class="tablet desktop">Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -699,13 +699,7 @@
                                                     
                                                     
                                                 </tr>
-                                            {% empty %}
-                                                <tr>
-                                                    <td colspan="100%" class="text-center py-4">
-                                                        <img src="/static/assets/images/no-data.png" alt="" style="width: 50px; opacity: 0.5;"><br>
-                                                        <span class="text-muted">No commissions earned yet. Start referring!</span>
-                                                    </td>
-                                                </tr>
+                                            
                                             {% endfor %}
                                         </tbody>
                                     </table>
@@ -1314,7 +1308,68 @@
             </div>
         </div>
     </div>
+
+
+    {% if not set_pin %}
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Set Transaction PIN</h1>
+                    {% comment %} <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> {% endcomment %}
+                </div>
+                <form action="" method="POST">
+                    <div class="modal-body">
+                            {% csrf_token %}
+                            {% include "message.html" %}
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">Transaction PIN:</label>
+                                <input type="password" id="digits-only" maxlength="4" placeholder="Enter Your Pin" name="pin" class="form-control" id="recipient-name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="cpin" class="col-form-label">Confirm Transaction PIN:</label>
+                                <input type="password" id="digits-only2" maxlength="4" placeholder="Conffirm PIN" name="cpin" class="form-control" id="cpin" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            {% comment %} <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> {% endcomment %}
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+         <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Wait 5 seconds
+                setTimeout(function() {
+                    // Initialize and show the modal using Bootstrap's native constructor
+                    var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
+                    myModal.show();
+                }, 1000);
+            });
+        </script>
+
+        <script>
+            const input = document.getElementById('digits-only');
+
+            input.addEventListener('input', function(event) {
+                // Replace any non-numeric character with an empty string
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+
+
+            const input2 = document.getElementById('digits-only2');
+
+            input2.addEventListener('input', function(event) {
+                // Replace any non-numeric character with an empty string
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        </script>
+    {% endif %}
 {% endblock content %}
+
 
 
 

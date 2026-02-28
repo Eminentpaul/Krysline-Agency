@@ -22,12 +22,12 @@
                                     </nav>
                                     <h5>Dashboard</h5>
                                 </div>
-                                <div class="col-12 col-sm-auto text-end py-3 py-sm-0">
+                                {% comment %} <div class="col-12 col-sm-auto text-end py-3 py-sm-0">
                                     <input type="text" class="form-control d-inline-block w-auto align-middle mx-3" id="daterangepicker">
                                     <button class="btn btn-square btn-theme d-inline-block" onclick="$(this).prev().click()">
                                         <i data-feather="calendar"></i>
                                     </button>
-                                </div>
+                                </div> {% endcomment %}
                             </div>
                         </div>
 
@@ -182,43 +182,45 @@
                                 </div>
 
                                 <!-- quick exchange -->
-                                <div class="col-12 col-md-6 col-lg-4">
-                                    <div class="card adminuiux-card">
-                                        <div class="card-header">
-                                            <div class="row align-items-center">
-                                                <div class="col">
-                                                    <h6>My Plan</h6>
-                                                </div>
-                                                <div class="col-auto px-0">
+                                {% if is_active %}
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <div class="card adminuiux-card">
+                                            <div class="card-header">
+                                                <div class="row align-items-center">
+                                                    <div class="col">
+                                                        <h6>My Plan</h6>
+                                                    </div>
+                                                    <div class="col-auto px-0">
 
-                                                </div>
-                                                <div class="col-auto">
-                                                    <span class="mx-1 text-secondary small">{{affiliate.updated_at|timesince}} ago</span>
-                                                    <button class="btn btn-sm btn-square btn-link"><i class="bi bi-arrow-clockwise"></i></button>
+                                                    </div>
+                                                    <div class="col-auto">
+                                                        <span class="mx-1 text-secondary small">Plan Expiration: {{affiliate.duration|timeuntil}} to ago</span>
+                                                        <button class="btn btn-sm btn-square btn-link"><i class="bi bi-arrow-clockwise"></i></button>
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="card-body">
-                                            
+                                            <div class="card-body">
                                                 
-                                            <br>
-                                            <div class="text-center">
-                                                {% comment %} <h5 class="fw-normal"><b class="fw-bold">Great!</b> You will get</h5> {% endcomment %}
-                                                <h1 class="mb-0 text-theme-1">{{ plan_name }}</h1>
-                                                <p class="text-secondary small mb-4">{{ rank_msg }}</p>
-                                                <a href="{% url "choose_package" %}" class="btn btn-outline-success">Upgrade</a>
+                                                    
+                                                <br>
+                                                <div class="text-center">
+                                                    {% comment %} <h5 class="fw-normal"><b class="fw-bold">Great!</b> You will get</h5> {% endcomment %}
+                                                    <h1 class="mb-0 text-theme-1">{{ plan_name }}</h1>
+                                                    <p class="text-secondary small mb-4">{{ rank_msg }}</p>
+                                                    <a href="{% url "choose_package" %}" class="btn btn-outline-success">Upgrade</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-
+                                {% endif %}
+                                    <br>
                                 <!-- recent transaction -->
                                 <div class="col-12 col-md-6 col-lg-12 mb-4">
                                     <div class="card adminuiux-card">
                                         <div class="card-header">
                                             <div class="row align-items-center">
                                                 <div class="col">
-                                                    <h6>Recent Transaction</h6>
+                                                    <h6>Recent Commission</h6>
                                                 </div>
                                                 <div class="col-auto px-0">
                                                     <a href="{% url "transaction_history" %}" class="btn btn btn-outline-theme">See All</a>
@@ -234,7 +236,7 @@
                                         <div class="card adminuiux-card mt-4 mb-0">
                                 <div class="card-body">
                                     <!-- data table -->
-                                    {% if latest_commissions %}
+
                                         <table id="dataTable" class="table w-100 nowrap">
                                             <thead>
                                                 <tr>
@@ -274,18 +276,12 @@
 
                                                         
                                                     </tr>
-                                                {% empty %}
-                                                    <tr>
-                                                        <td colspan="100%" class="text-center py-4">
-                                                            <img src="/static/assets/images/no-data.png" alt="" style="width: 50px; opacity: 0.5;"><br>
-                                                            <span class="text-muted">No commissions earned yet. Start referring!</span>
-                                                        </td>
-                                                    </tr>
+                                                
                                                 {% endfor %}
 
                                             </tbody>
                                         </table>
-                                    {% endif %}
+ 
                                 </div>
                             </div>
                                         
@@ -748,316 +744,66 @@
 
             </div>
 
-            <!-- qr code modal -->
-            <div class="modal adminuiux-modal fade" id="qrcodemodal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-body">
-                            <div class="text-center my-4">
-                                <div class="avatar avatar-150 mb-4">
-                                    <img src="{% static 'assets/img/adminuiux-qr.png' %}" alt="" class="mw-100 mx-auto">
-                                </div>
-                                <h5 class="mb-0">Scan QR Code</h5>
-                                <p class="text-secondary">To add money in wallet account</p>
+          
+
+     
+
+    {% if not set_pin %}
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Set Transaction PIN</h1>
+                    {% comment %} <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> {% endcomment %}
+                </div>
+                <form action="" method="POST">
+                    <div class="modal-body">
+                            {% csrf_token %}
+                            {% include "message.html" %}
+                            <div class="mb-3">
+                                <label for="recipient-name" class="col-form-label">Transaction PIN:</label>
+                                <input type="password" id="digits-only" maxlength="4" placeholder="Enter Your Pin" name="pin" class="form-control" id="recipient-name" required>
                             </div>
-                            <div class="row">
-                                <div class="col mb-3">
-                                    <p class="text-secondary">Name</p>
-                                </div>
-                                <div class="col-auto mb-3">
-                                    <p class="fw-medium">AdminUIUX</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col mb-3">
-                                    <p class="text-secondary">Virtual ID</p>
-                                </div>
-                                <div class="col-auto mb-3">
-                                    <p class="fw-medium">00VFGBADMINUIUX02154869</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col mb-3">
-                                    <p class="text-secondary">Valid Till</p>
-                                </div>
-                                <div class="col-auto mb-3">
-                                    <p class="fw-medium">26-09-2026 12:00 am</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col mb-3">
-                                    <p class="text-secondary">Generated on</p>
-                                </div>
-                                <div class="col-auto mb-3">
-                                    <p class="fw-medium">12-04-2024 6:25 am <i class="bi bi-arrow-clockwise text-secondary" data-bs-toggle="tooltip" title="Re-generate"></i></p>
-                                </div>
+                            <div class="mb-3">
+                                <label for="cpin" class="col-form-label">Confirm Transaction PIN:</label>
+                                <input type="password" id="digits-only2" maxlength="4" placeholder="Conffirm PIN" name="cpin" class="form-control" id="cpin" required>
                             </div>
                         </div>
-                        <div class="modal-footer justify-content-between">
-                            <button type="button" class="btn btn-link theme-red" data-bs-dismiss="modal">Close</button>
+                        <div class="modal-footer">
+                            {% comment %} <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button> {% endcomment %}
+                            <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
+        </div>
 
-            <!-- send money modal -->
-            <div class="modal adminuiux-modal fade" id="sendmoneymodal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <p class="modal-title h5">Send Money</p>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-floating mb-4">
-                                <input type="text" class="form-control" id="contact" placeholder="Enter contact..." value="Jonathan">
-                                <label for="contact">Send money to</label>
-                            </div>
+         <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Wait 5 seconds
+                setTimeout(function() {
+                    // Initialize and show the modal using Bootstrap's native constructor
+                    var myModal = new bootstrap.Modal(document.getElementById('staticBackdrop'));
+                    myModal.show();
+                }, 1000);
+            });
+        </script>
 
-                            <p class="small text-secondary text-center">Recently connected contacts</p>
-                            <!-- recent connection -->
-                            <div class="swiper swipernav mb-3">
-                                <div class="swiper-wrapper">
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle border border-dotted border-theme">
-                                            <span class="h4">+</span>
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-1.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-3.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-4.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-5.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-6.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-8.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-3.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-4.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+        <script>
+            const input = document.getElementById('digits-only');
 
-                            <input type="number" class="form-control form-control-lg text-center mb-3" id="ihavei" placeholder="Convert Amount..." value="100.00">
-                            <div class="row mb-4">
-                                <div class="col">
-                                    <div class="form-floating mb-1">
-                                        <select class="form-select" id="ihavecurrencyi">
-                                            <option>USD Wallet</option>
-                                            <option>CAD Wallet</option>
-                                            <option>AUD Wallet</option>
-                                        </select>
-                                        <label for="ihavecurrencyi">From...</label>
-                                    </div>
-                                    <p class="small text-secondary text-center">1.00 USD</p>
-                                </div>
-                                <div class="col-auto">
-                                    <button class="btn btn-square btn-theme mt-2"><i class="bi bi-arrow-left-right"></i></button>
-                                </div>
-                                <div class="col">
-                                    <div class="form-floating mb-1">
-                                        <select class="form-select" id="ihavecurrency2i">
-                                            <option>USD</option>
-                                            <option selected="">CAD</option>
-                                            <option>AUD</option>
-                                        </select>
-                                        <label for="ihavecurrency2i">Send in...</label>
-                                    </div>
-                                    <p class="small text-secondary text-center">1.38 CAD</p>
-                                </div>
-                            </div>
-                            <div class="text-center">
-                                <h5 class="fw-normal"><b class="fw-bold">Great!</b> You are going to send</h5>
-                                <h1 class="mb-0 text-theme-1">100.00</h1>
-                                <p class="text-secondary small">in Canadian Dollar</p>
-                            </div>
+            input.addEventListener('input', function(event) {
+                // Replace any non-numeric character with an empty string
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
 
-                            <div class="alert alert-danger alert-dismissible fade show mt-4" role="alert">
-                                <strong><i class="bi bi-exclamation-triangle me-1"></i> Low balance!</strong><br>
-                                <small>Your wallet account does not have enough money to send. Kindly add money or choose different wallet account.</small>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                            </div>
-                        </div>
-                        <div class="modal-footer justify-content-between">
-                            <button class="btn btn-theme">Send Money</button>
-                            <button type="button" class="btn btn-link mx-2 theme-red" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            const input2 = document.getElementById('digits-only2');
 
-            <!-- receive money modal -->
-            <div class="modal adminuiux-modal fade" id="receivemoneymodal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <p class="modal-title h5">Receive/Request Money</p>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-floating mb-4">
-                                <input type="text" class="form-control" id="contact" placeholder="Enter contact..." value="Jonathan">
-                                <label for="contact">Receive money from</label>
-                            </div>
-
-                            <p class="small text-secondary text-center">Recently connected contacts</p>
-                            <!-- recent connection -->
-                            <div class="swiper swipernav mb-4">
-                                <div class="swiper-wrapper">
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle border border-dotted border-theme">
-                                            <span class="h4">+</span>
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-1.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-3.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-4.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-5.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-6.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-8.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-3.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                    <div class="swiper-slide w-auto">
-                                        <div class="avatar avatar-40 rounded-circle coverimg">
-                                            <img src="{% static 'assets/img/modern-ai-image/user-4.jpg' %}" alt="">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row mb-4">
-                                <div class="col">
-                                    <input type="number" class="form-control form-control-lg" placeholder="Convert Amount..." value="100.00">
-                                </div>
-                                <div class="col-auto">
-                                    <select class="form-select form-select-lg">
-                                        <option>USD Wallet</option>
-                                        <option selected>CAD Wallet</option>
-                                        <option>AUD Wallet</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="text-center">
-                                <h5 class="fw-normal"><b class="fw-bold">Great!</b> You are going to receive</h5>
-                                <h1 class="mb-0 text-theme-1">100.00</h1>
-                                <p class="text-secondary small">in CAD wallet</p>
-                            </div>
-                        </div>
-                        <div class="modal-footer justify-content-between">
-                            <button class="btn btn-theme">Request Money</button>
-                            <button type="button" class="btn btn-link mx-2 theme-red" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- add money modal -->
-            <div class="modal adminuiux-modal fade" id="addmoneymodal" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <p class="modal-title h5">Add Money</p>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row mb-4">
-                                <div class="col">
-                                    <input type="number" class="form-control form-control-lg text-center" placeholder="Add Amount..." value="100.00">
-                                </div>
-                                <div class="col-auto">
-                                    <select class="form-select form-select-lg">
-                                        <option>USD Wallet</option>
-                                        <option>CAD Wallet</option>
-                                        <option>AUD Wallet</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="text-center mb-4">
-                                <h5 class="fw-normal"><b class="fw-bold">Great!</b> You are going to add</h5>
-                                <h1 class="mb-0 text-theme-1">100.00</h1>
-                                <p class="text-secondary small">money in CAD Wallet</p>
-                            </div>
-                            <h6>Add money using</h6>
-                            <ul class="list-group adminuiux-list-group">
-                                <li class="list-group-item">
-                                    <input class="form-check-input me-1" type="radio" name="listGroupRadio" value="" id="firstRadio2" checked="">
-                                    <label class="form-check-label stretched-link" for="firstRadio2">Net Banking</label>
-                                </li>
-                                <li class="list-group-item">
-                                    <input class="form-check-input me-1" type="radio" name="listGroupRadio" value="" id="secondRadio2">
-                                    <label class="form-check-label stretched-link" for="secondRadio2">Credit / Debit Card</label>
-                                </li>
-                                <li class="list-group-item">
-                                    <input class="form-check-input me-1" type="radio" name="listGroupRadio" value="" id="thirdRadio2">
-                                    <label class="form-check-label stretched-link" for="thirdRadio2">UPI Payment</label>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="modal-footer justify-content-between">
-                            <button class="btn btn-theme">Pay Now</button>
-                            <button type="button" class="btn btn-link mx-2 theme-red" data-bs-dismiss="modal">Cancel</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
-            <!-- page footer -->
-            <!-- standard footer -->
+            input2.addEventListener('input', function(event) {
+                // Replace any non-numeric character with an empty string
+                this.value = this.value.replace(/[^0-9]/g, '');
+            });
+        </script>
+    {% endif %}
 
 {% endblock content %}

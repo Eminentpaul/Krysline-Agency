@@ -42,54 +42,85 @@ load_dotenv()
 #                     source_user=new_user_profile.user,
 #                     generation=gen
 #                 )
-        
+
 #         current_upline = current_upline.referrer
 #         gen += 1
 
 
-
 @transaction.atomic
-def distribute_commissions(new_affiliate):
+def distribute_commissions(new_affiliate=None, property=None, new=False):
     """
     Climbs the MLM tree and pays uplines based on their package depth.
+
     """
+    payment_amount = 0
+    current_upline_profile = None
+    sales_percent = 10/100
+    rent_percent = 5/100
 
     # The person who just paid
-    payment_amount = new_affiliate.package.price
-    # The first person to get paid (The Referrer)
-    current_upline_profile = new_affiliate.user.profile.referrer 
+    if new:
+        payment_amount = new_affiliate.package.price
 
-    
+        # The first person to get paid (The Referrer)
+        current_upline_profile = new_affiliate.user.profile.referrer
+    else:
+        payment_amount = property.amount
+        # The first person to get paid (The Referrer)
+        current_upline_profile = property.affiliate.user.profile.referrer
+
     gen = 1
     # KAL Policy: We only pay up to 3 generations
     while current_upline_profile and gen <= 3:
         # Get the upline's business record to check their package
-        upline_affiliate = getattr(current_upline_profile.user, 'affiliate_record', None)
-        
+        upline_affiliate = getattr(
+            current_upline_profile.user, 'affiliate_record', None)
+
         if upline_affiliate and upline_affiliate.is_active:
             upline_package = upline_affiliate.package
-            
+
             # Check if their package allows earning at this depth (Gen 1, 2, or 3)
             if gen <= upline_package.generations:
                 # Pull percentage from the JSONField we created: {"1": 20, "2": 10...}
                 percentage = upline_package.commissions.get(str(gen), 0)
-                
+
                 if percentage > 0:
-                    commission_amount = (payment_amount * Decimal(percentage)) / Decimal(100)
-                    
-                    # 1. Update Balance (Securely)
-                    current_upline_profile.balance += commission_amount
-                    current_upline_profile.save()
-                    
-                    # 2. Create Audit Log
-                    CommissionLog.objects.create(
-                        recipient_profile=current_upline_profile,
-                        amount=commission_amount,
-                        source_user=new_affiliate.user,
-                        generation=gen
-                    )
-                    
-                    logger.info(f"Commission Paid: {commission_amount} to {current_upline_profile.user.email}")
+                    commission_amount = (
+                        payment_amount * Decimal(percentage)) / Decimal(100)
+
+                    with transaction.atomic():
+
+                        if not new:
+                            # 1. Update Balance (Securely)
+                            current_upline_profile.balance += commission_amount
+                            current_upline_profile.save()
+
+                            property.affiliate.user.profile.balance += int(
+                                property.amount * sales_percent)
+                            property.affiliate.user.profile.save()
+
+                        # 2. Create Audit Log
+                            CommissionLog.objects.create(
+                                recipient_profile=current_upline_profile,
+                                amount=commission_amount,
+                                source_user=property.affiliate.user,
+                                generation=gen
+                            )
+
+                        else:
+                            # 1. Update Balance (Securely)
+                            current_upline_profile.balance += commission_amount
+                            current_upline_profile.save()
+
+                            CommissionLog.objects.create(
+                                recipient_profile=current_upline_profile,
+                                amount=commission_amount,
+                                source_user=new_affiliate.user,
+                                generation=gen
+                            )
+
+                        logger.info(
+                            f"Commission Paid: {commission_amount} to {current_upline_profile.user.email}")
 
         # Move up to the next boss in the tree
         current_upline_profile = current_upline_profile.referrer
@@ -100,9 +131,8 @@ def distribute_commissions(new_affiliate):
     return True
 
 
-
 # ==================================================
-# Flutterwave transaction verification 
+# Flutterwave transaction verification
 # ==================================================
 
 
@@ -118,8 +148,6 @@ def distribute_commissions(new_affiliate):
 #     }
 
 
-    
-
 #     try:
 #         response = requests.get(url, headers=headers)
 #         res_data = response.json()
@@ -128,23 +156,23 @@ def distribute_commissions(new_affiliate):
 #             data = res_data["data"]
 #             # Fetch the pending affiliate record using the reference
 #             # tx_ref was generated in the 'process_payment' view
-            
+
 #             with transaction.atomic():
 #                 package = get_object_or_404(AffiliatePackage, price=float(data['amount']))
 #                 try:
 #                     affiliate = Affiliate.objects.select_for_update().get(referral_code=str(user.affiliate_record.referral_code))
-                    
+
 #                     if float(data["amount"]) >= package.price and data["currency"] == "NGN":
 #                         # SUCCESS: Activate user and trigger MLM Commissions
 #                         affiliate.is_active = True
 #                         affiliate.save()
-                        
+
 #                         # Trigger your MLM commission distribution logic
 #                         # distribute_commissions(affiliate.user.profile)
 
 #                         # print("Normal Ziko")
 #                         return True
-                    
+
 
 #                 except Affiliate.DoesNotExist:
 #                     Affiliate.objects.create(
@@ -152,12 +180,12 @@ def distribute_commissions(new_affiliate):
 #                         package = package
 #                     )
 
-                
+
 #                 # Critical check: Does the paid amount match the package price?
-                
-                    
+
+
 #     except Exception as e:
 #         print(f"Verification Error: {e}")
-        
-    
+
+
 #     return False

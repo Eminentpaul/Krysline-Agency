@@ -5,17 +5,24 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST, require_GET
-from affiliation.models import AffiliatePackage, CommissionLog, PropertyTransaction, Affiliate
+from affiliation.models import AffiliatePackage, CommissionLog, PropertyTransaction, Affiliate, UserInvoice
 from affiliation.services import *
 from dotenv import load_dotenv
 from django.urls import reverse
 import os
 import paystack
+from django.utils import timezone
 from monnify_verification.monnify_api import *
 from .models import Withdrawal, Transaction
 from authentication.models import UserProfile
 from .forms import UserUpdateForm, PaymentUpdate
 from django.db.models import Sum
+from datetime import datetime, timedelta
+from .utils import check_expired_subscriptions
+from krysline_admin.models import TransactionPIN
+from django.contrib import messages as mg
+from django.conf import settings
+
 
 load_dotenv()
 
@@ -35,8 +42,26 @@ def dashboard(request):
     affiliate = getattr(user, 'affiliate_record', None)
 
     # 2. Security Check: Redirect if no affiliate, no package, or inactive
-    if not affiliate or not affiliate.is_active or not affiliate.package:
-        return redirect('choose_package')
+
+    # Setting Transaction PIN
+    set_pin = False
+    if TransactionPIN.objects.filter(user=request.user).exists():
+        set_pin = True
+        if not affiliate or not affiliate.is_active:
+            return redirect('choose_package')
+
+    if request.method == 'POST':
+        pin = request.POST.get('pin')
+        cpin = request.POST.get('cpin')
+
+        trans_pin = TransactionPIN()
+
+        if pin == cpin:
+            trans_pin.user = request.user
+            trans_pin.set_pin(pin)
+            return redirect('dashboard')
+        else:
+            mg.error(request, 'PIN, Not matching, Try Again!')
 
     # 3. Financial Calculations (Withdrawals)
     # Total Paid Out (Approved)
@@ -87,14 +112,15 @@ def dashboard(request):
         'plan_name': plan_name,
         'rank_msg': rank_msg,
         'latest_commissions': latest_commissions,
-
+        'set_pin': set_pin,
+        'is_active': affiliate.is_active
     }
 
     return render(request, 'users/user-dashboard.html', context)
 
 
 @login_required(login_url='login')
-@rate_limit(rate='10/hour')  # Prevent script-kiddies from spamming packages
+@rate_limit(rate='1000/hour')  # Prevent script-kiddies from spamming packages
 @log_security_event(action='PACKAGE_SELECTION_START')
 def choose_package(request):
     """
@@ -104,107 +130,175 @@ def choose_package(request):
     if hasattr(request.user, 'affiliate'):
         return redirect('dashboard')
 
-    packages = AffiliatePackage.objects.filter(
-        is_active=True).order_by('price')
+    packages = AffiliatePackage.objects.all().order_by('price')
 
-    if request.method == "POST":
-        package_id = request.POST.get('package_id')
-        referrer_code = request.POST.get('referrer_code', '').strip()
+    
 
-        # 2. Secure Fetch: Get package by ID from DB, NOT the price from POST
-        selected_package = get_object_or_404(
-            AffiliatePackage, id=package_id, is_active=True)
-
-        # 3. Referrer Validation: Handle the upline logic
-        upline = None
-        if referrer_code:
-            upline = Affiliate.objects.filter(
-                referral_code=referrer_code).first()
-
-        # 4. Atomic Transaction: Create Affiliate profile safely
-        try:
-            with transaction.atomic():
-                new_affiliate = Affiliate.objects.create(
-                    user=request.user,
-                    upline=upline,
-                    package=selected_package,
-                    is_active=False  # Keep inactive until payment is confirmed
-                )
-
-                # Store the package_id in session for the Payment Gateway (Paystack/Flutterwave)
-                request.session['pending_registration_id'] = new_affiliate.id
-
-                # Redirect to your Payment Page
-                return redirect('process_payment')
-
-        except Exception as e:
-            logger.error("package_selection_failed",
-                         user=request.user.email, error=str(e))
-            return render(request, 'onboarding/choose_package.html', {
-                'packages': packages,
-                'error': "An error occurred. Please try again."
-            })
-
-    # print()
+    # print(request.user.affiliate_record.is_active)
     context = {
         'packages': packages,
-        'user_package': request.user.affiliate_record
+        'user_package': request.user.affiliate_record,
+        'is_active': request.user.affiliate_record.is_active,
     }
 
     return render(request, 'users/plans.html', context)
 
 
-@login_required(login_url='login')
-def payments(request):
+def package_payment(request, pk):
+    import uuid
+
     user = request.user
+    package = get_object_or_404(AffiliatePackage, id=pk)
+    now = timezone.localtime(timezone.now())
+    year = timezone.now()
+    year = str(datetime.now().date()).split("-")
+
+    reference = ''
 
     try:
-        paystack.api_key = os.environ.get('SECRET_KEY')
+        userInvoiceReference = UserInvoice.objects.filter(user=user)
+        if userInvoiceReference:
+            reference = userInvoiceReference.first().inovoice_reference
 
-        # status = request.GET.get('status')
-        tx_ref = request.GET.get('reference')
+            invoice, valid = get_invoice(reference)
+            if valid:
+                if invoice['invoiceStatus'] == "PENDING":
+                    url = invoice['checkoutUrl']
+                    return redirect(url)
 
-        response = paystack.Transaction.verify(tx_ref)
+                if invoice['invoiceStatus'] == "PAID":
+                    expire = datetime.strptime(
+                        invoice['expiryDate'], "%Y-%m-%d %H:%M:%S")
 
-        if response.status and response.data["status"] == "success":
+                    if timezone.is_aware(now):
+                        expire = timezone.make_aware(expire)
 
-            amount = response.data["amount"]/100
-            with transaction.atomic():
-                package = get_object_or_404(
-                    AffiliatePackage, price=float(amount))
-                print("package: ", package)
-                try:
-                    affiliate = Affiliate.objects.select_for_update().get(
-                        referral_code=str(user.affiliate_record.referral_code))
+                    # Checking if invoice has expired
+                    if expire < now or invoice['invoiceStatus'] == 'EXPIRED' or invoice['invoiceStatus'] == 'CANCELLED':
+                        reference = f"KAL-{package.name}-{user.username}-{uuid.uuid4()}-{year[0]}"
+                        print(reference)
+                    else:
+                        return redirect('payments')
+                else: 
+                    reference = f"KAL-{package.name}-{user.username}-{uuid.uuid4()}-{year[0]}"
+                    
 
-                    if not affiliate.package:
-                        affiliate.package = package
-                        affiliate.save()
+        description = f"Subscription for the {package.name.capitalize()} Plan - {package.get_name_display()}"
+        local_now = timezone.localtime(settings.DURATION)
 
-                    if float(amount) >= package.price:
-                        # SUCCESS: Activate user and trigger MLM Commissions
-                        affiliate.is_active = True
-                        affiliate.save()
+        
+        # 2. Format it
+        expiry_date = local_now.strftime("%Y-%m-%d %H:%M:%S")
 
-                        print("Normal", affiliate)
-                        # Trigger your MLM commission distribution logic
-                        # distribute_commissions(affiliate.user.profile)
+        # update user invoice reference
+        userInvoice = UserInvoice.objects.filter(user=user).first()
+        userInvoice.inovoice_reference = reference
+        userInvoice.save()
 
-                        if distribute_commissions(affiliate):
+        # Generating new Invoice 
+        invoice, valid = create_invoice(
+            int(package.price),
+            user,
+            description,
+            userInvoice.inovoice_reference,
+            expiry_date
+        )
+
+
+        if valid:
+            print(invoice, 'Original Created')
+            url = invoice['checkoutUrl']
+            return redirect(url)
+        else:
+            messages.error(request, "Unable to generate invoice")
+            return redirect('choose_package')
+    except:
+        messages.error(request, 'Please Try Again!')
+        return redirect('choose_package') 
+
+
+@login_required(login_url='login')
+def payments(request):
+    reference = ""
+    payment_ref = request.GET.get('paymentReference')
+
+    if payment_ref:
+        reference = payment_ref
+    else:
+        reference = request.user.invoice.inovoice_reference
+
+
+    try:
+        invoice, valid = get_invoice(reference)
+
+  
+        if valid and invoice['invoiceStatus'] == 'PAID':
+
+            package_name = invoice['invoiceReference'].split('-')[1]
+
+            description = invoice['description'].lower()
+
+            if "subscription" in description:
+
+                with transaction.atomic():
+
+                    package = get_object_or_404(
+                        AffiliatePackage, name=package_name, price=float(invoice['amount']))
+
+                    user = get_object_or_404(
+                        User, email=invoice['customerEmail'])
+
+                    duration = settings.DURATION
+
+                    try:
+                        affiliate = Affiliate.objects.select_for_update().get(
+                            referral_code=str(user.affiliate_record.referral_code))
+
+                        if not affiliate.package:
+                            affiliate.package = package
+                            affiliate.save()
+
+                        if float(invoice['amount']) >= package.price:
+                            # SUCCESS: Activate user and trigger MLM Commissions
+                            
+                            affiliate.is_active = True
+                            affiliate.duration = duration
+                            affiliate.package = package
+                            affiliate.save()
+
+                            if distribute_commissions(new_affiliate=affiliate, new=True):
+                                Transaction.objects.create(
+                                    user=user,
+                                    amount=package.price,
+                                    transaction_type='package_purchase',
+                                    description=f"Subscription Approved (Ref: {package.get_name_display()})"
+                                )
+                                return redirect('dashboard')
+                                
+
+                    except Affiliate.DoesNotExist:
+                        affiliate2 = Affiliate.objects.create(
+                            user=user,
+                            package=package,
+                            duration=duration,
+                            is_active=True
+                        )
+                        affiliate2.save()
+
+                        if distribute_commissions(affiliate2):
+
                             return redirect('dashboard')
-
-                except Affiliate.DoesNotExist:
-                    Affiliate.objects.create(
-                        user=user,
-                        package=package
-                    )
-
+            else:
+                print("Put withdrawal completion here")
+                # TODO: verify payment for widthdrawal transfer
         else:
             messages.error(request, "Payment not successful")
             return redirect('choose_package')
 
     except Exception as e:
         print(f"Verification Error: {e}")
+        messages.error(request, "Payment Not successful")
+        return redirect('choose_package')
 
 
 @login_required(login_url='login')
@@ -218,23 +312,29 @@ def withdraw_funds(request):
     """
     profile = request.user.profile
 
+    user_pin = request.user.transaction_pin
+
     if not profile.account_number:
-        messages.warning(request, "Please update your bank details to enable withdrawals.")
+        messages.warning(
+            request, "Please update your bank details to enable withdrawals.")
         # Build the URL: /user/profile/update/?next=/user/withdraw/
-        dest_url = reverse('payment_update') 
+        dest_url = reverse('payment_update')
         return redirect(f"{dest_url}?next={request.path}")
 
-    package_price = int(request.user.affiliate_record.package.price)
 
     if request.method == 'POST':
         try:
-            # 1. Get amount and sanitize
+            # 1. Get amount, Transaction_PIN and sanitize
             amount = Decimal(request.POST.get('amount', 0))
+            if not user_pin.check_pin(request.POST.get('pin')):
+                messages.error(request, "Invalid Transaction PIN.")
+                return redirect('withdraw_funds')
+
             MIN_WITHDRAWAL = Decimal('2000.00')  # KAL Policy: Min ₦2k
 
             # 2. SECURITY CHECKS
             # A. Check if they have enough commission balance
-            if amount > (profile.balance - package_price):
+            if amount > profile.balance:
                 messages.error(request, "Insufficient commission balance.")
                 return redirect('withdraw_funds')
 

@@ -46,7 +46,11 @@
                                             <input type="text" name="amount" class="form-control" aria-label="Amount (to the nearest dollar)">
                                             <span class="input-group-text">.00</span>
                                         </div>
-                                        <span class="input-text text-danger-light mb-3">Safely withdraw your funds using our highly secure process and various withdrawal method</span>
+                                        <div class="mb-3">
+                                            <label for="cpin" class="col-form-label">Confirm Transaction PIN:</label>
+                                            <input type="password" id="digits-only2" maxlength="4" placeholder="Conffirm PIN" name="pin" class="form-control" id="cpin" required>
+                                        </div>
+                                        {% comment %} <span class="input-text text-danger-light mb-3">Safely withdraw your funds using our highly secure process and various withdrawal method</span> {% endcomment %}
                                     </div>
                                     <div class="col-12 col-md-6 col-lg-6 text-center">
                                         <div class="input-group mb-3">

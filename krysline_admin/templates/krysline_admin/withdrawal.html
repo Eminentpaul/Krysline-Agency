@@ -1,0 +1,179 @@
+{% extends "krysline_nav.html" %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+{% load custom_tags %}
+{% load widget_tweaks %}
+
+
+
+{% block content %}
+    <main class="adminuiux-content has-sidebar" onclick="contentClick()">
+
+        
+
+        <!-- content -->
+        <div class="container mt-3" id="main-content">
+            
+
+            <div class="row gx-3 gx-lg-4">
+                <!-- Orders -->
+                <div class="col-12 col-md-12 position-relative">
+                    <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                        <div class="card-header">
+                            <div class="row gx-3">
+                                <div class="col-auto">
+                                    <i class="bi bi-shop h5 avatar avatar-40 bg-theme-1-subtle text-theme-1 rounded"></i>
+                                </div>
+                                <div class="col-auto align-self-center">
+                                    <h6 class="mb-0">All Transactions</h6>
+                                    <p class="text-secondary small">{% include "message.html" %}</p>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="card-body py-0">
+                            <table class="table" id="dataTable">
+                                <thead>
+                                    <tr class="text-muted">
+                                        <th class="w-12"></th>
+                                        <th class="desktop tablet">Transaction ID</th>
+                                        <th class="all">User</th>
+                                        <th class="all">Amount</th>
+                                        <th class="desktop">Initiated Date</th>
+                                        <th class="desktop">Approved Date</th>
+                                        <th class="tablet desktop">Status</th>
+                                        {% if not approved %}
+                                            <th class="all">Action</th>
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% if approved %}
+                                        {% for withdraw in withdrawals %}
+                                    
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    <p class="mb-0">{{withdraw.transaction_id}}</p>
+                                                    {% comment %} <p class="text-secondary small">Men Shoes</p> {% endcomment %}
+                                                </td>
+                                                <td>
+                                                    <div class="row gx-3 align-items-center">
+                                                        {% comment %} <div class="col-auto">
+                                                            <figure class="avatar avatar-50 border mb-0 coverimg rounded">
+                                                                <li class="bi bi-coin fs-2"></li>
+                                                            </figure>
+                                                        </div> {% endcomment %}
+                                                        <div class="col">
+                                                            <p class="mb-0">{{withdraw.user.get_full_name|title}}</p>
+                                                            <p class="text-secondary small">{{withdraw.username|title}}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0">{{withdraw.amount|intcomma}}</p>
+                                                    <p class="text-secondary small">NGN</p>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0">{{withdraw.created_at|date:"M d, Y"}}</p>
+                                                    <p class="text-secondary small">{{withdraw.created_at|date:"h:i A"}}</p>
+                                                </td>
+                                                
+                                                <td>
+                                                    <p class="mb-0">{{withdraw.processed_at|date:"M d, Y"}}</p>
+                                                    <p class="text-secondary small">{{withdraw.processed_at|date:"h:i A"}}</p>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-sm badge-light text-bg-theme-1 theme-green">Approved & Paid</span>
+                                                </td>
+                                                {% comment %} <td>
+                                                    <div class="dropdown d-inline-block">
+                                                        <a class="text-secondary no-caret" data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static" role="button">
+                                                            <i class="bi bi-three-dots"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            <li><a class="dropdown-item" href="javascript:void(0)">Edit</a></li>
+                                                            <li><a class="dropdown-item" href="javascript:void(0)">Move</a></li>
+                                                            <li><a class="dropdown-item text-danger" href="javascript:void(0)">Delete</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </td> {% endcomment %}
+                                            </tr>
+
+                                        {% endfor %}
+                                    {% else %}
+                                        {% for withdraw in pending_withdrawals %}
+                                    
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    <p class="mb-0">{{withdraw.transaction_id}}</p>
+                                                    {% comment %} <p class="text-secondary small">Men Shoes</p> {% endcomment %}
+                                                </td>
+                                                <td>
+                                                    <div class="row gx-3 align-items-center">
+                                                        {% comment %} <div class="col-auto">
+                                                            <figure class="avatar avatar-50 border mb-0 coverimg rounded">
+                                                                <li class="bi bi-coin fs-2"></li>
+                                                            </figure>
+                                                        </div> {% endcomment %}
+                                                        <div class="col">
+                                                            <p class="mb-0">{{withdraw.user.get_full_name|title}}</p>
+                                                            <p class="text-secondary small">{{withdraw.username|title}}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0">{{withdraw.amount|intcomma}}</p>
+                                                    <p class="text-secondary small">NGN</p>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0">{{withdraw.created_at|date:"M d, Y"}}</p>
+                                                    <p class="text-secondary small">{{withdraw.created_at|date:"h:i A"}}</p>
+                                                </td>
+                                                
+                                                <td>
+                                                    <p class="mb-0">{{withdraw.processed_at|date:"M d, Y"}}</p>
+                                                    <p class="text-secondary small">{{withdraw.processed_at|date:"h:i A"}}</p>
+                                                </td>
+                                                <td>
+                                                    {% if withdraw.status == "pending" %}
+                                                        <span class="badge badge-sm badge-light text-bg-warning theme-green">{{withdraw.get_status_display}}</span>
+                                                    {% else %}
+                                                        <span class="badge badge-sm badge-light text-bg-danger theme-green">{{withdraw.get_status_display}}</span>
+                                                    {% endif %}
+                                                </td>
+                                                <td>
+                                                    <div class="dropdown d-inline-block">
+                                                        <a class="text-secondary no-caret" data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static" role="button">
+                                                            <i class="bi bi-three-dots"></i>
+                                                        </a>
+                                                        {% if user.user_type == "manager" %}
+                                                        
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            <li><a class="dropdown-item" href="{% url "edit_withdraw" withdraw.transaction_id %}">Edit</a></li>
+                                                            {% comment %} <li><a class="dropdown-item" href="javascript:void(0)">Move</a></li>
+                                                            <li><a class="dropdown-item text-danger" href="javascript:void(0)">Delete</a></li> {% endcomment %}
+                                                        </ul>
+                                                        {% endif %}
+                                                    </div>
+                                                </td>
+                                            </tr>
+
+                                        {% endfor %}
+                                    {% endif %}
+                                    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            
+        </div>
+    </main>
+</div>
+
+{% endblock %}

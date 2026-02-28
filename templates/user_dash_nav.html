@@ -35,7 +35,7 @@
 
 <body class="main-bg main-bg-opac main-bg-blur adminuiux-sidebar-fill-white adminuiux-sidebar-boxed  theme-blue roundedui" data-theme="theme-blue" data-sidebarfill="adminuiux-sidebar-fill-white" data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" tabindex="0">
     <!-- Pageloader -->
-<div class="pageloader">
+{% comment %} <div class="pageloader">
     <div class="container h-100">
         <div class="row justify-content-center align-items-center text-center h-100">
             <div class="col-12 mb-auto pt-4"></div>
@@ -50,7 +50,7 @@
             </div>
         </div>
     </div>
-</div>
+</div>  {% endcomment %}
         <!-- standard header -->
 <header class="adminuiux-header">
     <!-- Fixed navbar -->
@@ -105,15 +105,15 @@
             <!-- right icons button -->
             <div class="ms-auto">
                 <!-- global search toggle -->
-                <button class="btn btn-link btn-square btn-icon btn-link-header" type="button" onclick="openSearch()">
+                {% comment %} <button class="btn btn-link btn-square btn-icon btn-link-header" type="button" onclick="openSearch()">
                     <i data-feather="search"></i>
-                </button>
+                </button>{% endcomment %}
 
                 <!-- dark mode -->
                 <button class="btn btn-link btn-square btnsunmoon btn-link-header" id="btn-layout-modes-dark-page">
                     <i class="sun mx-auto" data-feather="sun"></i>
                     <i class="moon mx-auto" data-feather="moon"></i>
-                </button>
+                </button> 
 
                 <!-- application list dropdown -->
                 {% comment %} <div class="dropdown d-none d-sm-inline-block">
@@ -307,9 +307,9 @@
                             </div>
                         </div>
                         <div class="px-2">
-                            <div><a class="dropdown-item" href="investment-myprofile.html"><i data-feather="user" class="avatar avatar-18 me-1"></i> My
+                            {% comment %} <div><a class="dropdown-item" href="investment-myprofile.html"><i data-feather="user" class="avatar avatar-18 me-1"></i> My
                                     Profile</a>
-                            </div>
+                            </div> {% endcomment %}
                             <div>
                                 <a class="dropdown-item" href="{% url "dashboard" %}">
                                     <div class="row g-0">

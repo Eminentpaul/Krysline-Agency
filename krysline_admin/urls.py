@@ -3,8 +3,14 @@ from . import views
 
 urlpatterns = [
     path('dashboard/', views.home, name='krysline_admin'),
+    path('All/Transactions/', views.transaction_history, name='all_transaction'),
+    path('All/Withdrawal/approved/', views.withdrawal, name='all_approved_withdrawal'),
+    path('All/Withdrawal/pending-or-rejected/', views.pending_withdrawal, name='all_pending_withdrawal'),
     path('active_user/', views.active_user, name="active_user"),
     path('inactive_user/', views.inactive_user, name="inactive_user"),
     path('edit/<str:pk>/user/', views.updateUser, name='edit_user'),
     path('delete/<str:pk>/user/', views.delete_user, name='delete_user'),
+    path('edit/<str:trans_id>/withdrawal/', views.edit_withdraw, name='edit_withdraw'),
+    path('edit/<str:pk>/package/', views.package_update, name='package_update'), 
+    path('Property/Transactions/', views.property, name="properties"),
 ]

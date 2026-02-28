@@ -1,26 +1,34 @@
-"""
-URL configuration for project project.
 
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/6.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path, include
+import datetime
+from django.utils import timezone
+from affiliation.models import Affiliate
 
 urlpatterns = [
+    # Panel URLs (include each panel you installed)
+    path('admin/dj-redis-panel/', include('dj_redis_panel.urls')),
+    path('admin/dj-cache-panel/', include('dj_cache_panel.urls')),
+    path('admin/dj-urls-panel/', include('dj_urls_panel.urls')),
+    
+    # Control Room dashboard
+    path('admin/dj-control-room/', include('dj_control_room.urls')),
+    
     path('developer/eminent/account/', admin.site.urls),
     path('user/', include("authentication.urls")),
     path('Dashboard/', include("users.urls")), 
     path('api', include("monnify_verification.urls")),
     path('kryline/agency/ltd/', include("krysline_admin.urls"))
 ]
+
+
+def check_expiration():
+    today = timezone.localtime(timezone.now()) - datetime.timedelta(minutes=2)
+    # TODO: MINUS 1 HOUR 
+
+    Affiliate.objects.filter(
+            is_active=True,
+            duration__lt=today
+        ).update(is_active=False) 
+    
+check_expiration()

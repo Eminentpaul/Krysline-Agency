@@ -718,7 +718,7 @@
                                         </a>
                                     </div>
                                     <div>
-                                        <a class="dropdown-item" href="adminux-statement.html">
+                                        <a class="dropdown-item" href="{% url "all_transaction" %}">
                                             <i data-feather="clipboard" class="avatar avatar-18 me-1"></i> Transactions
                                             <!--TODO UPDATE URLS-->
                                         </a>
@@ -836,12 +836,12 @@
                                         <div class="col align-self-center menu-name">Inactive User</div>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                {% comment %} <li class="nav-item">
                                     <a class="nav-link" href="#">
                                         <i class="menu-icon bi bi-radar"></i>
                                         <div class="col align-self-center menu-name">Blocked IPs</div>
                                     </a>
-                                </li>
+                                </li> {% endcomment %}
                                 {% comment %} <li class="nav-item">
                                     <a class="nav-link" href="adminux-finance-wallet.html">
                                         <i class="menu-icon bi bi-wallet2"></i>
@@ -866,19 +866,19 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{% url "all_transaction" %}">
                                         <i class="menu-icon bi bi-bank"></i>
                                         <div class="col align-self-center menu-name">Transaction History</div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{% url "all_approved_withdrawal" %}">
                                         <i class="menu-icon bi bi-cash-stack"></i>
                                         <div class="col align-self-center menu-name">Withdrawals</div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="{% url "all_pending_withdrawal" %}">
                                         <i class="menu-icon bi bi-currency-exchange"></i>
                                         <div class="col align-self-center menu-name">Pending Withdrawals</div>
                                     </a>
@@ -912,12 +912,12 @@
                                         <div class="col align-self-center menu-name">View All Package</div>
                                     </a>
                                 </li>
-                                <li class="nav-item">
+                                {% comment %} <li class="nav-item">
                                     <a class="nav-link" href="adminux-network-performance.html">
                                         <i class="menu-icon bi bi-bag-plus-fill"></i>
                                         <div class="col align-self-center menu-name">Add Package</div>
                                     </a>
-                                </li>
+                                </li> {% endcomment %}
                                 {% comment %} <li class="nav-item">
                                     <a class="nav-link" href="adminux-network-devices.html">
                                         <i class="menu-icon bi bi-pc-display-horizontal"></i>
@@ -936,15 +936,27 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="adminux-social-dashboard.html">
+                                    <a class="nav-link" href="{% url "properties" %}">
                                         <i class="menu-icon bi bi-view-list"></i>
-                                        <div class="col align-self-center menu-name">View All Properties</div>
+                                        <div class="col align-self-center menu-name">All Property Transaction</div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" href="adminux-social-analytics.html">
-                                        <i class="menu-icon bi bi-bar-chart"></i>
-                                        <div class="col align-self-center menu-name">Add Properties</div>
+                                        <i class="menu-icon bi bi-folder-check"></i>
+                                        <div class="col align-self-center menu-name">Verified Transaction</div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="adminux-social-analytics.html">
+                                        <i class="menu-icon bi bi-menu-up"></i>
+                                        <div class="col align-self-center menu-name">Unverified Transaction</div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="adminux-social-analytics.html">
+                                        <i class="menu-icon bi bi-folder-plus"></i>
+                                        <div class="col align-self-center menu-name">Add Properties Trans.</div>
                                     </a>
                                 </li>
                                 
