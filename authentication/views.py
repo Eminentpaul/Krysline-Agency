@@ -199,6 +199,7 @@ def register(request):
                     return render(request, 'authentication/verify_email_sent.html')
                 
             except Exception as e:
+                mg.error(request, 'Username or Email has been used! Try Again')
                 logger.error("registration_error", error=str(e))
                 form.add_error(None, "An internal error occurred. Please try again.")
         else:
@@ -258,16 +259,19 @@ def activate_account(request, uidb64, token):
                 new_profile.referrer = upline_affiliate.user.profile
                 new_profile.save()
 
-                
-                Affiliate.objects.get_or_create(
-                    user=user,
-                    upline=upline_affiliate,
-                    # is_active=False # Stays inactive until they pay for a package
-                )
+                print("Creat Affiliate")
+                new_profile.user.affiliate_record.upline = upline_affiliate
+                new_profile.user.affiliate_record.save() 
+                print("Creat Done")
                 
             except Affiliate.DoesNotExist:
-                # If code is wrong, they just don't have a referrer (Company Direct)
-                pass 
+                pass
+                # Affiliate.objects.get_or_create(
+                #     user=user,
+                #     # upline=upline_affiliate,
+                #     is_active=False # Stays inactive until they pay for a package
+                # )
+
 
         # Log them in automatically after verification
         auth_login(request, user)

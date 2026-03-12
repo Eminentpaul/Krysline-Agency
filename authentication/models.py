@@ -15,7 +15,7 @@ from security.models import EncryptedField
 
 
 class User(AbstractUser):
-
+   
     USER_TYPE = (
         ('affiliate', 'affiliate'),
         ('admin', 'admin'),

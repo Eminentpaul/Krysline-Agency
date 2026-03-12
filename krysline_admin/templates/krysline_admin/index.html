@@ -26,109 +26,43 @@
                             onclick="this.previousElementSibling.click()"><i class="bi bi-calendar-event"></i></span>
                     </div>
                 </div>
-                <div class="col-auto ps-0 position-relative order-2 order-sm-3 mb-3 mb-sm-0">
-                    <div class="dropdown d-inline-block">
-                        <a class="btn btn-link btn-square no-caret dropdown-toggle"
-                        href="#"
-                        role="button"
-                        id="filterintitle"
-                        data-bs-toggle="dropdown"
-                        data-bs-auto-close="outside"
-                        aria-expanded="false">
-                            <i class="bi bi-filter"></i>
-                        </a>
-                        <div class="dropdown-menu width-300" aria-labelledby="filterintitle">
-                            <div class="p-1 mb-2">
-                                <div class="input-group input-group-md rounded" style="--mw-dynamic:234px">
-                                    <span class="input-group-text text-theme-1"><i class="bi bi-box"></i></span>
-                                    <select class="form-control choices" id="titltfilterlist" multiple>
-                                        <option value="San Francisco">San Francisco</option>
-                                        <option value="New York">New York</option>
-                                        <option value="London">London</option>
-                                        <option value="Chicago">Chicago</option>
-                                        <option value="India" selected="">India</option>
-                                        <option value="Sydney">Sydney</option>
-                                        <option value="Seattle">Seattle</option>
-                                        <option value="Los Angeles">Los Angeles</option>
-                                        <option value="Indonesia">Indonesia</option>
-                                        <option value="Los Angeles">Los Angeles</option>
-                                        <option value="Chicago">Chicago</option>
-                                        <option value="India">India</option>
-                                    </select>
-                                </div>
-                                <div class="invalid-feedback">You have already selected maximum option allowed. (This is Configurable)</div>
-                            </div>
-                            <div class="p-1">
-                                <h6 class="mb-0">Orders:</h6>
-                                <p class="text-secondary small">1256 orders last week</p>
-                            </div>
-                            <ul class="list-group list-group-flush bg-transparent border-0 mb-2">
-                                <li class="list-group-item">
-                                    <div class="row gx-3 gx-lg-4">
-                                        <div class="col">Online Orders</div>
-                                        <div class="col-auto">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input"
-                                                    type="checkbox"
-                                                    role="switch"
-                                                    id="titleswitch1">
-                                                <label class="form-check-label" for="titleswitch1"></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="row gx-3 gx-lg-4">
-                                        <div class="col">Offline Orders</div>
-                                        <div class="col-auto">
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input"
-                                                    type="checkbox"
-                                                    role="switch"
-                                                    id="titleswitch2"
-                                                    checked="">
-                                                <label class="form-check-label" for="titleswitch2"></label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                            <div class="p-1">
-                                <div class="row gx-3 gx-lg-4">
-                                    <div class="col">
-                                        <button class="btn btn-outline-secondary border ddclose">cancel</button>
-                                    </div>
-                                    <div class="col-auto">
-                                        <button class="btn btn-theme">Save</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <a href="adminux-company-help-center.html"
-                    class="btn btn-link btn-square"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top"
-                    id="stylise">
-                        <i class="bi bi-life-preserver"></i>
-                    </a>
-                    <a href="https://1.envato.market/7N7Br"
-                    target="_blank"
-                    class="btn btn-link btn-square"
-                    data-bs-toggle="tooltip"
-                    data-bs-placement="top">
-                        <span class="bi bi-basket position-relative">
-                            <span class="position-absolute top-0 start-100 p-1 bg-danger border border-light rounded-circle">
-                                <span class="visually-hidden">New alerts</span>
-                            </span>
-                        </span>
-                    </a>
-                </div>
+                          <div class="card custom--card mb-4 mx">
+              <div class="card-body">
+                  <form method="GET" action="{% url 'inventory_report' %}" class="row g-3 align-items-end">
+                      <!-- 1. Text Search -->
+                      <div class="col-md-4">
+                          <label class="form-label">Search Entry (Ref ID / Description)</label>
+                          <input type="text" name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Ex: PKG-1234">
+                      </div>
+
+                      <!-- 2. Date Range: Start -->
+                      <div class="col-md-3">
+                          <label class="form-label">From Date</label>
+                          <input type="date" name="start_date" value="{{ request.GET.start_date }}" class="form-control">
+                      </div>
+
+                      <!-- 3. Date Range: End -->
+                      <div class="col-md-3">
+                          <label class="form-label">To Date</label>
+                          <input type="date" name="end_date" value="{{ request.GET.end_date }}" class="form-control">
+                      </div>
+
+                      <!-- 4. Filter Button -->
+                      <div class="col-md-2">
+                          <button type="submit" class="btn btn-primary w-100">
+                              <i class="fas fa-filter"></i> Filter
+                          </button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+
+          <!-- Financial Table remains as we built it, but now it responds to the form above -->
             </div>
             <nav aria-label="breadcrumb" class="breadcrumb-theme mt-3 rounded">
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item bi">
-                        <a href="adminux-dashboard.html"><i class="bi bi-house-door me-2"></i> AdminUX</a>
+                        <a href="adminux-dashboard.html"><i class="bi bi-house-door me-2"></i> Krysline Agency Ltd.</a>
                     </li>
                     <li class="breadcrumb-item bi active" aria-current="page">Finance</li>
                 </ol>
@@ -166,10 +100,10 @@
                                             <i class="bi bi-three-dots-vertical"></i>
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-end">
-                                            <li>
+                                            {% comment %} <li>
                                                 <a class="dropdown-item" href="javascript:void(0)">View All Users</a>
-                                                <!--TODO: update the url-->
-                                            </li>
+                                                
+                                            </li> {% endcomment %}
                                             {% comment %} <li>
                                                 <a class="dropdown-item" href="javascript:void(0)">Move</a>
                                             </li>
@@ -212,8 +146,8 @@
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
-                                                <a class="dropdown-item" href="javascript:void(0)">View Active Users</a>
-                                                <!--TODO: update the url-->
+                                                <a class="dropdown-item" href="{% url "active_user" %}">View Active Users</a>
+                                                
                                             </li>
                                             {% comment %} <li>
                                                 <a class="dropdown-item" href="javascript:void(0)">Move</a>
@@ -241,9 +175,9 @@
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <p class="text-secondary small mb-1">Unverified Emails</p>
+                                    <p class="text-secondary small mb-1">Total Package Income</p>
                                     <h5>
-                                        {{unverified_email|intcomma}}
+                                        <small>₦</small>{{totalPackageIncome|floatformat:2|intcomma}}
                                     </h5>
                                 </div>
                             </div>
@@ -306,10 +240,10 @@
                                             <i class="bi bi-three-dots-vertical"></i>
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-end">
-                                            {% comment %} <li>
-                                                <a class="dropdown-item" href="javascript:void(0)">View All Users</a>
-                                                <!--TODO: update the url-->
-                                            </li> {% endcomment %}
+                                            <li>
+                                                <a class="dropdown-item" href="{% url 'all_approved_withdrawal' %}">All Approved Withdrawal</a>
+                                               
+                                            </li> 
                                             {% comment %} <li>
                                                 <a class="dropdown-item" href="javascript:void(0)">Move</a>
                                             </li>
@@ -352,8 +286,8 @@
                                         </a>
                                         <ul class="dropdown-menu dropdown-menu-end">
                                             <li>
-                                                <a class="dropdown-item" href="javascript:void(0)">View Active Users</a>
-                                                <!--TODO: update the url-->
+                                                <a class="dropdown-item" href="{% url "all_pending_withdrawal" %}">View Pending Withdrawals</a>
+                                               
                                             </li>
                                             {% comment %} <li>
                                                 <a class="dropdown-item" href="javascript:void(0)">Move</a>
@@ -381,9 +315,31 @@
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <p class="text-secondary small mb-1">Unverified Emails</p>
+                                    <p class="text-secondary small mb-1">Total Property Sale</p>
                                     <h5>
-                                        {{unverified_email|intcomma}}
+                                        <small>₦</small>{{totalPropertySale|floatformat:2|intcomma}}
+                                    </h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6 col-lg-6 col-xxl-3">
+                    <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                        <div class="card-body">
+                            <div class="row gx-3 align-items-center">
+                                <div class="col-auto">
+                                    <div class="avatar avatar-60">
+                                        <div id="circleprogrdessredsum"></div>
+                                        <div class="avatar avatar-40 h5 bg-theme-1-subtle text-theme-1 rounded-circle position-absolute top-50 start-50 translate-middle theme-red">
+                                            <i class="bi bi-person-fill-slash"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <p class="text-secondary small mb-1">Total Expenses</p>
+                                    <h5>
+                                        <small>₦</small>{{total_expenses|floatformat:2|intcomma}}
                                     </h5>
                                 </div>
                             </div>
@@ -403,9 +359,9 @@
                                     </div>
                                 </div>
                                 <div class="col">
-                                    <p class="opacity-50 small mb-1">Total Packages</p>
+                                    <p class="opacity-50 small mb-1">Total Property Activities</p>
                                     <h5>
-                                        {{total_packages|intcomma}}
+                                        {{total_property|intcomma}}
                                     </h5>
                                 </div>
                                 
@@ -448,16 +404,16 @@
                                         </div>
                                         {% if total_income > 90000 %}
                                             <div class="col">
-                                                <p class="small opacity-50 mb-1">Income</p>
+                                                <p class="small opacity-50 mb-1">Net Income</p>
                                                 <h5 class="">
-                                                <small>₦</small>{{total_income|div:1000|intcomma}}<small>k</small>
+                                                <small>₦</small>{{net_balance|div:1000|intcomma}}<small>k</small>
                                                 </h5>
                                             </div>
                                         {% else %}
                                             <div class="col">
-                                                <p class="small opacity-50 mb-1">Income</p>
+                                                <p class="small opacity-50 mb-1">Net Income</p>
                                                 <h5 class="">
-                                                <small>₦</small>{{total_income|floatformat:2|intcomma}}
+                                                <small>₦</small>{{net_balance|floatformat:2|intcomma}}
                                                 </h5>
                                             </div>
                                         {% endif %}
@@ -467,16 +423,16 @@
                                     <div class="row gx-3 align-items-center">
                                         {% if total_withdrawal > 900 %}
                                             <div class="col">
-                                                <p class="small opacity-50 mb-1">Expense</p>
+                                                <p class="small opacity-50 mb-1">Outflow</p>
                                                 <h5 class="">
-                                                    <small>₦</small>{{total_withdrawal|div:1000|intcomma}}<small>k</small>
+                                                    <small>₦</small>{{outflow|div:1000|intcomma}}<small>k</small>
                                                 </h5>
                                             </div>
                                         {% else %}
                                             <div class="col">
                                                 <p class="small opacity-50 mb-1">Expense</p>
                                                 <h5 class="">
-                                                    <small>₦</small>{{total_withdrawal|floatformat:2|intcomma}}
+                                                    <small>₦</small>{{outflow|floatformat:2|intcomma}}
                                                 </h5>
                                             </div>
                                         {% endif %}
@@ -1129,7 +1085,7 @@
     </div>
     <!-- footer -->
     <!-- large footer -->
-    <div class="adminuiux-footer has-adminuiux-sidebar mt-auto py-0">
+    <div class="adminuiux-footer has-adminuiux-sidebar mt-auto py-0 d-none">
         <div class="container py-4 py-lg-5">
             <div class="row mb-3">
                 <div class="col-12 col-xxl-4 mb-3 mb-xxl-0">
@@ -1208,7 +1164,7 @@
                         <b>Main office:</b>
                     </p>
                     <p class="mb-1">
-                        <a href="https://adminuiux.com" target="_blank">www.adminuiux.com</a>
+                        <a href="" target="_blank">www.adminuiux.com</a>
                     </p>
                     <p class="text-secondary mb-4">Test data 103909 Witamer CR, Niagara Falls, NY 14305, United States</p>
                     <div class="row gx-3 align-items-center mb-3">
@@ -1368,6 +1324,10 @@
             });
         </script>
     {% endif %}
+
+
+     <!-- Page Level js -->
+    <script src="{% static 'assets/js/adminux/adminux-finance-dashboard.js' %}"></script>
 {% endblock content %}
 
 

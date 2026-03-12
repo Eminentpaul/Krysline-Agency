@@ -51,10 +51,10 @@
                              alt=""
                              class="height-100 mb-3">
                         <p class="h3 mb-0">
-                            <span class="text-gradient">AdminUX</span>
+                            <span class="text-gradient">Krysline</span>
                         </p>
                         <p class="small text-secondary mb-3">
-                            <span class="">Admin Dashboard HTML Template</span>
+                            <span class="">Agency Admin Dashboard</span>
                         </p>
                         <div class="loader6 mb-2 mx-auto"
                              style="border-color: var(--adminuiux-theme-2)">
@@ -80,17 +80,17 @@
                         <i class="sidebar-svg" data-feather="menu"></i>
                     </button>
                     <!-- logo -->
-                    <a class="navbar-brand" href="adminux-dashboard.html">
+                    <a class="navbar-brand" href="{% url "krysline_admin" %}">
                         <img data-bs-img="light"
                              src="{% static 'assets/img/logo-light.svg' %}"
                              alt="">
                         <img data-bs-img="dark" src="{% static 'assets/img/logo.svg' %}" alt="">
                         <div class="">
-                            <span class="h4 text-gradient">Admin<span class="fw-bold">UX</span></span>
-                            <p class="company-tagline">Best HTML template</p>
+                            <span class="h4 text-gradient"><span class="fw-bold">Kryline Agency</span></span>
+                            {% comment %} <p class="company-tagline">Best HTML template</p> {% endcomment %}
                         </div>
                     </a>
-                    <!-- search -->
+                    <!-- search 
                     <div class="px-3 justify-content-center d-none d-lg-flex">
                         <div class="input-group input-group-md rounded search-wrap width-300 mx-auto">
                             <span class="input-group-text border-0 bg-none">
@@ -356,163 +356,8 @@
                             </div>
                         </div>
                     </div>
-                    <!-- menu -->
-                    <div class="navbar-expand-xl d-none d-xl-block ms-3">
-                        <div class="collapse navbar-collapse" id="mainheaderNavbar">
-                            <ul class="navbar-nav">
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle no-caret"
-                                       data-bs-toggle="dropdown"
-                                       href="#"
-                                       role="button"
-                                       aria-expanded="false"
-                                       data-bs-auto-close="outside">Pages</a>
-                                    <div class="dropdown-menu">
-                                        <div>
-                                            <a class="dropdown-item" href="adminux-profile-professional.html">Profile</a>
-                                        </div>
-                                        <div class="dropend">
-                                            <a class="dropdown-item"
-                                               data-bs-toggle="dropdown"
-                                               aria-expanded="false"
-                                               role="button"
-                                               data-bs-auto-close="outside">
-                                                Company <span class="arrow bi bi-chevron-right"></span>
-                                            </a>
-                                            <div class="dropdown-menu">
-                                                <div>
-                                                    <a class="dropdown-item active" href="adminux-company-profile.html">Company Profile</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="adminux-company-user-roles.html">User Roles</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="adminux-company-resource.html">Resources</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <a class="dropdown-item" href="adminux-company-management.html">Management</a>
-                                        </div>
-                                        <div>
-                                            <a class="dropdown-item" href="adminux-company-career.html">Career</a>
-                                        </div>
-                                        <div>
-                                            <a class="dropdown-item" href="adminux-forum.html">Forum</a>
-                                        </div>
-                                        <div>
-                                            <hr class="dropdown-divider">
-                                        </div>
-                                        <div>
-                                            <a class="dropdown-item" href="adminux-company-help-center.html">Help Center</a>
-                                        </div>
-                                        <div>
-                                            <a class="dropdown-item" href="adminux-onboarding.html">Onboarding</a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle no-caret"
-                                       data-bs-toggle="dropdown"
-                                       href="#"
-                                       role="button"
-                                       aria-expanded="false">Components</a>
-                                    <div class="dropdown-menu width-300">
-                                        <div class="dropdown-title mb-3 p-2">
-                                            <p>Creative &amp; Unique Components</p>
-                                            <p class="text-secondary small">
-                                                Our components are flexible to adopt. Use these to create new page, make UI template design unique and consistent.
-                                            </p>
-                                        </div>
-                                        <div class="row g-0">
-                                            <div class="col-12 col-md-12 col-lg-6">
-                                                <div>
-                                                    <a class="dropdown-item" href="component-cards.html"><i class="bi bi-card-heading me-2"></i>Cards</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="component-chartjs.html"><i class="bi bi-bar-chart me-2"></i>Chartjs</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="component-daterangepicker.html"><i class="bi bi-calendar-event me-2"></i>Datepicker</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="component-full-calendar.html"><i class="bi bi-calendar-week me-2"></i>Calendar</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="component-progress.html"><i class="bi bi-clock-history me-2"></i>Progress</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-md-12 col-lg-6">
-                                                <div>
-                                                    <a class="dropdown-item" href="component-collapse.html"><i class="bi bi-card-text me-2"></i>Collapse</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="component-pricing.html"><i class="bi bi-newspaper me-2"></i>Pricing</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="component-modal-dialogues.html"><i class="bi bi-star me-2"></i>Modal Box</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="component-avatar.html"><i class="bi bi-person-circle me-2"></i>Avatar</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="component-progressbar-js.html"><i class="bi bi-kanban-fill me-2"></i>ProgressBar js</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li class="nav-item dropdown">
-                                    <a class="nav-link dropdown-toggle no-caret"
-                                       data-bs-toggle="dropdown"
-                                       href="#"
-                                       role="button"
-                                       aria-expanded="false">Supportive</a>
-                                    <div class="dropdown-menu width-300">
-                                        <div class="dropdown-title mb-3 p-2">
-                                            <p>Supportive &amp; Helpful Pages</p>
-                                            <p class="text-secondary small">
-                                                Do not make your user lost somewhere else from where they can't come back. Make important journey flawless.
-                                            </p>
-                                        </div>
-                                        <div class="row g-0">
-                                            <div class="col-12 col-md-12 col-lg-6">
-                                                <div>
-                                                    <a class="dropdown-item" href="adminux-login.html"><i class="bi bi-person me-2 text-theme-1"></i>Sign in</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="adminux-signup.html"><i class="bi bi-person-plus me-2 text-theme-1"></i>Sign up</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="adminux-forgot-password.html"><i class="bi bi-key me-2 text-theme-1"></i>Password</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="adminux-maintenance.html"><i class="bi bi-gear me-2"></i>Maintenance</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="adminux-comingsoon.html"><i class="bi bi-alarm me-2"></i>Coming Soon</a>
-                                                </div>
-                                            </div>
-                                            <div class="col-12 col-md-12 col-lg-6">
-                                                <div>
-                                                    <a class="dropdown-item" href="adminux-page-not-found-2.html"><i class="bi bi-bug me-2"></i>Error</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="adminux-onboarding.html"><i class="bi bi-emoji-smile me-2"></i>Onboarding</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="adminux-contact-us.html"><i class="bi bi-envelope me-2"></i>Contact</a>
-                                                </div>
-                                                <div>
-                                                    <a class="dropdown-item" href="adminux-timeline.html"><i class="bi bi-calendar-week me-2"></i>Timeline</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                     menu -->
+                    
                     <!-- right icons button -->
                     <div class="ms-auto">
                         <!-- global search toggle -->
@@ -700,7 +545,7 @@
                                     <div>
                                         <a class="dropdown-item" href="{% url "active_user" %}">
                                             <i data-feather="user" class="avatar avatar-18 me-1"></i> All Active Users
-                                            <!--TODO aplly the url-->
+                                            
                                         </a>
                                     </div>
                                     <div>
@@ -710,7 +555,7 @@
                                                     <i data-feather="gift" class="avatar avatar-18 me-1"></i>
                                                     All Packages
                                                 </div>
-                                                <!--TODO aplly the url-->
+                                                
                                                 {% comment %} <div class="col-auto">
                                                     <p class="small text-success">Upgrade</p>
                                                 </div> {% endcomment %}
@@ -720,7 +565,7 @@
                                     <div>
                                         <a class="dropdown-item" href="{% url "all_transaction" %}">
                                             <i data-feather="clipboard" class="avatar avatar-18 me-1"></i> Transactions
-                                            <!--TODO UPDATE URLS-->
+                                            
                                         </a>
                                     </div>
                                     {% comment %} <div class="dropdown open-left dropdown-dontclose">
@@ -883,18 +728,20 @@
                                         <div class="col align-self-center menu-name">Pending Withdrawals</div>
                                     </a>
                                 </li>
-                                {% comment %} <li class="nav-item">
-                                    <a class="nav-link" href="adminux-finance-wallet.html">
-                                        <i class="menu-icon bi bi-wallet2"></i>
-                                        <div class="col align-self-center menu-name">Wallet</div>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{% url "all_expenses" %}">
+                                        <i class="menu-icon bi bi-layout-text-sidebar"></i>
+                                        <div class="col align-self-center menu-name">View All Expenses</div>
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="adminux-finance-rewards.html">
-                                        <i class="menu-icon bi bi-award"></i>
-                                        <div class="col align-self-center menu-name">Rewards</div>
+                                
+                                 <li class="nav-item">
+                                    <a class="nav-link" href="{% url "add_expense" %}">
+                                        <i class="menu-icon bi bi-plus-lg"></i>
+                                        <div class="col align-self-center menu-name">Add Expenses</div>
                                     </a>
-                                </li> {% endcomment %}
+                                </li>
+                                
                             </ul>
                         </li>
                         <li class="nav-item dropdown">
@@ -942,19 +789,19 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="adminux-social-analytics.html">
+                                    <a class="nav-link" href="{% url "verified_property" %}">
                                         <i class="menu-icon bi bi-folder-check"></i>
                                         <div class="col align-self-center menu-name">Verified Transaction</div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="adminux-social-analytics.html">
+                                    <a class="nav-link" href="{% url "unverified_property" %}">
                                         <i class="menu-icon bi bi-menu-up"></i>
                                         <div class="col align-self-center menu-name">Unverified Transaction</div>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="adminux-social-analytics.html">
+                                    <a class="nav-link" href="{% url "add_properties" %}">
                                         <i class="menu-icon bi bi-folder-plus"></i>
                                         <div class="col align-self-center menu-name">Add Properties Trans.</div>
                                     </a>
@@ -972,17 +819,19 @@
                             </a>
                             <ul class="dropdown-menu">
                                 <li class="nav-item">
-                                    <a class="nav-link" href="adminux-inventory-dashboard.html">
+                                    <a class="nav-link" href="{% url "inventory_report" %}">
                                         <i class="menu-icon bi bi-box"></i>
                                         <div class="col align-self-center menu-name">Inventory Dashboard</div>
                                     </a>
                                 </li>
-                                {% comment %} <li class="nav-item">
-                                    <a class="nav-link" href="adminux-inventory-stock.html">
+                                 {% comment %} <li class="nav-item">
+                                    <a class="nav-link" href="">
+                                        
                                         <i class="menu-icon bi bi-clipboard-check"></i>
-                                        <div class="col align-self-center menu-name">Stock</div>
+                                        <div class="col align-self-center menu-name">Add Expenses</div>
                                     </a>
-                                </li>
+                                </li> {% endcomment %}
+                                {% comment %}
                                 <li class="nav-item">
                                     <a class="nav-link" href="adminux-inventory-orders.html">
                                         <i class="menu-icon bi bi-bag-check"></i>
@@ -1041,7 +890,7 @@
                     <i class="bi bi-arrow-up"></i>
                 </button>
             </div>
-            <!-- Page Level js -->
-            <script src="{% static 'assets/js/adminux/adminux-finance-dashboard.js' %}"></script>
+           
+            
     </body>
 </html>

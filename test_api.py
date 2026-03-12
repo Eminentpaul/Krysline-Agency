@@ -4,13 +4,17 @@ print(package_name)
 
 
 
-# import paystack
-# from pprint import pprint
-# import os
+import paystack
+from pprint import pprint
+import os
 
-# # Set your API key based on domain (test or live mode)
-# secret_key = os.environ.get("SECRET_KEY")
-# paystack.api_key = secret_key
+
+# Set your API key based on domain (test or live mode)
+secret_key = os.environ.get("PAYSTACK_SECRET_KEY")
+paystack.api_key = secret_key
+
+
+initiate = paystack.Transfer.initiate(source="1000", amount=50000, recipient=)
 
 # url = "https://api.paystack.co"
 # headers = {

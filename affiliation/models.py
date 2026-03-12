@@ -124,7 +124,7 @@ class Affiliate(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.user.email} ({self.referral_code})"
+        return f"{self.user.get_full_name()} ({self.referral_code})"
     
 
 
@@ -154,6 +154,7 @@ class PropertyTransaction(models.Model):
     affiliate = models.ForeignKey('Affiliate', on_delete=models.PROTECT, related_name='sales')
     
     # Financial Details
+    client_name = models.CharField(max_length=255, null=True, blank=True)
     amount = models.DecimalField(max_digits=15, decimal_places=2, validators=[MinValueValidator(Decimal('0.01'))])
     description = models.TextField()
     transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES, default='SALE')
@@ -186,4 +187,4 @@ class PropertyTransaction(models.Model):
 
     class Meta:
         verbose_name = "Property Transaction"
-        ordering = ['-created_at']
+        ordering = ['created_at']

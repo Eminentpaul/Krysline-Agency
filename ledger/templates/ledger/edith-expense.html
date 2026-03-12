@@ -1,0 +1,141 @@
+{% extends "krysline_nav.html" %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+{% load custom_tags %}
+{% load widget_tweaks %}
+
+
+
+{% block content %}
+<main class="adminuiux-content has-sidebar" onclick="contentClick()">
+
+    <!-- page title -->
+    <div class="container-fluid py-3">
+        <div class="row align-items-center page-title">
+            <div class="col col-sm mb-3 mb-sm-0 order-1">
+                <h5 class="mb-0">{{edit_user.username|title}} Account Settings</h5>
+                <p class="text-secondary small">Make sure your profile is updated</p>
+            </div>
+            
+        </div>
+        <nav aria-label="breadcrumb" class="breadcrumb-theme mt-3 rounded">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item bi"><a href="{% url "krysline_admin" %}"><i class="bi bi-house-door me-2"></i> Krysline Agency Ltd.</a></li>
+                <li class="breadcrumb-item bi"><a href="{% url "all_expenses" %}"> Expense </a></li>
+                <li class="breadcrumb-item bi active" aria-current="page"> Expense Details</li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- content -->
+    <div class="container mt-3 w-75" id="main-content">
+        <ul class="nav nav-pills overflow-x-auto text-nowrap flex-nowrap pb-3" id="myTab" role="tablist">
+            
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Trans. ID: {{expense.receipt_number|upper}}</button>
+            </li>
+            
+        </ul>
+    
+
+            <!-- profile tab-->
+            <div  id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                    <div class="card-body">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            {% include "message.html" %}
+                            <h6 class="mb-3 mb-lg-4">Expense Details</h6>
+                            <div class="row gx-3 gx-lg-4 mb-3">
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group mb-3 position-relative check-valid">
+                                        <div class="form-floating">
+                                            {% comment %} <input type="text" placeholder="UserName" value="Adminuiux" required class="form-control"> {% endcomment %}
+                                            {{form.category |add_class:"form-control"|append_attr:"readonly:readonly"  }}
+                                            <label>Expense Category</label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter valid input</div>
+                                </div>
+                                
+                           
+                            
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group mb-3 position-relative check-valid">
+                                        <div class="form-floating">
+                                            {% comment %} <input type="text" placeholder="UserName" value="Adminuiux" required class="form-control"> {% endcomment %}
+                                            {% if edit %}
+                                                {{form.amount |add_class:"form-control"|append_attr:"readonly:readonly"  }}
+                                            {% else %}
+                                                {{form.amount |add_class:"form-control" }}
+                                            {% endif %}
+                                            <label>Expense Amount</label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter valid input</div>
+                                </div>
+                                
+                            
+                            <div class="row gx-3 gx-lg-4 mb-3">
+                                {% if edit %}
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <div class="form-group mb-3 position-relative check-valid">
+                                            <div class="form-floating">
+                                                {% comment %} <input type="text" placeholder="UserName" value="Adminuiux" required class="form-control"> {% endcomment %}
+                                                {{form.status |add_class:"form-control"|append_attr:""  }}
+                                                <label>Expense Status</label>
+                                            </div>
+                                        </div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
+                                    </div>
+                                {% endif %}
+                                
+                            
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group mb-3 position-relative check-valid">
+                                        <div class="form-floating">
+                                            {% comment %} <input type="text" placeholder="UserName" value="Adminuiux" required class="form-control"> {% endcomment %}
+                                            {{form.description |add_class:"form-control"|append_attr:"rows:5"  }}
+                                            <label>Expense {{form.description.label}}</label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter valid input</div>
+                                </div>
+                                
+                            </div>
+                            
+
+                            {% if edit %}
+                                <div class="row gx-3">
+                                    <div class="col">
+                                        <!-- submit button -->
+                                        <button class="btn btn-theme" type="submit">Update Expense</button>
+                                    </div>
+                                    {% comment %} <div class="col-auto">
+                                        <button class="btn btn-link theme-red" type="button">Cancel</button>
+                                    </div> {% endcomment %}
+                                </div>
+                            {% else %}
+                                <div class="row gx-3">
+                                    <div class="col">
+                                        <!-- submit button -->
+                                        <button class="btn btn-theme" type="submit">Submit Expense</button>
+                                    </div>
+                                    {% comment %} <div class="col-auto">
+                                        <button class="btn btn-link theme-red" type="button">Cancel</button>
+                                    </div> {% endcomment %}
+                                </div>
+                            {% endif %}
+                        </div>
+                    <form>
+                </div>
+            </div>
+
+
+    </div>
+
+</main>
+</div>
+
+{% endblock %}

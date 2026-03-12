@@ -55,8 +55,6 @@ def distribute_commissions(new_affiliate=None, property=None, new=False):
     """
     payment_amount = 0
     current_upline_profile = None
-    sales_percent = 10/100
-    rent_percent = 5/100
 
     # The person who just paid
     if new:
@@ -95,8 +93,9 @@ def distribute_commissions(new_affiliate=None, property=None, new=False):
                             current_upline_profile.balance += commission_amount
                             current_upline_profile.save()
 
-                            property.affiliate.user.profile.balance += int(
-                                property.amount * sales_percent)
+                            
+                            property.affiliate.user.profile.balance += int((
+                                property.amount * 10)/100)
                             property.affiliate.user.profile.save()
 
                         # 2. Create Audit Log

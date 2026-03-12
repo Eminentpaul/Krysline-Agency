@@ -70,6 +70,10 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_ALLOW_CREDENTIALS = True
 
+
+# SITE_ID 
+SITE_ID = 1
+
 # Content Security Policy
 CSP_DEFAULT_SRC = ("'self'",)
 CSP_SCRIPT_SRC = ("'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net")
@@ -92,6 +96,7 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sites',
 ]
 
 
@@ -101,7 +106,8 @@ MY_APPS = [
     'affiliation',
     'users',
     'monnify_verification',
-    'krysline_admin'
+    'krysline_admin', 
+    'ledger',
 ]
 
 THIRD_PARTY_APPS = [
@@ -116,6 +122,19 @@ THIRD_PARTY_APPS = [
     
     # Then add Django Control Room
     'dj_control_room',
+
+    # AllAuth
+    'allauth',
+    'allauth.account',
+
+    # Optional -- requires install using `django-allauth[socialaccount]`.
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
+     # The MFA app:
+    'allauth.mfa'
+    
+    
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + MY_APPS
@@ -127,11 +146,28 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django_otp.middleware.OTPMiddleware', # 2FA
     'django.contrib.messages.middleware.MessageMiddleware',
     'authentication.middleware.IPBlacklistMiddleware', # Add this here!
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'csp.middleware.CSPMiddleware',
+
+
+    # Add the account middleware:
+    "allauth.account.middleware.AccountMiddleware", #allauth middleware
 ]
+
+
+
+# AUTHENTICATION_BACKENDS = [
+    
+#     # Needed to login by username in Django admin, regardless of `allauth`
+#     'django.contrib.auth.backends.ModelBackend',
+
+#     # `allauth` specific authentication methods, such as login by email
+#     'allauth.account.auth_backends.AuthenticationBackend',
+    
+# ]
 
 ROOT_URLCONF = 'project.urls'
 
@@ -166,6 +202,13 @@ DATABASES = {
         "PORT": "3306",
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'csdb.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -233,16 +276,22 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 
 
+# 2FA
+# LOGIN_URL = 'two_factor:login'
+
+# # this one is optional
+# LOGIN_REDIRECT_URL = 'two_factor:Dashboard/user'
+
 
 
 # Django Control settings.py
-DJ_CONTROL_ROOM_SETTINGS = {
-    # Global: Show panels in both Control Room and their own sections
-    'REGISTER_PANELS_IN_ADMIN': False,  # Default: False
+# DJ_CONTROL_ROOM_SETTINGS = {
+#     # Global: Show panels in both Control Room and their own sections
+#     'REGISTER_PANELS_IN_ADMIN': False,  # Default: False
     
-    # Per-panel: Override for specific panels
-    'PANEL_ADMIN_REGISTRATION': {
-        'dj_redis_panel': True,   # Redis in both places
-        'dj_cache_panel': False,  # Cache only in Control Room
-    }
-}
+#     # Per-panel: Override for specific panels
+#     'PANEL_ADMIN_REGISTRATION': {
+#         'dj_redis_panel': True,   # Redis in both places
+#         'dj_cache_panel': False,  # Cache only in Control Room
+#     }
+# }

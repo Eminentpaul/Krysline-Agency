@@ -22,6 +22,10 @@ from .utils import check_expired_subscriptions
 from krysline_admin.models import TransactionPIN
 from django.contrib import messages as mg
 from django.conf import settings
+from django.db import transaction
+
+
+import uuid
 
 
 load_dotenv()
@@ -32,7 +36,7 @@ load_dotenv()
 @login_required(login_url='login')
 @two_factor_required
 # @kyc_required  # Optional: Only if you want to block dashboard until KYC is done
-@rate_limit(rate='6/minute')
+@rate_limit(rate='10/hour')
 @login_required
 def dashboard(request):
     user = request.user
@@ -47,8 +51,9 @@ def dashboard(request):
     set_pin = False
     if TransactionPIN.objects.filter(user=request.user).exists():
         set_pin = True
-        if not affiliate or not affiliate.is_active:
-            return redirect('choose_package')
+
+    if not affiliate or not affiliate.is_active:
+        return redirect('choose_package')
 
     if request.method == 'POST':
         pin = request.POST.get('pin')
@@ -120,101 +125,128 @@ def dashboard(request):
 
 
 @login_required(login_url='login')
-@rate_limit(rate='1000/hour')  # Prevent script-kiddies from spamming packages
+# Prevent script-kiddies from spamming packages
+@rate_limit(rate='100000/hour')
 @log_security_event(action='PACKAGE_SELECTION_START')
 def choose_package(request):
     """
     View to display and securely process KAL Registration Packages.
     """
+    user = request.user
+    
+    user_package = None
+    is_active = False
     # 1. Security Check: If they already have a package, don't let them join again
     if hasattr(request.user, 'affiliate'):
         return redirect('dashboard')
 
-    packages = AffiliatePackage.objects.all().order_by('price')
+    affiliate = getattr(user, 'affiliate_record', None)
 
-    
+    if affiliate:
+        user_package = request.user.affiliate_record
+        is_active = request.user.affiliate_record.is_active
+
+    packages = AffiliatePackage.objects.all().order_by('price')
 
     # print(request.user.affiliate_record.is_active)
     context = {
         'packages': packages,
-        'user_package': request.user.affiliate_record,
-        'is_active': request.user.affiliate_record.is_active,
+        'user_package': user_package,
+        'is_active': is_active,
     }
 
     return render(request, 'users/plans.html', context)
 
 
+@login_required(login_url='login')
 def package_payment(request, pk):
-    import uuid
-
     user = request.user
     package = get_object_or_404(AffiliatePackage, id=pk)
     now = timezone.localtime(timezone.now())
     year = timezone.now()
     year = str(datetime.now().date()).split("-")
+    get_user_invoice_id = UserInvoice.objects.filter(user=user).first().inovoice_reference.split("-")[1]
 
-    reference = ''
+    def generate_reference():
+        return f"KAL-{package.id}-{user.id}-{uuid.uuid4().hex[:8]}-{year[0]}"
 
     try:
-        userInvoiceReference = UserInvoice.objects.filter(user=user)
-        if userInvoiceReference:
-            reference = userInvoiceReference.first().inovoice_reference
+        with transaction.atomic():
 
-            invoice, valid = get_invoice(reference)
-            if valid:
-                if invoice['invoiceStatus'] == "PENDING":
-                    url = invoice['checkoutUrl']
-                    return redirect(url)
+            # Lock row to prevent race condition
+            user_invoice = (
+                UserInvoice.objects
+                .select_for_update()
+                .get_or_create(user=user)[0]
+            )
 
-                if invoice['invoiceStatus'] == "PAID":
-                    expire = datetime.strptime(
-                        invoice['expiryDate'], "%Y-%m-%d %H:%M:%S")
+            reference = user_invoice.inovoice_reference
 
-                    if timezone.is_aware(now):
-                        expire = timezone.make_aware(expire)
+            # If reference exists → verify status
+            if reference and reference.split("-")[1] == package.id:
 
-                    # Checking if invoice has expired
-                    if expire < now or invoice['invoiceStatus'] == 'EXPIRED' or invoice['invoiceStatus'] == 'CANCELLED':
-                        reference = f"KAL-{package.name}-{user.username}-{uuid.uuid4()}-{year[0]}"
-                        print(reference)
-                    else:
-                        return redirect('payments')
-                else: 
-                    reference = f"KAL-{package.name}-{user.username}-{uuid.uuid4()}-{year[0]}"
-                    
+                invoice, valid = get_invoice(reference)
 
-        description = f"Subscription for the {package.name.capitalize()} Plan - {package.get_name_display()}"
-        local_now = timezone.localtime(settings.DURATION)
+                if valid:
 
-        
-        # 2. Format it
-        expiry_date = local_now.strftime("%Y-%m-%d %H:%M:%S")
+                    status = invoice.get("invoiceStatus")
 
-        # update user invoice reference
-        userInvoice = UserInvoice.objects.filter(user=user).first()
-        userInvoice.inovoice_reference = reference
-        userInvoice.save()
+                    # 🔹 Still payable → reuse
+                    if status == "PENDING":
+                        return redirect(invoice.get("checkoutUrl"))
 
-        # Generating new Invoice 
-        invoice, valid = create_invoice(
-            int(package.price),
-            user,
-            description,
-            userInvoice.inovoice_reference,
-            expiry_date
-        )
+                    # 🔹 Already paid → stop duplicate payment
+                    if status == "PAID":
+                        expire = datetime.strptime(
+                            invoice['expiryDate'], "%Y-%m-%d %H:%M:%S")
 
+                        if timezone.is_aware(now):
+                            expire = timezone.make_aware(expire)
 
-        if valid:
-            print(invoice, 'Original Created')
-            url = invoice['checkoutUrl']
-            return redirect(url)
-        else:
-            messages.error(request, "Unable to generate invoice")
-            return redirect('choose_package')
-    except:
-        messages.error(request, 'Please Try Again!')
-        return redirect('choose_package') 
+                            if expire < now:
+                                reference = generate_reference()
+                                print("Paid alredy new reference", reference)
+                            else:
+                                return redirect("payments")
+
+                    # 🔹 Expired / Cancelled → create new reference
+                    if status in ["EXPIRED", "CANCELLED"]:
+                        reference = generate_reference()
+
+                else:
+                    reference = generate_reference()
+
+            else:
+                reference = generate_reference()
+                
+
+            local_now = timezone.localtime(settings.DURATION)
+            expiry_date = local_now.strftime("%Y-%m-%d %H:%M:%S")
+
+            description = f"Subscription for {package.get_name_display()} Plan"
+
+            # 🔹 Create invoice externally
+            invoice, valid = create_invoice(
+                int(package.price),
+                user,
+                description,
+                reference,
+                expiry_date
+            )
+
+            if not valid:
+                messages.error(request, "Unable to generate invoice.")
+                return redirect("choose_package")
+
+            # 🔹 Save reference only after successful invoice creation
+            user_invoice.inovoice_reference = reference
+            user_invoice.save()
+
+            return redirect(invoice.get("checkoutUrl"))
+
+    except Exception as e:
+        messages.error(request, "Something went wrong. Please try again.")
+        return redirect("choose_package")
 
 
 @login_required(login_url='login')
@@ -227,14 +259,12 @@ def payments(request):
     else:
         reference = request.user.invoice.inovoice_reference
 
-
     try:
         invoice, valid = get_invoice(reference)
 
-  
         if valid and invoice['invoiceStatus'] == 'PAID':
 
-            package_name = invoice['invoiceReference'].split('-')[1]
+            package_id = invoice['invoiceReference'].split('-')[1]
 
             description = invoice['description'].lower()
 
@@ -243,7 +273,8 @@ def payments(request):
                 with transaction.atomic():
 
                     package = get_object_or_404(
-                        AffiliatePackage, name=package_name, price=float(invoice['amount']))
+                        AffiliatePackage, id=package_id, price=float(invoice['amount']))
+                    print("Checking the Package:", package)
 
                     user = get_object_or_404(
                         User, email=invoice['customerEmail'])
@@ -260,21 +291,25 @@ def payments(request):
 
                         if float(invoice['amount']) >= package.price:
                             # SUCCESS: Activate user and trigger MLM Commissions
-                            
-                            affiliate.is_active = True
-                            affiliate.duration = duration
-                            affiliate.package = package
+                            affiliate.is_active = False
                             affiliate.save()
 
-                            if distribute_commissions(new_affiliate=affiliate, new=True):
-                                Transaction.objects.create(
-                                    user=user,
-                                    amount=package.price,
-                                    transaction_type='package_purchase',
-                                    description=f"Subscription Approved (Ref: {package.get_name_display()})"
-                                )
+                            if not affiliate.is_active or affiliate.package.price < package.price:
+                                affiliate.is_active = True
+                                affiliate.duration = duration
+                                affiliate.package = package
+                                affiliate.save()
+
+                                if distribute_commissions(new_affiliate=affiliate, new=True):
+                                    Transaction.objects.create(
+                                        user=user,
+                                        amount=package.price,
+                                        transaction_type='package_purchase',
+                                        description=f"Subscription Approved (Ref: {package.get_name_display()})"
+                                    )
+                                    return redirect('dashboard')
+                            else:
                                 return redirect('dashboard')
-                                
 
                     except Affiliate.DoesNotExist:
                         affiliate2 = Affiliate.objects.create(
@@ -303,7 +338,7 @@ def payments(request):
 
 @login_required(login_url='login')
 @transaction.atomic
-@rate_limit(rate='5/minute')  # Prevent script-kiddies from spamming packages
+@rate_limit(rate='5/hour')  # Prevent script-kiddies from spamming packages
 @log_security_event(action='TRANSACTION_CREATE')
 def withdraw_funds(request):
     """
@@ -320,7 +355,6 @@ def withdraw_funds(request):
         # Build the URL: /user/profile/update/?next=/user/withdraw/
         dest_url = reverse('payment_update')
         return redirect(f"{dest_url}?next={request.path}")
-
 
     if request.method == 'POST':
         try:
@@ -428,7 +462,7 @@ def referral_list(request):
 
 
 @login_required(login_url="login")
-@rate_limit(rate='100/hour')  # Prevent script-kiddies from spamming packages
+@rate_limit(rate='5/hour')  # Prevent script-kiddies from spamming packages
 @log_security_event(action='PROFILE_UPDATE')
 def profile_update(request):
 
@@ -482,7 +516,7 @@ def profile_update(request):
 
 @log_security_event(action="PROFILE_UPDATE")
 @login_required(login_url="login")
-@rate_limit('10/minute')
+@rate_limit('5/hour')
 def payment_update(request):
     profile = request.user.profile
 
@@ -516,6 +550,37 @@ def payment_update(request):
         'payment': True
     }
     return render(request, 'users/user-payment.html', context)
+
+
+def user_pin_change(request):
+    obj_pin = TransactionPIN()
+
+    if request.method == 'POST':
+        pin = request.POST.get('pin')
+        cpin = request.POST.get('cpin')
+        current_pin = request.POST.get('current_pin')
+
+        if pin == cpin:
+            try:
+                user_pin = TransactionPIN.objects.get(user=request.user)
+
+                if user_pin.check_pin(current_pin):
+                    user_pin.set_pin(pin)
+                    mg.success(request, 'PIN Updated successfully!')
+                    return redirect('change_pin')
+                else:
+                    mg.error(
+                        request, 'PIN verification failed! Try Again, Account will be Locked after 4 attempts')
+                    
+            except TransactionPIN.DoesNotExist:
+                obj_pin.user = request.user
+                obj_pin.set_pin(pin)
+                mg.success(request, 'PIN Updated successfully!')
+                return redirect('change_pin')
+        else:
+            mg.error(request, 'New PIN & Confirmation PIN does not match!')
+
+    return render(request, 'users/pin.html')
 
 
 def verify_bank_account(request):

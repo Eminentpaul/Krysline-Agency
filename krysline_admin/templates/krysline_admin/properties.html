@@ -26,7 +26,7 @@
                                     <i class="bi bi-shop h5 avatar avatar-40 bg-theme-1-subtle text-theme-1 rounded"></i>
                                 </div>
                                 <div class="col-auto align-self-center">
-                                    <h6 class="mb-0">All Transactions</h6>
+                                    <h6 class="mb-0">{% if properties %}All{% endif %} Property Transactions</h6>
                                     <p class="text-secondary small">{% include "message.html" %}</p>
                                 </div>
                                 
@@ -38,24 +38,25 @@
                                     <tr class="text-muted">
                                         <th class="w-12"></th>
                                         <th class="desktop tablet">Transaction ID</th>
-                                        <th class="all">User</th>
+                                        <th class="all">Affiliate</th>
+                                        <th class="desktop">Approved By</th>
                                         <th class="all">Amount</th>
-                                        <th class="desktop">Initiated Date</th>
+                                        <th class="desktop">Created Date</th>
                                         <th class="desktop">Approved Date</th>
-                                        <th class="tablet desktop">Status</th>
-                                        {% if not approved %}
-                                            <th class="all">Action</th>
-                                        {% endif %}
+                                        <th class="tablet desktop">Transaction Type</th>
+                                        
+                                        <th class="all">Action</th>
+                                        
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% if approved %}
-                                        {% for withdraw in withdrawals %}
+                                    {% if properties %}
+                                        {% for trans in properties %}
                                     
                                             <tr>
                                                 <td></td>
                                                 <td>
-                                                    <p class="mb-0">{{withdraw.transaction_id}}</p>
+                                                    <p class="mb-0">{{trans.transaction_id}}</p>
                                                     {% comment %} <p class="text-secondary small">Men Shoes</p> {% endcomment %}
                                                 </td>
                                                 <td>
@@ -66,50 +67,10 @@
                                                             </figure>
                                                         </div> {% endcomment %}
                                                         <div class="col">
-                                                            <p class="mb-0">{{withdraw.user.get_full_name|title}}</p>
-                                                            <p class="text-secondary small">{{withdraw.username|title}}</p>
+                                                            <p class="mb-0">{{trans.affiliate.user.get_full_name|title}}</p>
+                                                            <p class="text-secondary small">{{trans.affiliate.user.username|title}}</p>
                                                         </div>
                                                     </div>
-                                                </td>
-                                                <td>
-                                                    <p class="mb-0">{{withdraw.amount|intcomma}}</p>
-                                                    <p class="text-secondary small">NGN</p>
-                                                </td>
-                                                <td>
-                                                    <p class="mb-0">{{withdraw.created_at|date:"M d, Y"}}</p>
-                                                    <p class="text-secondary small">{{withdraw.created_at|date:"h:i A"}}</p>
-                                                </td>
-                                                
-                                                <td>
-                                                    <p class="mb-0">{{withdraw.processed_at|date:"M d, Y"}}</p>
-                                                    <p class="text-secondary small">{{withdraw.processed_at|date:"h:i A"}}</p>
-                                                </td>
-                                                <td>
-                                                    <span class="badge badge-sm badge-light text-bg-theme-1 theme-green">Approved & Paid</span>
-                                                </td>
-                                                {% comment %} <td>
-                                                    <div class="dropdown d-inline-block">
-                                                        <a class="text-secondary no-caret" data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static" role="button">
-                                                            <i class="bi bi-three-dots"></i>
-                                                        </a>
-                                                        <ul class="dropdown-menu dropdown-menu-end">
-                                                            <li><a class="dropdown-item" href="javascript:void(0)">Edit</a></li>
-                                                            <li><a class="dropdown-item" href="javascript:void(0)">Move</a></li>
-                                                            <li><a class="dropdown-item text-danger" href="javascript:void(0)">Delete</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </td> {% endcomment %}
-                                            </tr>
-
-                                        {% endfor %}
-                                    {% else %}
-                                        {% for withdraw in pending_withdrawals %}
-                                    
-                                            <tr>
-                                                <td></td>
-                                                <td>
-                                                    <p class="mb-0">{{withdraw.transaction_id}}</p>
-                                                    {% comment %} <p class="text-secondary small">Men Shoes</p> {% endcomment %}
                                                 </td>
                                                 <td>
                                                     <div class="row gx-3 align-items-center">
@@ -119,49 +80,209 @@
                                                             </figure>
                                                         </div> {% endcomment %}
                                                         <div class="col">
-                                                            <p class="mb-0">{{withdraw.user.get_full_name|title}}</p>
-                                                            <p class="text-secondary small">{{withdraw.username|title}}</p>
+                                                            <p class="mb-0">{{trans.verified_by.get_full_name|title}}</p>
+                                                            <p class="text-secondary small">{{trans.verified_by.username|title|default:"Not Verified"}}</p>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <p class="mb-0">{{withdraw.amount|intcomma}}</p>
+                                                    <p class="mb-0">{{trans.amount|intcomma}}</p>
                                                     <p class="text-secondary small">NGN</p>
                                                 </td>
                                                 <td>
-                                                    <p class="mb-0">{{withdraw.created_at|date:"M d, Y"}}</p>
-                                                    <p class="text-secondary small">{{withdraw.created_at|date:"h:i A"}}</p>
+                                                    <p class="mb-0">{{trans.created_at|date:"M d, Y"}}</p>
+                                                    <p class="text-secondary small">{{trans.created_at|date:"h:i A"}}</p>
                                                 </td>
                                                 
                                                 <td>
-                                                    <p class="mb-0">{{withdraw.processed_at|date:"M d, Y"}}</p>
-                                                    <p class="text-secondary small">{{withdraw.processed_at|date:"h:i A"}}</p>
+                                                    <p class="mb-0">{{trans.verification_date|date:"M d, Y"|default:"No Date"}}</p>
+                                                    <p class="text-secondary small">{{trans.verification_date|date:"h:i A"}}</p>
                                                 </td>
                                                 <td>
-                                                    {% if withdraw.status == "pending" %}
-                                                        <span class="badge badge-sm badge-light text-bg-warning theme-green">{{withdraw.get_status_display}}</span>
+                                                    {% if not trans.is_verified %}
+                                                        <span class="badge badge-sm badge-light text-bg-warning theme-green">{{trans.get_transaction_type_display}}</span>
                                                     {% else %}
-                                                        <span class="badge badge-sm badge-light text-bg-danger theme-green">{{withdraw.get_status_display}}</span>
+                                                        <span class="badge badge-sm badge-light text-bg-theme-1 theme-green">{{trans.get_transaction_type_display}}</span>
                                                     {% endif %}
+                                                    
                                                 </td>
                                                 <td>
                                                     <div class="dropdown d-inline-block">
                                                         <a class="text-secondary no-caret" data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static" role="button">
                                                             <i class="bi bi-three-dots"></i>
                                                         </a>
-                                                        {% if user.user_type == "manager" %}
-                                                        
                                                         <ul class="dropdown-menu dropdown-menu-end">
-                                                            <li><a class="dropdown-item" href="{% url "edit_withdraw" withdraw.transaction_id %}">Edit</a></li>
-                                                            {% comment %} <li><a class="dropdown-item" href="javascript:void(0)">Move</a></li>
-                                                            <li><a class="dropdown-item text-danger" href="javascript:void(0)">Delete</a></li> {% endcomment %}
+                                                            {% if not trans.is_verified %}
+                                                                <li><a class="dropdown-item" href="{% url "verify_property" trans.id %}">Verify</a></li>
+                                                            {% endif %}
+                                                            {% comment %} <li><a class="dropdown-item" href="javascript:void(0)">Move</a></li> {% endcomment %}
+                                                            <li><a class="dropdown-item text-danger" href="{% url "delete_property" trans.id %}">Delete</a></li>
                                                         </ul>
-                                                        {% endif %}
+
+                                                       
                                                     </div>
-                                                </td>
+                                                </td> 
                                             </tr>
 
                                         {% endfor %}
+                                    
+                                    {% endif %}
+                                    
+                                    {% if verified_properties %}
+                                        {% for trans in verified_properties %}
+                                    
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    <p class="mb-0">{{trans.transaction_id}}</p>
+                                                    {% comment %} <p class="text-secondary small">Men Shoes</p> {% endcomment %}
+                                                </td>
+                                                <td>
+                                                    <div class="row gx-3 align-items-center">
+                                                        {% comment %} <div class="col-auto">
+                                                            <figure class="avatar avatar-50 border mb-0 coverimg rounded">
+                                                                <li class="bi bi-coin fs-2"></li>
+                                                            </figure>
+                                                        </div> {% endcomment %}
+                                                        <div class="col">
+                                                            <p class="mb-0">{{trans.affiliate.user.get_full_name|title}}</p>
+                                                            <p class="text-secondary small">{{trans.affiliate.user.username|title}}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row gx-3 align-items-center">
+                                                        {% comment %} <div class="col-auto">
+                                                            <figure class="avatar avatar-50 border mb-0 coverimg rounded">
+                                                                <li class="bi bi-coin fs-2"></li>
+                                                            </figure>
+                                                        </div> {% endcomment %}
+                                                        <div class="col">
+                                                            <p class="mb-0">{{trans.verified_by.get_full_name|title}}</p>
+                                                            <p class="text-secondary small">{{trans.verified_by.username|title|default:"Not Verified"}}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0">{{trans.amount|intcomma}}</p>
+                                                    <p class="text-secondary small">NGN</p>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0">{{trans.created_at|date:"M d, Y"}}</p>
+                                                    <p class="text-secondary small">{{trans.created_at|date:"h:i A"}}</p>
+                                                </td>
+                                                
+                                                <td>
+                                                    <p class="mb-0">{{trans.verification_date|date:"M d, Y"|default:"No Date"}}</p>
+                                                    <p class="text-secondary small">{{trans.verification_date|date:"h:i A"}}</p>
+                                                </td>
+                                                <td>
+                                                    {% if not trans.is_verified %}
+                                                        <span class="badge badge-sm badge-light text-bg-warning theme-green">{{trans.get_transaction_type_display}}</span>
+                                                    {% else %}
+                                                        <span class="badge badge-sm badge-light text-bg-theme-1 theme-green">{{trans.get_transaction_type_display}}</span>
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td>
+                                                    <div class="dropdown d-inline-block">
+                                                        <a class="text-secondary no-caret" data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static" role="button">
+                                                            <i class="bi bi-three-dots"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            {% if not trans.is_verified %}
+                                                                <li><a class="dropdown-item" href="{% url "verify_property" trans.id %}">Verify</a></li>
+                                                            {% endif %}
+                                                            {% comment %} <li><a class="dropdown-item" href="javascript:void(0)">Move</a></li> {% endcomment %}
+                                                            <li><a class="dropdown-item text-danger" href="{% url "delete_property" trans.id %}">Delete</a></li>
+                                                        </ul>
+
+                                                        
+                                                    </div>
+                                                </td> 
+                                            </tr>
+
+                                        {% endfor %}
+                                    
+                                    {% endif %}
+                                    
+                                    
+                                    {% if unverified_properties %}
+                                        {% for trans in unverified_properties %}
+                                    
+                                            <tr>
+                                                <td></td>
+                                                <td>
+                                                    <p class="mb-0">{{trans.transaction_id}}</p>
+                                                    {% comment %} <p class="text-secondary small">Men Shoes</p> {% endcomment %}
+                                                </td>
+                                                <td>
+                                                    <div class="row gx-3 align-items-center">
+                                                        {% comment %} <div class="col-auto">
+                                                            <figure class="avatar avatar-50 border mb-0 coverimg rounded">
+                                                                <li class="bi bi-coin fs-2"></li>
+                                                            </figure>
+                                                        </div> {% endcomment %}
+                                                        <div class="col">
+                                                            <p class="mb-0">{{trans.affiliate.user.get_full_name|title}}</p>
+                                                            <p class="text-secondary small">{{trans.affiliate.user.username|title}}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="row gx-3 align-items-center">
+                                                        {% comment %} <div class="col-auto">
+                                                            <figure class="avatar avatar-50 border mb-0 coverimg rounded">
+                                                                <li class="bi bi-coin fs-2"></li>
+                                                            </figure>
+                                                        </div> {% endcomment %}
+                                                        <div class="col">
+                                                            <p class="mb-0">{{trans.verified_by.get_full_name|title}}</p>
+                                                            <p class="text-secondary small">{{trans.verified_by.username|title|default:"Not Verified"}}</p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0">{{trans.amount|intcomma}}</p>
+                                                    <p class="text-secondary small">NGN</p>
+                                                </td>
+                                                <td>
+                                                    <p class="mb-0">{{trans.created_at|date:"M d, Y"}}</p>
+                                                    <p class="text-secondary small">{{trans.created_at|date:"h:i A"}}</p>
+                                                </td>
+                                                
+                                                <td>
+                                                    <p class="mb-0">{{trans.verification_date|date:"M d, Y"|default:"No Date"}}</p>
+                                                    <p class="text-secondary small">{{trans.verification_date|date:"h:i A"}}</p>
+                                                </td>
+                                                <td>
+                                                    {% if not trans.is_verified %}
+                                                        <span class="badge badge-sm badge-light text-bg-warning theme-green">{{trans.get_transaction_type_display}}</span>
+                                                    {% else %}
+                                                        <span class="badge badge-sm badge-light text-bg-theme-1 theme-green">{{trans.get_transaction_type_display}}</span>
+                                                    {% endif %}
+                                                    
+                                                </td>
+                                                <td>
+                                                    <div class="dropdown d-inline-block">
+                                                        <a class="text-secondary no-caret" data-bs-toggle="dropdown" aria-expanded="false" data-bs-display="static" role="button">
+                                                            <i class="bi bi-three-dots"></i>
+                                                        </a>
+                                                        <ul class="dropdown-menu dropdown-menu-end">
+                                                            {% if not trans.is_verified %}
+                                                                <li><a class="dropdown-item" href="{% url "verify_property" trans.id %}">Verify</a></li>
+                                                            {% endif %}
+                                                            {% comment %} <li><a class="dropdown-item" href="javascript:void(0)">Move</a></li> {% endcomment %}
+                                                            <li><a class="dropdown-item text-danger" href="{% url "delete_property" trans.id %}">Delete</a></li>
+                                                        </ul>
+
+                                                        
+                                                    </div>
+                                                </td> 
+                                            </tr>
+
+                                        {% endfor %}
+                                    
                                     {% endif %}
                                     
                                 </tbody>

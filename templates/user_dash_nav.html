@@ -63,14 +63,25 @@
             </button>
 
             <!-- logo -->
-            <a class="navbar-brand" href="{% url "dashboard" %}">
-                <img data-bs-img="light" src="{% static 'assets/img/logo-light.svg' %}" alt="">
-                <img data-bs-img="dark" src="{% static 'assets/img/logo.svg' %}" alt="">
-                <div class="">
-                    <span class="h4">Investment<b>UX</b></span>
-                    <p class="company-tagline">AdminUIUX HTML template</p>
-                </div>
-            </a>
+            {% if user.user_type == "manager" %}
+                <a class="navbar-brand" href="{% url "krysline_admin" %}">
+                    <img data-bs-img="light" src="{% static 'assets/img/logo-light.svg' %}" alt="">
+                    <img data-bs-img="dark" src="{% static 'assets/img/logo.svg' %}" alt="">
+                    <div class="">
+                        <span class="h4"><b>Kryline Agency</b></span>
+                        {% comment %} <p class="company-tagline"></p> {% endcomment %}
+                    </div>
+                </a>
+            {% else %}
+                <a class="navbar-brand" href="{% url "dashboard" %}">
+                    <img data-bs-img="light" src="{% static 'assets/img/logo-light.svg' %}" alt="">
+                    <img data-bs-img="dark" src="{% static 'assets/img/logo.svg' %}" alt="">
+                    <div class="">
+                        <span class="h4"><b>Kryline Agency</b></span>
+                        {% comment %} <p class="company-tagline"></p> {% endcomment %}
+                    </div>
+                </a>
+            {% endif %}
 
             <!-- navigation inline -->
             <div class="collapse navbar-collapse right-in-device justify-content-center" id="header-navbar">
@@ -81,8 +92,8 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link" href="">Transaction</a>
-                            <!--TODO change url-->
+                            <a class="nav-link" href="{% url "all_transaction" %}">Transaction</a>
+                            
                         </li>
                     {% else %}
                         <li class="nav-item">

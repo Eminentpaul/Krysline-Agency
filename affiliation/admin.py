@@ -35,7 +35,7 @@ class AffiliatePackageAdmin(admin.ModelAdmin):
     # Updated to match the fields actually present in your Model
     list_display = (
         'name',
-        'price_formatted',
+        # 'price_formatted',
         'generations',
         'is_active',
         'has_spillover',
@@ -45,35 +45,35 @@ class AffiliatePackageAdmin(admin.ModelAdmin):
     list_filter = ('is_active', 'has_spillover', 'generations')
     list_display_links = ('name',)
 
-    fieldsets = (
-        ('Basic Information', {
-            # Removed 'description' because it's not in the model
-            'fields': ('name', 'price', 'is_active', 'url')
-        }),
-        ('MLM Structure', {
-            'fields': ('generations', 'has_spillover'),
-            'description': 'Configure how many levels deep this package earns.'
-        }),
-        ('Commission Logic', {
-            # Use 'commissions' (the JSONField) instead of the old separate gen fields
-            'fields': ('commissions',),
-            'description': "Enter as JSON. Example: {'1': 20, '2': 10, '3': 5}"
-        }),
-        ('Package Description', {
-            # Use 'commissions' (the JSONField) instead of the old separate gen fields
-            'fields': ('description',),
-            'description': "Enter the Description of the Package"
-        }),
-    )
+    # fieldsets = (
+    #     ('Basic Information', {
+    #         # Removed 'description' because it's not in the model
+    #         'fields': ('name', 'price', 'is_active', 'url')
+    #     }),
+    #     ('MLM Structure', {
+    #         'fields': ('generations', 'has_spillover'),
+    #         'description': 'Configure how many levels deep this package earns.'
+    #     }),
+    #     ('Commission Logic', {
+    #         # Use 'commissions' (the JSONField) instead of the old separate gen fields
+    #         'fields': ('commissions',),
+    #         'description': "Enter as JSON. Example: {'1': 20, '2': 10, '3': 5}"
+    #     }),
+    #     ('Package Description', {
+    #         # Use 'commissions' (the JSONField) instead of the old separate gen fields
+    #         'fields': ('description',),
+    #         'description': "Enter the Description of the Package"
+    #     }),
+    # )
 
-    @admin.display(description='Price (NGN)')
-    def price_formatted(self, obj):
-        return f"₦{obj.price:,.2f}"
+    # @admin.display(description='Price (NGN)')
+    # def price_formatted(self, obj):
+    #     return f"₦{obj.price:,.2f}"
 
-    def get_readonly_fields(self, request, obj=None):
-        if obj and not request.user.is_superuser:
-            return ('price', 'generations', 'name')
-        return super().get_readonly_fields(request, obj)
+    # def get_readonly_fields(self, request, obj=None):
+    #     if obj and not request.user.is_superuser:
+    #         return ('price', 'generations', 'name')
+    #     return super().get_readonly_fields(request, obj)
 
 
 @admin.register(Affiliate)
@@ -128,16 +128,17 @@ class AffiliateAdmin(admin.ModelAdmin):
     @admin.display(description='Upline (Referrer)')
     def get_upline(self, obj):
         if obj.upline:
-            return f"{obj.upline.user.username} ({obj.upline.referral_code})"
+            return f"{obj.upline.user.get_full_name()} ({obj.upline.referral_code})"
         return "Company (Direct)"
 
     # Security: Prevent deletion of Affiliates (Deactivate instead)
     # This preserves the financial audit trail
     def has_delete_permission(self, request, obj=None):
-        if request.user.user_type == 'admin' or request.user.user_type == 'manager':
+        if request.user.is_superuser:
             return True
         else:
             return False
+        
 
 
 @admin.register(CommissionLog)

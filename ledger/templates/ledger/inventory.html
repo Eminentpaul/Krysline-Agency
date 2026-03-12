@@ -1,0 +1,1581 @@
+{% extends "krysline_nav.html" %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+{% load custom_tags %}
+
+
+
+{% block content %}
+      <main class="adminuiux-content has-sidebar" onclick="contentClick()">
+        <!-- page title -->
+        <div class="container-fluid py-3">
+          <div class="row align-items-center page-title">
+            <div class="col col-sm mb-3 mb-sm-0 order-1">
+              <h5 class="mb-0">Inventory Dashboard</h5>
+              <p class="text-secondary small">
+                Keep your eyes on market demand and supply. Keep stock
+                available.
+              </p>
+            </div>
+
+             <!-- Inventory Filter Area
+            <div class="col-12 col-sm-auto order-3 order-sm-2">
+              <div class="input-group input-group-md width-250">
+                <input
+                  type="text"
+                  class="form-control bg-transparent"
+                  value=""
+                  id="daterangepickerranges"
+                />
+                <span
+                  class="input-group-text text-theme-1 bg-transparent"
+                  id="titlecalendar"
+                  onclick="this.previousElementSibling.click()"
+                  ><i class="bi bi-calendar-event"></i
+                ></span>
+              </div>
+            </div>
+
+            -->
+          <div class="card custom--card mb-4 mx">
+              <div class="card-body">
+                  <form method="GET" action="{% url 'inventory_report' %}" class="row g-3 align-items-end">
+                      <!-- 1. Text Search -->
+                      <div class="col-md-4">
+                          <label class="form-label">Search Entry (Ref ID / Description)</label>
+                          <input type="text" name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Ex: PKG-1234">
+                      </div>
+
+                      <!-- 2. Date Range: Start -->
+                      <div class="col-md-3">
+                          <label class="form-label">From Date</label>
+                          <input type="date" name="start_date" value="{{ request.GET.start_date }}" class="form-control">
+                      </div>
+
+                      <!-- 3. Date Range: End -->
+                      <div class="col-md-3">
+                          <label class="form-label">To Date</label>
+                          <input type="date" name="end_date" value="{{ request.GET.end_date }}" class="form-control">
+                      </div>
+
+                      <!-- 4. Filter Button -->
+                      <div class="col-md-2">
+                          <button type="submit" class="btn btn-primary w-100">
+                              <i class="fas fa-filter"></i> Filter
+                          </button>
+                      </div>
+                  </form>
+              </div>
+          </div>
+
+          <!-- Financial Table remains as we built it, but now it responds to the form above -->
+
+          <nav aria-label="breadcrumb" class="breadcrumb-theme mt-3 rounded">
+            <ol class="breadcrumb mb-0">
+              <li class="breadcrumb-item bi">
+                <a href="adminux-dashboard.html"
+                  ><i class="bi bi-house-door me-2"></i> Kryline Agency Ltd.</a
+                >
+              </li>
+              <li class="breadcrumb-item bi active" aria-current="page">
+                Inventory
+              </li>
+            </ol>
+          </nav>
+        </div>
+
+        <!-- content -->
+        <div class="container mt-3" id="main-content">
+          <div class="row gx-3 gx-lg-4">
+            <!-- summary sales delivery stocks-->
+            <div class="col-12 col-md-12 col-lg-6">
+              <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                <div class="card-header">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <div
+                        class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1 theme-blue"
+                      >
+                        <i class="bi bi-bag h5"></i>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <h5 class="mb-0"> Revenue Summary</h5>
+                      {% comment %} <p class="small text-secondary">Sales this month</p> {% endcomment %}
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row gx-3 mb-3">
+                    <div class="col-6">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <div
+                            class="avatar avatar-50 rounded bg-theme-1-subtle text-theme-1 theme-cyan"
+                          >
+                            <i class="bi bi-cart h5"></i>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <p class="small text-secondary mb-0">Revenue Net. Balance</p>
+                          <h5>₦{{net_balance|floatformat:2|intcomma}}</h5>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <div
+                            class="avatar avatar-50 rounded bg-theme-1-subtle text-theme-1 theme-yellow"
+                          >
+                            <i class="bi bi-bar-chart h5"></i>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <p class="small text-secondary mb-0">Inflow Revenue</p>
+                          <h5><small class="h6">₦</small>{{total_inflow|floatformat:2|intcomma}} </h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row gx-3">
+                    <div class="col-6">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <div
+                            class="avatar avatar-50 rounded bg-theme-1-subtle text-theme-1 theme-red"
+                          >
+                            <i class="bi bi-coin h5"></i>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <p class="small text-secondary mb-0">Outflow Revenue</p>
+                          <h5><small class="h6">₦</small>{{total_outflow|intcomma}}</h5>
+                        </div>
+                      </div>
+                    </div>
+                    {% comment %} <div class="col-6">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <div
+                            class="avatar avatar-50 rounded bg-theme-1-subtle text-theme-1 theme-red"
+                          >
+                            <i class="bi bi-arrow-down-right h5"></i>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <p class="small text-secondary mb-0">Expenses</p>
+                          <h5>13158 <small class="h6">USD</small></h5>
+                        </div>
+                      </div>
+                    </div>  {% endcomment %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Orders and status summary-->
+            {% comment %} <div class="col-12 col-md-12 col-lg-6">
+              <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                <div class="card-header">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <div
+                        class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1 theme-red"
+                      >
+                        <i class="bi bi-box h5"></i>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <h6 class="mb-0">Order Overview</h6>
+                      <p class="small text-secondary">
+                        Orders status and Rejections
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row gx-3 mb-3">
+                    <div class="col-6">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <div
+                            class="avatar avatar-50 rounded bg-theme-1-subtle text-theme-1 theme-cyan"
+                          >
+                            <i class="bi bi-bag-check h5"></i>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <p class="small text-secondary mb-0">Booked</p>
+                          <h5>523</h5>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <div
+                            class="avatar avatar-50 rounded bg-theme-1-subtle text-theme-1 theme-yellow"
+                          >
+                            <i class="bi bi-clipboard-check h5"></i>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <p class="small text-secondary mb-0">Processed</p>
+                          <h5>135</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row gx-3">
+                    <div class="col-6">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <div
+                            class="avatar avatar-50 rounded bg-theme-1-subtle text-theme-1 theme-red"
+                          >
+                            <i class="bi bi-geo-alt h5"></i>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <p class="small text-secondary mb-0">Delivered</p>
+                          <h5>6521</h5>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <div
+                            class="avatar avatar-50 rounded bg-theme-1-subtle text-theme-1 theme-green"
+                          >
+                            <i class="bi bi-cart-x h5"></i>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <p class="small text-secondary mb-0">
+                            Rejected/Cancelled
+                          </p>
+                          <h5>13</h5>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> {% endcomment %}
+          </div>
+
+          <!-- sales chart -->
+          <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+            <div class="card-header">
+              <div class="row gx-3 align-items-center">
+                <div class="col-auto">
+                  <i
+                    class="bi bi-boxes h5 avatar avatar-40 bg-theme-1-subtle text-theme-1 rounded"
+                  ></i>
+                </div>
+                <div class="col">
+                  <h6 class="mb-0">Sales and Package subscription</h6>
+                  {% comment %} <p class="small text-secondary">Purchase Statistics</p> {% endcomment %}
+                </div>
+
+                <!-- cost and profit  -->
+                <div class="col-auto align-self-center">
+                  <div class="swiper swipernav">
+                    <div class="swiper-wrapper">
+                      <div class="swiper-slide width-250">
+                        <div class="row gx-3 align-items-center">
+                          <div class="col-auto">
+                            <div
+                              class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1 theme-yellow"
+                            >
+                              <i class="bi bi-bar-chart"></i>
+                            </div>
+                          </div>
+                          <div class="col">
+                            <p class="text-secondary small mb-0">Revenue</p>
+                            <h5 class="mb-0">
+                              <small class="h6">₦</small>
+                              <span class="increamentcount">{{total_inflow|floatformat:2|intcomma}}</span>
+                            </h5>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="swiper-slide width-250">
+                        <div class="row gx-3 align-items-center">
+                          <div class="col-auto">
+                            <div
+                              class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1 theme-red"
+                            >
+                              <i class="bi bi-coin"></i>
+                            </div>
+                          </div>
+                          <div class="col">
+                            <p class="text-secondary small mb-0">Cost</p>
+                            <h5 class="mb-0">
+                              <small class="h6">₦</small>
+                              <span class="increamentcount">{{total_outflow|floatformat:2|intcomma}}</span>
+                            </h5>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="swiper-slide width-250">
+                        <div class="row gx-3 align-items-center">
+                          <div class="col-auto">
+                            <div
+                              class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1 theme-green"
+                            >
+                              <i class="bi bi-arrow-up-right"></i>
+                            </div>
+                          </div>
+                          <div class="col">
+                            <p class="text-secondary small mb-0">Profit</p>
+                            <h5 class="mb-0">
+                              <small class="h6">₦</small>
+                              <span class="increamentcount">{{net_balance|floatformat:2|intcomma}}</span>
+                            </h5>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body px-0">
+              <div class="height-200">
+                <canvas id="areachartblue1"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <!-- sales summary -->
+          <div class="row gx-3 gx-lg-12">
+            <!-- in basic -->
+            <div class="col-12 col-md-6 col-lg-2">
+              <div
+                class="card adminuiux-card shadow-sm bg-l-gradient-light theme-blue mb-3 mb-lg-4"
+              >
+                <div class="card-header">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <div
+                        class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1"
+                      >
+                        <i class="bi bi-boxes h5"></i>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <h6 class="mb-0">{{basic.name}}</h6>
+                      <p class="small text-secondary">
+                      {{basic|package_price|div:1000}}K
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col">
+                      <h4 class="fw-medium mb-0">₦{{basic|package_income|floatformat:2|intcomma}}</h4>
+                      {% comment %} <p class="small">
+                        5
+                        <span class="text-theme-1 theme-green"
+                          ><i class="bi bi-arrow-up fs-10"></i>3.15%</span
+                        >
+                      </p> {% endcomment %}
+                    </div>
+                    <div class="col-auto">
+                       <div class="avatar avatar-50">
+                        <div id="circleprogressblue1"></div>
+                      </div> 
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- manufacture  -->
+            <div class="col-12 col-md-6 col-lg-2">
+              <div
+                class="card adminuiux-card shadow-sm bg-l-gradient-light theme-purple mb-3 mb-lg-4"
+              >
+                <div class="card-header">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <div
+                        class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1 theme-purple"
+                      >
+                        <i class="bi bi-tag h5"></i>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <h6 class="mb-0">{{standard.name}}</h6>
+                      {{standard|package_price|div:1000}}K
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col">
+                      <h4 class="fw-medium mb-0">₦{{standard|package_income|floatformat:2|intcomma}}</h4>
+                       
+                    </div>
+                    <div class="col-auto">
+                      <div class="avatar avatar-50">
+                        <div id="circleprogressgreen1"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- wishlist  -->
+            <div class="col-12 col-md-6 col-lg-2">
+              <div
+                class="card adminuiux-card shadow-sm bg-l-gradient-light theme-pink mb-3 mb-lg-4"
+              >
+                <div class="card-header">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <div
+                        class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1 theme-pink"
+                      >
+                        <i class="bi bi-heart h5"></i>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <h6 class="mb-0">{{premium.name}}</h6>
+                      {{premium|package_price|div:1000}}K
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col">
+                      <h4 class="fw-medium mb-0">₦{{standard|package_income|floatformat:2|intcomma}}</h4>
+                      <p class="small">
+                       
+                        
+                      </p> 
+                    </div>
+                    <div class="col-auto">
+                      <div class="avatar avatar-50">
+                        <div id="circleprogressyellow1"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- referral  -->
+            <div class="col-12 col-md-6 col-lg-2">
+              <div
+                class="card adminuiux-card shadow-sm bg-l-gradient-light theme-red mb-3 mb-lg-4"
+              >
+                <div class="card-header">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <div
+                        class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1 theme-red"
+                      >
+                        <i class="bi bi-people h5"></i>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <h6 class="mb-0">{{professional.name|truncatechars:6}}</h6>
+                      <p class="small text-secondary">
+                       {{professional|package_price|div:1000}}K
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col">
+                      <h4 class="fw-medium mb-0">₦{{professional|package_income|floatformat:2|intcomma}}</h4>
+                      {% comment %} <p class="small">
+                        530.00
+                        <span class="text-theme-1 theme-green"
+                          ><i class="bi bi-arrow-up fs-10"></i>4.15%</span
+                        >
+                      </p> {% endcomment %}
+                    </div>
+                    <div class="col-auto">
+                      <div class="avatar avatar-50">
+                        <div id="circleprogressred1"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- referral  -->
+            <div class="col-12 col-md-6 col-lg-2">
+              <div
+                class="card adminuiux-card shadow-sm bg-l-gradient-light theme-red mb-3 mb-lg-4"
+              >
+                <div class="card-header">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <div
+                        class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1 theme-red"
+                      >
+                        <i class="bi bi-people h5"></i>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <h6 class="mb-0">{{elite.name}}</h6>
+                      <p class="small text-secondary">
+                       {{elite|package_price|div:1000}}K
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col">
+                      <h4 class="fw-medium mb-0">₦{{elite|package_income|floatformat:2|intcomma}}</h4>
+                      
+                    </div>
+                    <div class="col-auto">
+                      <div class="avatar avatar-50">
+                        <div id="circleprogressrefd1"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- suppliers and categories demanded -->
+          <div class="row gx-3 gx-lg-4 d-none">
+            <!-- Sent money -->
+            <div class="col-12 col-md-12 col-lg-6 col-xxl-3">
+              <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                <div class="card-header">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <i
+                        class="bi bi-receipt h5 avatar avatar-40 bg-theme-1-subtle text-theme-1 theme-yellow rounded"
+                      ></i>
+                    </div>
+                    <div class="col">
+                      <h6 class="mb-0">Pay bill</h6>
+                      <p class="small text-secondary">Supplier payments</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="input-group input-group-md rounded mb-2">
+                    <span class="input-group-text text-theme-1"
+                      ><i class="bi bi-person-lines-fill"></i
+                    ></span>
+                    <input
+                      class="form-control"
+                      type="search"
+                      placeholder="Search Supplier"
+                    />
+                  </div>
+                  <input
+                    class="form-control form-control-lg fs-2 fw-bold text-center mb-2"
+                    type="number"
+                    placeholder="0.00"
+                  />
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-12 mb-2">
+                      <div class="input-group input-group-md rounded">
+                        <span class="input-group-text text-theme-1 px-2"
+                          ><i class="bi bi-cash"></i
+                        ></span>
+                        <select class="form-select">
+                          <option>Wallet</option>
+                          <option selected>Bank</option>
+                          <option>Crypto</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="col-12">
+                      <div class="input-group input-group-md rounded">
+                        <span class="input-group-text text-theme-1 px-2"
+                          ><i class="bi bi-bank"></i
+                        ></span>
+                        <select class="form-control simplechosen">
+                          <option>CA Bank</option>
+                          <option>Larson Bank</option>
+                          <option>Truelance Bank</option>
+                          <option selected>Cabilian Bank</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <p class="text-secondary small text-center mb-3">
+                    Balance: 966800.00 USD
+                  </p>
+                  <button class="btn btn-outline-theme w-100">
+                    Payout now
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top Suppliers -->
+            <div class="col-12 col-md-12 col-lg-6 col-xxl-3">
+              <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                <div class="card-header">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <i
+                        class="bi bi-building h5 avatar avatar-40 bg-theme-1-subtle text-theme-1 theme-purple rounded"
+                      ></i>
+                    </div>
+                    <div class="col">
+                      <h6 class="mb-0">Top Supplier</h6>
+                      <p class="small text-secondary">Stock providers</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body px-0 py-1">
+                  <ul class="list-group border-0 bg-none">
+                    <li class="list-group-item">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <p class="mb-0">Larsons Ltd.</p>
+                          <p class="text-secondary small">1258 Units</p>
+                        </div>
+                        <div class="col ps-0 text-end">
+                          <h6 class="mb-0">11,070.77 <small>USD</small></h6>
+                          <p class="small text-secondary">
+                            -20.17
+                            <span class="text-theme-1 theme-red"
+                              ><i class="bi bi-arrow-up fs-10"></i>-0.04%</span
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <p class="mb-0">Devines Boxes</p>
+                          <p class="text-secondary small">1150 Units</p>
+                        </div>
+                        <div class="col ps-0 text-end">
+                          <h6 class="mb-0">10,030.77 <small>USD</small></h6>
+                          <p class="small text-secondary">
+                            -20.17
+                            <span class="text-theme-1 theme-red"
+                              ><i class="bi bi-arrow-up fs-10"></i>-0.04%</span
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <p class="mb-0">Firoscas</p>
+                          <p class="text-secondary small">1100 Units</p>
+                        </div>
+                        <div class="col ps-0 text-end">
+                          <h6 class="mb-0">16,530.77 <small>USD</small></h6>
+                          <p class="small text-secondary">
+                            -20.17
+                            <span class="text-theme-1 theme-red"
+                              ><i class="bi bi-arrow-up fs-10"></i>-0.04%</span
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <p class="mb-0">Bonds</p>
+                          <p class="text-secondary small">900 Units</p>
+                        </div>
+                        <div class="col ps-0 text-end">
+                          <h6 class="mb-0">4048.24 <small>USD</small></h6>
+                          <p class="small text-secondary">
+                            1.20
+                            <span class="text-theme-1 theme-green"
+                              ><i class="bi bi-arrow-up fs-10"></i>0.04%</span
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <p class="mb-0">Jackson Pvt. Ltd.</p>
+                          <p class="text-secondary small">800 Units</p>
+                        </div>
+                        <div class="col ps-0 text-end">
+                          <h6 class="mb-0">3750.00 <small>USD</small></h6>
+                          <p class="small text-secondary">
+                            74.00<span class="text-theme-1 theme-red"
+                              ><i class="bi bi-arrow-up fs-10"></i>-2.09%</span
+                            >
+                          </p>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top buyers -->
+            <div class="col-12 col-md-12 col-lg-6 col-xxl-3">
+              <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                <div class="card-header">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <i
+                        class="bi bi-people h5 avatar avatar-40 bg-theme-1-subtle text-theme-1 theme-pink rounded"
+                      ></i>
+                    </div>
+                    <div class="col">
+                      <h6 class="mb-0">Top Buyers</h6>
+                      <p class="small text-secondary">Our Product Buyers</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body px-0 py-1">
+                  <ul class="list-group border-0 bg-none">
+                    <li class="list-group-item">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <figure
+                            class="avatar avatar-40 rounded-circle coverimg"
+                          >
+                            <img
+                              src="{% static 'assets/img/modern-ai-image/user-1.jpg' %}"
+                              class="w-100"
+                              alt=""
+                            />
+                          </figure>
+                        </div>
+                        <div class="col-auto">
+                          <p class="mb-0">AdminUIUX</p>
+                          <p class="text-secondary small">250 Units</p>
+                        </div>
+                        <div class="col ps-0 text-end">
+                          <h6 class="mb-0">1,070.77 <small>USD</small></h6>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <figure
+                            class="avatar avatar-40 rounded-circle coverimg"
+                          >
+                            <img
+                              src="{% static 'assets/img/modern-ai-image/user-2.jpg' %}"
+                              class="w-100"
+                              alt=""
+                            />
+                          </figure>
+                        </div>
+                        <div class="col-auto">
+                          <p class="mb-0">Jenny D'Souza</p>
+                          <p class="text-secondary small">140 Units</p>
+                        </div>
+                        <div class="col ps-0 text-end">
+                          <h6 class="mb-0">1,030.77 <small>USD</small></h6>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <figure
+                            class="avatar avatar-40 rounded-circle coverimg"
+                          >
+                            <img
+                              src="{% static 'assets/img/modern-ai-image/user-3.jpg' %}"
+                              class="w-100"
+                              alt=""
+                            />
+                          </figure>
+                        </div>
+                        <div class="col-auto">
+                          <p class="mb-0">Almandra</p>
+                          <p class="text-secondary small">120 Units</p>
+                        </div>
+                        <div class="col ps-0 text-end">
+                          <h6 class="mb-0">1,530.77 <small>USD</small></h6>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <figure
+                            class="avatar avatar-40 rounded-circle coverimg"
+                          >
+                            <img
+                              src="{% static 'assets/img/modern-ai-image/user-4.jpg' %}"
+                              class="w-100"
+                              alt=""
+                            />
+                          </figure>
+                        </div>
+                        <div class="col-auto">
+                          <p class="mb-0">Monty Alberto</p>
+                          <p class="text-secondary small">100 Units</p>
+                        </div>
+                        <div class="col ps-0 text-end">
+                          <h6 class="mb-0">848.24 <small>USD</small></h6>
+                        </div>
+                      </div>
+                    </li>
+                    <li class="list-group-item">
+                      <div class="row gx-3 align-items-center">
+                        <div class="col-auto">
+                          <figure
+                            class="avatar avatar-40 rounded-circle coverimg"
+                          >
+                            <img
+                              src="{% static 'assets/img/modern-ai-image/user-1.jpg' %}"
+                              class="w-100"
+                              alt=""
+                            />
+                          </figure>
+                        </div>
+                        <div class="col-auto">
+                          <p class="mb-0">Jackson Pvt. Ltd.</p>
+                          <p class="text-secondary small">800 Units</p>
+                        </div>
+                        <div class="col ps-0 text-end">
+                          <h6 class="mb-0">3750.00 <small>USD</small></h6>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Demanded Categories -->
+            <div class="col-12 col-md-12 col-lg-6 col-xxl-3">
+              <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                <div class="card-header">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <i
+                        class="bi bi-star h5 avatar avatar-40 bg-theme-1-subtle text-theme-1 theme-red rounded"
+                      ></i>
+                    </div>
+                    <div class="col">
+                      <h6 class="mb-0">Top Categories</h6>
+                      <p class="small text-secondary">Popular in selling</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3 text-center">
+                    <canvas
+                      id="doughnutchart"
+                      class="avatar avatar-160 mx-auto"
+                    ></canvas>
+                  </div>
+                  <div class="row gx-3">
+                    <div class="col-6 mb-4">
+                      <div class="row gx-3">
+                        <div class="col-auto">
+                          <div
+                            class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1 theme-yellow"
+                          >
+                            <i class="bi bi-bicycle h4"></i>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <h6 class="mb-0">40</h6>
+                          <p class="small text-secondary">Kids Play</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6 mb-4">
+                      <div class="row gx-3">
+                        <div class="col-auto">
+                          <div
+                            class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1 theme-green"
+                          >
+                            <i class="bi bi-tools h5"></i>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <h6 class="mb-0">10</h6>
+                          <p class="small text-secondary">Tools</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6 mb-0">
+                      <div class="row gx-3">
+                        <div class="col-auto">
+                          <div
+                            class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1 theme-red"
+                          >
+                            <i class="bi bi-pc-display-horizontal h5"></i>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <h6 class="mb-0">15</h6>
+                          <p class="small text-secondary">Electronics</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-6 mb-0">
+                      <div class="row gx-3">
+                        <div class="col-auto">
+                          <div
+                            class="avatar avatar-40 rounded bg-theme-1-subtle text-theme-1 theme-blue"
+                          >
+                            <i class="bi bi-house h5"></i>
+                          </div>
+                        </div>
+                        <div class="col">
+                          <h6 class="mb-0">25</h6>
+                          <p class="small text-secondary">Decorative</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row gx-3 gx-lg-4 mb-3 mb-lg-4">
+            <div class="col text-center py-3">
+              <h4>
+                Inflow and Outflow of Income
+                
+              </h4>
+              {% comment %} <p class="text-secondary">
+                Proximity and Expectation of users will be best combination to
+                make everything productive.
+              </p> {% endcomment %}
+            </div>
+          </div>
+
+
+          <div class="row gx-3 gx-lg-4">
+            <!-- Orders -->
+            <div class="col-12 col-md-12 position-relative">
+              <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                <div class="card-header">
+                  <div class="row gx-3">
+                    <div class="col-auto">
+                      <i
+                        class="bi bi-shop h5 avatar avatar-40 bg-theme-1-subtle text-theme-1 rounded"
+                      ></i>
+                    </div>
+                    <div class="col-auto align-self-center">
+                      <h6 class="mb-0">Revenue Logs</h6>
+                      <p class="text-secondary small">All inflow and outflow income</p>
+                    </div>
+                    {% comment %} <div class="col-auto ms-auto">
+                      <div class="input-group">
+                        <span class="input-group-text text-theme-1"
+                          ><i class="bi bi-search"></i
+                        ></span>
+                        <input
+                          type="text"
+                          class="form-control"
+                          placeholder="Search..."
+                        />
+                      </div>
+                    </div>
+                    <div class="col-auto">
+                      <div class="dropdown d-inline-block">
+                        <a
+                          class="btn btn-square btn-link no-caret dropdown-toggle"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                          data-bs-display="static"
+                          role="button"
+                        >
+                          <i class="bi bi-three-dots-vertical"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li>
+                            <a class="dropdown-item" href="javascript:void(0)"
+                              >Edit</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="javascript:void(0)"
+                              >Move</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              class="dropdown-item text-danger"
+                              href="javascript:void(0)"
+                              >Delete</a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </div> {% endcomment %}
+                  </div>
+                </div>
+                <div class="card-body py-0">
+                  <table class="table" id="dataTable">
+                    <thead>
+                      <tr class="text-muted">
+                        <th class="w-12"></th>
+                        <th class="all">Reference ID</th>
+                        <th class="all">Amount</th>
+                        <th class="desktop">Received/From</th>
+                        <th class="tablet desktop">Category</th>
+                        <th class="all">Entry Type</th>
+                        <th class="desktop">Date</th>
+                        
+                        {% comment %} <th class="all">Action</th> {% endcomment %}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for query in entries %}
+                        <tr>
+                          <td></td>
+                          
+                          <td>
+                            <p class="mb-0">{{query.reference_id}}</p>
+                            <p class="text-secondary small">{{ query.get_category_display }}</p>
+                          </td>
+                          <td>
+                            <p class="mb-0">{{query.amount|floatformat:2|intcomma}}</p>
+                            <p class="text-secondary small">NGN</p>
+                          </td>
+                          <td>
+                            <p class="mb-0">{{query.actor.get_full_name|title}}</p>
+                            <p class="text-secondary small">
+                              {{query.actor.email|mask_email}}
+                            </p>
+                          </td>
+                          
+                          <td>
+                            <span
+                              class="badge badge-sm badge-light text-bg-theme-1 theme-green"
+                              >{{query.category|upper}}</span
+                            >
+                          </td>
+                          <td>
+                            {% if query.entry_type == "inflow" %}
+                              <span
+                              class="badge badge-sm badge-light text-bg-theme-1 theme-green"
+                              >{{query.entry_type|title}}</span
+                            >
+                            {% else %}
+                              <span
+                              class="badge badge-sm badge-light text-bg-danger theme-green"
+                              >{{query.entry_type|title}}</span
+                            >
+                            {% endif %}
+                          </td>
+                          <td>
+                                <p class="mb-0">{{query.timestamp|date:"M d, Y"}}</p>
+                                <p class="text-secondary small">{{query.timestamp|date:"h:i A"}}</p>
+                          </td>
+                          
+                          {% comment %} <td>
+                            <div class="dropdown d-inline-block">
+                              <a
+                                class="text-secondary no-caret"
+                                data-bs-toggle="dropdown"
+                                aria-expanded="false"
+                                data-bs-display="static"
+                                role="button"
+                              >
+                                <i class="bi bi-three-dots"></i>
+                              </a>
+                              <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                  <a
+                                    class="dropdown-item"
+                                    href="javascript:void(0)"
+                                    >Edit</a
+                                  >
+                                </li>
+                                <li>
+                                  <a
+                                    class="dropdown-item"
+                                    href="javascript:void(0)"
+                                    >Move</a
+                                  >
+                                </li>
+                                <li>
+                                  <a
+                                    class="dropdown-item text-danger"
+                                    href="javascript:void(0)"
+                                    >Delete</a
+                                  >
+                                </li>
+                              </ul>
+                            </div>
+                          </td> {% endcomment %}
+                        </tr>
+                      {% endfor %}
+                      
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- summary  -->
+          <div class="row gx-3 gx-lg-4 d-none">
+            <div class="col-12 col-md-6 col-lg-6 col-xxl-3">
+              <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                <div class="card-body">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <div class="avatar avatar-60">
+                        <div id="circleprogressblue"></div>
+                        <div
+                          class="avatar avatar-40 h5 bg-theme-1-subtle text-theme-1 theme-blue position-absolute start-50 top-50 translate-middle rounded-circle"
+                        >
+                          <i class="bi bi-receipt"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <p class="text-secondary small mb-1">Total Bills</p>
+                      <h5 class="fw-medium">25486.00 <small>USD</small></h5>
+                    </div>
+                    <div class="col-auto">
+                      <div class="dropdown d-inline-block">
+                        <a
+                          class="text-secondary no-caret"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                          data-bs-display="static"
+                          role="button"
+                        >
+                          <i class="bi bi-three-dots-vertical"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li>
+                            <a class="dropdown-item" href="javascript:void(0)"
+                              >Edit</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="javascript:void(0)"
+                              >Move</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              class="dropdown-item text-danger"
+                              href="javascript:void(0)"
+                              >Delete</a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6 col-xxl-3">
+              <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                <div class="card-body">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <div class="avatar avatar-60">
+                        <div id="circleprogressyellow"></div>
+                        <div
+                          class="avatar avatar-40 h5 bg-theme-1-subtle text-theme-1 theme-yellow position-absolute start-50 top-50 translate-middle rounded-circle"
+                        >
+                          <i class="bi bi-credit-card"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <p class="text-secondary small mb-1">Paid Bills</p>
+                      <h5 class="fw-medium">12550<small>USD</small></h5>
+                    </div>
+                    <div class="col-auto">
+                      <div class="dropdown d-inline-block">
+                        <a
+                          class="text-secondary no-caret"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                          data-bs-display="static"
+                          role="button"
+                        >
+                          <i class="bi bi-three-dots-vertical"></i>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                          <li>
+                            <a class="dropdown-item" href="javascript:void(0)"
+                              >Edit</a
+                            >
+                          </li>
+                          <li>
+                            <a class="dropdown-item" href="javascript:void(0)"
+                              >Move</a
+                            >
+                          </li>
+                          <li>
+                            <a
+                              class="dropdown-item text-danger"
+                              href="javascript:void(0)"
+                              >Delete</a
+                            >
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6 col-xxl-3">
+              <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                <div class="card-body">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <div class="avatar avatar-60">
+                        <div id="circleprogressredsum"></div>
+                        <div
+                          class="avatar avatar-40 h5 bg-theme-1-subtle text-theme-1 theme-red position-absolute start-50 top-50 translate-middle rounded-circle"
+                        >
+                          <i class="bi bi-receipt-cutoff"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <p class="text-secondary small mb-1">Unpaid Bills</p>
+                      <h5 class="fw-medium">1525<small>k</small></h5>
+                    </div>
+                    <div class="col-auto avatar-group">
+                      <figure
+                        class="avatar avatar-40 rounded-circle coverimg"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Just Demo"
+                      >
+                        <img
+                          src="{% static 'assets/img/modern-ai-image/company6.png' %}"
+                          alt=""
+                        />
+                      </figure>
+                      <figure
+                        class="avatar avatar-40 rounded-circle coverimg"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Preview Purpose"
+                      >
+                        <img
+                          src="{% static 'assets/img/modern-ai-image/company7.jpg' %}"
+                          alt=""
+                        />
+                      </figure>
+                      <figure
+                        class="avatar avatar-40 rounded-circle coverimg"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="to look real"
+                      >
+                        <img
+                          src="{% static 'assets/img/modern-ai-image/company8.jpg' %}"
+                          alt=""
+                        />
+                      </figure>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-12 col-md-6 col-lg-6 col-xxl-3">
+              <div
+                class="card adminuiux-card shadow-sm mb-3 mb-lg-4 bg-theme-1"
+              >
+                <div class="card-body">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <div class="avatar avatar-60">
+                        <div id="circleprogresswhite"></div>
+                        <div
+                          class="avatar avatar-40 h5 bg-white-opacity text-white position-absolute start-50 top-50 translate-middle rounded-circle"
+                        >
+                          <i class="bi bi-envelope-check"></i>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col">
+                      <p class="opacity-75 small mb-1">In Orders</p>
+                      <h5 class="fw-medium">130 <small>Units</small></h5>
+                    </div>
+                    <div class="col-auto avatar-group">
+                      <figure
+                        class="avatar avatar-40 rounded-circle coverimg"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Shelvey Doe"
+                      >
+                        <img
+                          src="{% static 'assets/img/modern-ai-image/user-2.jpg' %}"
+                          alt=""
+                          class="w-100"
+                        />
+                      </figure>
+                      <figure
+                        class="avatar avatar-40 rounded-circle coverimg"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Maria Smith"
+                      >
+                        <img
+                          src="{% static 'assets/img/modern-ai-image/user-3.jpg' %}"
+                          alt=""
+                          class="w-100"
+                        />
+                      </figure>
+                      <figure
+                        class="avatar avatar-40 rounded-circle coverimg"
+                        data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="Steve Branden"
+                      >
+                        <img
+                          src="{% static 'assets/img/modern-ai-image/user-4.jpg' %}"
+                          alt=""
+                          class="w-100"
+                        />
+                      </figure>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Offers assets average-->
+          <div class="row gx-3 gx-lg-4 d-none">
+            <!-- offer -->
+            <div class="col-12 col-md-6 col-lg-6 col-xxl-3 order-2 order-xxl-1">
+              <div
+                class="card adminuiux-card shadow-sm overflow-hidden mb-3 mb-lg-4"
+              >
+                <div class="row mx-0">
+                  <div
+                    class="col-6 theme-green bg-theme-1 text-center py-4 z-index-1"
+                  >
+                    <div class="position-relative">
+                      <h3 class="mb-0">6.15%</h3>
+                      <p class="mb-2">Interest Rate</p>
+                      <p class="opacity-75 small">
+                        Business Loan are at cheaper rate
+                      </p>
+                    </div>
+                  </div>
+                  <div class="col-6 position-relative">
+                    <figure
+                      class="coverimg position-absolute w-100 h-100 start-0 top-0 m-0"
+                    >
+                      <img
+                        src="{% static 'assets/img/modern-ai-image/pet-3.jpg' %}"
+                        class="mw-100"
+                        alt=""
+                      />
+                    </figure>
+                  </div>
+                </div>
+              </div>
+              <div
+                class="card adminuiux-card shadow-sm overflow-hidden mb-3 mb-lg-4"
+              >
+                <div class="row mx-0">
+                  <div
+                    class="col-6 pe-0 bg-theme-1 text-white half-circle-vertical text-center py-4 z-index-1"
+                  >
+                    <div class="position-relative">
+                      <h2 class="mb-0">15<small>%</small></h2>
+                      <p class="mb-2">Discount</p>
+                      <p class="opacity-75 small">Buy more, Get more</p>
+                    </div>
+                  </div>
+                  <div class="col-6 position-relative">
+                    <figure
+                      class="coverimg position-absolute w-100 h-100 start-0 top-0 m-0"
+                    >
+                      <img
+                        src="{% static 'assets/img/modern-ai-image/user5-kid.jpg' %}"
+                        class="mw-100"
+                        alt=""
+                      />
+                    </figure>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Top countries earning -->
+            <div
+              class="col-12 col-md-12 col-lg-12 col-xxl-6 order-1 order-xxl-2 mb-4"
+            >
+              <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                <div class="card-header">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <i
+                        class="bi bi-cart h5 avatar avatar-40 bg-theme-1-subtle text-theme-1 rounded"
+                      ></i>
+                    </div>
+                    <div class="col">
+                      <h6 class="mb-0">Global Country Performance</h6>
+                      <p class="small text-secondary">Last months</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-12 col-md-6">
+                      <div id="jsvectormap" class="w-100 height-200"></div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                      <div class="row gx-3 mb-3">
+                        <div class="col-auto">
+                          <div class="rounded bg-theme-1 p-3">
+                            <p class="opacity-75 small mb-1">
+                              Target<br />Income
+                            </p>
+                            <h5>$2542</h5>
+                          </div>
+                        </div>
+                        <div class="col align-self-center">
+                          <div class="row gx-3 mb-3">
+                            <div class="col">
+                              <p class="text-secondary small mb-0">
+                                United States
+                              </p>
+                              <p>New York</p>
+                            </div>
+                            <div class="col-auto text-end">
+                              <p class="text-secondary small mb-0">New Sales</p>
+                              <p>120 orders</p>
+                            </div>
+                          </div>
+                          <div>
+                            <div
+                              class="progress height-10 mb-1 bg-theme-1-subtle text-theme-1"
+                            >
+                              <div
+                                class="progress-bar bg-theme-1 w-50"
+                                role="progressbar"
+                                aria-valuenow="45"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                              ></div>
+                            </div>
+                          </div>
+                          <p class="small text-secondary">
+                            Targeted Orders<span class="float-end">260</span>
+                          </p>
+                        </div>
+                      </div>
+                      <div class="row gx-3">
+                        <div class="col-auto">
+                          <div class="rounded bg-purple text-white p-3">
+                            <p class="opacity-75 small mb-1">
+                              Target<br />Income
+                            </p>
+                            <h5>$2542</h5>
+                          </div>
+                        </div>
+                        <div class="col align-self-center">
+                          <div class="row gx-3 mb-3">
+                            <div class="col">
+                              <p class="text-secondary small mb-0">
+                                United States
+                              </p>
+                              <p>New York</p>
+                            </div>
+                            <div class="col-auto text-end">
+                              <p class="text-secondary small mb-0">New Sales</p>
+                              <p>120 orders</p>
+                            </div>
+                          </div>
+                          <div>
+                            <div
+                              class="progress height-10 mb-1 bg-theme-1-subtle text-theme-1 theme-purple"
+                            >
+                              <div
+                                class="progress-bar bg-theme-1 w-50"
+                                role="progressbar"
+                                aria-valuenow="45"
+                                aria-valuemin="0"
+                                aria-valuemax="100"
+                              ></div>
+                            </div>
+                          </div>
+                          <p class="small text-secondary">
+                            Targeted Orders<span class="float-end">260</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Average Expenses -->
+            <div class="col-12 col-md-6 col-lg-6 col-xxl-3 order-3 mb-4">
+              <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                <div class="card-header">
+                  <div class="row gx-3 align-items-center">
+                    <div class="col-auto">
+                      <i
+                        class="bi bi-cart h5 avatar avatar-40 bg-theme-1-subtle text-theme-1 rounded"
+                      ></i>
+                    </div>
+                    <div class="col">
+                      <h6 class="mb-0">Average Expenses</h6>
+                      <p class="small text-secondary">Last 3 months</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="card-body text-center">
+                  <div class="height-140 w-100 position-relative mb-2">
+                    <div
+                      class="position-absolute bottom-0 mx-auto start-50 translate-middle"
+                    >
+                      <p class="text-secondary small mb-0">Total Expense</p>
+                      <h5>5.4k <small>USD</small></h5>
+                    </div>
+                    <div class="avatar avatar-200 mt--25 position-relative">
+                      <canvas id="semidoughnutchart"></canvas>
+                    </div>
+                  </div>
+                  <p class="text-secondary">
+                    You have spend most on raw materials and have to look at
+                    order cancellation
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+
+    <script src="{% static 'assets/js/adminux/adminux-inventory-dashboard.js' %}"></script>
+
+{% endblock %}

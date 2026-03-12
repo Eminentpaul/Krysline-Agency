@@ -14,10 +14,10 @@
     <div class="container-fluid py-3">
         <div class="row align-items-center page-title">
             <div class="col col-sm mb-3 mb-sm-0 order-1">
-                <h5 class="mb-0">{{edit_user.username|title}} Account Settings</h5>
-                <p class="text-secondary small">Make sure your profile is updated</p>
+                <h5 class="mb-0">{{edit_user.username|title}} Package Settings</h5>
+                {% comment %} <p class="text-secondary small">Make sure your profile is updated</p> {% endcomment %}
             </div>
-            <div class="col-auto ps-0 position-relative order-2 order-sm-3 mb-3 mb-sm-0">
+            {% comment %} <div class="col-auto ps-0 position-relative order-2 order-sm-3 mb-3 mb-sm-0">
                 <div class="dropdown d-inline-block">
                     <a class="btn btn-link btn-square no-caret dropdown-toggle" href="#" role="button" id="filterintitle" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
                         <i class="bi bi-filter"></i>
@@ -84,20 +84,20 @@
                 <a href="adminux-company-help-center.html" class="btn btn-link btn-square" data-bs-toggle="tooltip" data-bs-placement="top" id="stylise">
                     <i class="bi bi-life-preserver"></i>
                 </a>
-                <a href="" target="_blank" class="btn btn-link btn-square" data-bs-toggle="tooltip" data-bs-placement="top">
+                <a href="https://1.envato.market/7N7Br" target="_blank" class="btn btn-link btn-square" data-bs-toggle="tooltip" data-bs-placement="top">
                     <span class="bi bi-basket position-relative">
                         <span class="position-absolute top-0 start-100 p-1 bg-danger border border-light rounded-circle">
                             <span class="visually-hidden">New alerts</span>
                         </span>
                     </span>
                 </a>
-            </div>
+            </div> {% endcomment %}
         </div>
         <nav aria-label="breadcrumb" class="breadcrumb-theme mt-3 rounded">
             <ol class="breadcrumb mb-0">
                 <li class="breadcrumb-item bi"><a href="{% url "krysline_admin" %}"><i class="bi bi-house-door me-2"></i> Krysline Agency Ltd.</a></li>
-                <li class="breadcrumb-item bi"><a> {{edit_user.username|title}}</a></li>
-                <li class="breadcrumb-item bi active" aria-current="page"> Account Settings</li>
+                <li class="breadcrumb-item bi"><a> {{package.name|title}}</a></li>
+                <li class="breadcrumb-item bi active" aria-current="page"> Property Transaction</li>
             </ol>
         </nav>
     </div>
@@ -107,7 +107,7 @@
         <ul class="nav nav-pills overflow-x-auto text-nowrap flex-nowrap pb-3" id="myTab" role="tablist">
             
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">{{edit_user.get_full_name|title}}</button>
+                <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Add Property Transaction</button>
             </li>
             
         </ul>
@@ -120,36 +120,76 @@
                         <form action="" method="post">
                             {% csrf_token %}
                             {% include "message.html" %}
-                            <h6 class="mb-3 mb-lg-4">Profile details</h6>
+                            {% comment %} <h6 class="mb-3 mb-lg-4">Create Property Transaction</h6> {% endcomment %}
                             <div class="row gx-3 gx-lg-4 mb-3">
                                 <div class="col-12 col-md-6 col-lg-4">
                                     <div class="form-group mb-3 position-relative check-valid">
                                         <div class="form-floating">
+                                             <input type="text" name='affiliate' id="affiliate_name" placeholder="UserName" value="" required class="form-control" list="affiliate_list">  
+                                             <datalist id="affiliate_list">
+                                                <select id="affiliate_name">
+                                                {% for user in affiliates %}
+                                                    <option value="{{user}}">{{user}}</option>
+                                                {% empty %}
+                                                     <option value="">No Affiliate</option>
+                                                {% endfor %}
+
+                                                </select>
+                                            </datalist>
+                                            <label>Sold By</label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter valid input</div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group mb-3 position-relative check-valid">
+                                        <div class="form-floating">
                                             {% comment %} <input type="text" placeholder="UserName" value="Adminuiux" required class="form-control"> {% endcomment %}
-                                            {{form.user_type |add_class:"form-control"  }}
-                                            <label>User Accout Type</label>
+                                            {{form.amount |add_class:"form-control"  }}
+                                            <label>Property Amount</label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter valid input</div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group mb-3 position-relative check-valid">
+                                        <div class="form-floating">
+                                            {% comment %} <input type="text" placeholder="UserName" value="Adminuiux" required class="form-control"> {% endcomment %}
+                                            {{form.transaction_type |add_class:"form-control"  }}
+                                            <label>Transaction Type</label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter valid input</div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group mb-3 position-relative check-valid">
+                                        <div class="form-floating">
+                                            {% comment %} <input type="text" placeholder="UserName" value="Adminuiux" required class="form-control"> {% endcomment %}
+                                            {{form.client_name |add_class:"form-control"  }}
+                                            <label>Client Name</label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter valid input</div>
+                                </div>
+                                <div class="col-12 col-md-12 col-lg-8">
+                                    <div class="form-group mb-3 position-relative check-valid">
+                                        <div class="form-floating">
+                                            {% comment %} <input type="text" placeholder="UserName" value="Adminuiux" required class="form-control"> {% endcomment %}
+                                            {{form.description|add_class:"form-control"|attr:"rows=15"}}
+                                            <label>Property Description</label>
                                         </div>
                                     </div>
                                     <div class="invalid-feedback">Please enter valid input</div>
                                 </div>
                                 
                             </div>
-                            <h6 class="mb-3 mb-lg-4">Public Visibility</h6>
-                            <div class="row mb-3 mb-lg-4">
-                                <div class="col-12 col-md-6 col-lg-4 col-xl-3">
-                                    <div class="form-check form-switch">
-                                        {% comment %} <input class="form-check-input" type="checkbox" id="profileswitch1" > {% endcomment %}
-                                        {{form.is_active |add_class:"form-check-input"  }}
-                                        <label class="form-check-label" for="profileswitch1">Active</label>
-                                    </div>
-                                </div>
-                                
-                            </div>
+                            {% comment %} <h6 class="mb-3 mb-lg-4">Public Visibility</h6> {% endcomment %}
+                            
 
                             <div class="row gx-3">
                                 <div class="col">
                                     <!-- submit button -->
-                                    <button class="btn btn-theme" type="submit">Update</button>
+                                    <button class="btn btn-theme" type="submit">Create Transaction</button>
                                 </div>
                                 {% comment %} <div class="col-auto">
                                     <button class="btn btn-link theme-red" type="button">Cancel</button>

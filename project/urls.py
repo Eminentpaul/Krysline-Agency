@@ -5,6 +5,7 @@ import datetime
 from django.utils import timezone
 from affiliation.models import Affiliate
 
+
 urlpatterns = [
     # Panel URLs (include each panel you installed)
     path('admin/dj-redis-panel/', include('dj_redis_panel.urls')),
@@ -17,8 +18,12 @@ urlpatterns = [
     path('developer/eminent/account/', admin.site.urls),
     path('user/', include("authentication.urls")),
     path('Dashboard/', include("users.urls")), 
-    path('api', include("monnify_verification.urls")),
-    path('kryline/agency/ltd/', include("krysline_admin.urls"))
+    path('monnify/api', include("monnify_verification.urls")),
+    path('kryline/agency/ltd/', include("krysline_admin.urls")),
+    path('ledger/', include("ledger.urls")),
+
+    # 2FA 
+    # path('', include(tf_urls)),
 ]
 
 

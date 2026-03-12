@@ -33,15 +33,23 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if security %}active{% endif %}" aria-current="page" href="investment-settings-contact.html">
+                        <a class="nav-link {% if security %}active{% endif %}" aria-current="page" href="{% url "change_pin" %}">
                             <div class="avatar avatar-28 icon"><i class="bi bi-key fs-4"></i></div>
                             <div class="col">
-                                <p class="h6 mb-0">Enable 2FA</p>
-                                <p class="small opacity-75">Security, 2FA</p>
-                                <!-- TODO: Update for 2FA-->
+                                <p class="h6 mb-0">Change Transaction PIN</p>
+                                <p class="small opacity-75">Security</p>
                             </div>
                         </a>
-                    </li>
+                    </li> 
+                    <li class="nav-item">
+                        <a class="nav-link {% if security %}active{% endif %}" aria-current="page" href="{% url "password_reset" %}" target="_blank">
+                            <div class="avatar avatar-28 icon"><i class="bi bi-key fs-4"></i></div>
+                            <div class="col">
+                                <p class="h6 mb-0">Change Password</p>
+                                <p class="small opacity-75">Security</p>
+                            </div>
+                        </a>
+                    </li> 
                 </ul>
             </div>
         </div>

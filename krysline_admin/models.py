@@ -45,4 +45,4 @@ class TransactionPIN(models.Model):
             return False
 
     def __str__(self):
-        return f"PIN for {self.user.username}"
+        return f"PIN for {self.user.get_full_name()}"

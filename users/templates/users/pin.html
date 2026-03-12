@@ -1,0 +1,128 @@
+{% extends "krysline_nav.html" %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+{% load custom_tags %}
+{% load widget_tweaks %}
+
+
+
+{% block content %}
+<main class="adminuiux-content has-sidebar" onclick="contentClick()">
+
+    <!-- page title -->
+    <div class="container-fluid py-3">
+        <div class="row align-items-center page-title">
+            <div class="col col-sm mb-3 mb-sm-0 order-1">
+                <h5 class="mb-0">Transaction PIN Settings</h5>
+                <p class="text-secondary small">Make sure your PIN is secured</p>
+            </div>
+            
+        </div>
+        <nav aria-label="breadcrumb" class="breadcrumb-theme mt-3 rounded">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item bi"><a><i class="bi bi-house-door me-2"></i> Krysline Agency Ltd.</a></li>
+                <li class="breadcrumb-item bi"><a> Transaction PIN Change</a></li>
+                <li class="breadcrumb-item bi active" aria-current="page">PIN Update </li>
+            </ol>
+        </nav>
+    </div>
+
+    <!-- content -->
+    <div class="container mt-3 w-75" id="main-content">
+        <ul class="nav nav-pills overflow-x-auto text-nowrap flex-nowrap pb-3" id="myTab" role="tablist">
+            
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false">Change to New PIN</button>
+            </li>
+            
+        </ul>
+    
+
+            <!-- profile tab-->
+            <div  id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                <div class="card adminuiux-card shadow-sm mb-3 mb-lg-4">
+                    <div class="card-body">
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            {% include "message.html" %}
+                            <h6 class="mb-3 mb-lg-4">Old PIN Details</h6>
+                            <div class="row gx-3 gx-lg-4 mb-3">
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group mb-3 position-relative check-valid">
+                                        <div class="form-floating">
+                                            <input type="password" maxlength="4" id="digits-only" placeholder="Current PIN" name="current_pin" required class="form-control">
+                                            <label>Current PIN</label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter valid input</div>
+                                </div>
+                                
+                            </div>
+                            <h6 class="mb-3 mb-lg-4">New PIN Details</h6>
+                            <div class="row gx-3 gx-lg-4 mb-3">
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group mb-3 position-relative check-valid">
+                                        <div class="form-floating">
+                                            <input type="password" id="digits-only2" maxlength="4" placeholder="New PIN" name="pin" required class="form-control">
+                                            <label>New PIN</label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter valid input</div>
+                                </div>
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="form-group mb-3 position-relative check-valid">
+                                        <div class="form-floating">
+                                            <input type="password" id="digits-only3" maxlength="4" placeholder="Confirm New PIN" name="cpin" required class="form-control">
+                                            <label>Confirm New PIN</label>
+                                        </div>
+                                    </div>
+                                    <div class="invalid-feedback">Please enter valid input</div>
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="row gx-3">
+                                <div class="col">
+                                    <!-- submit button -->
+                                    <button class="btn btn-theme" type="submit">Change PIN</button>
+                                </div>
+                                {% comment %} <div class="col-auto">
+                                    <button class="btn btn-link theme-red" type="button">Cancel</button>
+                                </div> {% endcomment %}
+                            </div>
+                        </div>
+                    <form>
+                </div>
+            </div>
+
+
+    </div>
+
+</main>
+</div>
+
+<script>
+    const input = document.getElementById('digits-only');
+
+    input.addEventListener('input', function(event) {
+        // Replace any non-numeric character with an empty string
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    const input2 = document.getElementById('digits-only2');
+
+    input2.addEventListener('input', function(event) {
+        // Replace any non-numeric character with an empty string
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    const input3 = document.getElementById('digits-only3');
+
+    input3.addEventListener('input', function(event) {
+        // Replace any non-numeric character with an empty string
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+</script>
+
+{% endblock %}
