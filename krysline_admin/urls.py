@@ -11,6 +11,7 @@ urlpatterns = [
     path('edit/<str:pk>/user/', views.updateUser, name='edit_user'),
     path('Affiliate/<str:pk>/package/', views.view_user_package, name='view_package'),
     path('delete/<str:pk>/user/', views.delete_user, name='delete_user'),
+    path('UnblockPIN/<str:pk>/user/', views.unblock_pin, name='unblock_pin'),
     path('edit/<str:trans_id>/withdrawal/', views.edit_withdraw, name='edit_withdraw'),
     path('edit/<str:pk>/package/', views.package_update, name='package_update'), 
     path('Property/Transactions/', views.property, name="properties"),
@@ -18,5 +19,5 @@ urlpatterns = [
     path('Property/Verified/Transactions/', views.Verified_property, name="verified_property"),
     path('Property/unerified/Transactions/', views.unverified_property, name="unverified_property"),
     path('delete/<str:pk>/property/transaction/', views.delete_property_transaction, name='delete_property'), 
-    path('verify/<str:pk>/property/transaction/', views.verify_property_transaction, name='verify_property'), 
+    path('verify/<str:pk>/property/transaction/', views.verify_property_transaction, name='verify_property'),  
 ]

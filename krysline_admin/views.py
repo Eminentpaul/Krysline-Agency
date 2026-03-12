@@ -433,6 +433,18 @@ def delete_property_transaction(request, pk):
     return redirect('properties')
 
 
+
+@log_security_event(action="UNBLOCKING_PIN")
+@login_required(login_url="login")
+def unblock_pin(request, pk):
+
+    pin = get_object_or_404(TransactionPIN, user__id=pk)
+    pin.unblock_pin()
+    
+    mg.success(request, f'{pin.user.username} PIN Unblocked!')
+    return redirect("active_user")
+
+
 @login_required(login_url="login")
 @rate_limit("50/hour")
 @log_security_event(action="VERIFY_APPROVE_PROPERTY_TRANSACTION")

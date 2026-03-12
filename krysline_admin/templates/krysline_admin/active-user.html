@@ -93,6 +93,7 @@
                                                     <ul class="dropdown-menu dropdown-menu-end">
                                                         <li><a class="dropdown-item" href="{% url "edit_user" iuser.id %}">Edit</a></li>
                                                         <li><a class="dropdown-item" href="{% url "view_package" iuser.affiliate_record.id %}">View Active Package</a></li>
+                                                        <li><a class="dropdown-item text-danger" href="{% url "unblock_pin" iuser.id %}">Unblock PIN</a></li>
                                                         {% comment %} <li><a class="dropdown-item" href="javascript:void(0)">Move</a></li> {% endcomment %}
                                                         
                                                         <li><a class="dropdown-item text-danger" href="{% url "delete_user" iuser.id %}">Delete</a></li>

@@ -26,6 +26,12 @@ class TransactionPIN(models.Model):
         self.pin_hash = make_password(raw_pin)
         self.save()
 
+    def unblock_pin(self):        
+        if self.is_locked == True:
+            self.is_locked = False
+            self.failed_attempts = 0
+            self.save()
+
     def check_pin(self, raw_pin):
         """Verifies the PIN and handles lockout logic."""
         if self.is_locked:

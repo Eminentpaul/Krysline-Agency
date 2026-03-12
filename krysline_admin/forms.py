@@ -5,10 +5,10 @@ from affiliation.models import Affiliate, AffiliatePackage, PropertyTransaction
 
 
 class UserUpdateForm(ModelForm):
-    # class Meta:
-    #     model = User
-    #     fields = ['user_type', 'is_active']
-    pass
+    class Meta:
+        model = User
+        fields = ['user_type', 'is_active']
+
 
 
 
