@@ -1,0 +1,5 @@
+Database information
+
+Username: kagejthw_krysline
+Password: Kris1997@Agency
+DB name: kagejthw_krysline_db

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Transaction, Withdrawal
+from .models import Transaction, Withdrawal, Notification
+from django.utils import timezone
 from django.utils.html import format_html
 
 @admin.register(Transaction)
@@ -35,3 +36,30 @@ class WithdrawalAdmin(admin.ModelAdmin):
     list_filter = ('status',)
     readonly_fields = ('transaction_id', 'created_at')
     raw_id_fields = ('user',)
+
+
+
+
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = [
+        'title', 'user', 'notification_type', 'priority', 
+        'is_read', 'created_at'
+    ]
+    list_filter = [
+        'notification_type', 'priority', 'is_read', 'created_at'
+    ]
+    search_fields = ['title', 'message', 'user__email', 'user__username']
+    readonly_fields = ['id', 'created_at', 'updated_at']
+    # date_hierarchy = 'created_at'
+    actions = ['mark_as_read', 'mark_as_unread']
+    
+    def mark_as_read(self, request, queryset):
+        queryset.update(is_read=True, read_at=timezone.now())
+    mark_as_read.short_description = "Mark selected as read"
+    
+    def mark_as_unread(self, request, queryset):
+        queryset.update(is_read=False)
+    mark_as_unread.short_description = "Mark selected as unread"
+
+

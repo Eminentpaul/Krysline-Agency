@@ -20,6 +20,7 @@ from security.decorators import *
 def inventory_report(request):
     queryset = FinancialEntry.objects.all()
 
+
     # 1. TEXT SEARCH
     query = request.GET.get('q')
     if query:
@@ -55,17 +56,37 @@ def inventory_report(request):
 
     net_balance = total_inflow - total_outflow
 
+    packages = {
+        'basic': {'name': "", 'price': 0, 'total': 0},
+        'standard': {'price': 0, 'total': 0},
+        'premium': {'price': 0, 'total': 0},
+        'professional': {'price': 0, 'total': 0},
+        'elite': {'price': 0, 'total': 0},
+    }
+
+    for query in queryset:
+        try:
+            # Extract package name from reference
+            package_name = query.reference_id.split("-")[-1].lower()
+            
+            if package_name in packages:
+                # Add price to list and update total
+                packages[package_name]['name']= package_name
+                packages[package_name]['price']= query.amount
+                packages[package_name]['total'] += query.amount
+
+        except Exception as e:
+            print(f"Error processing {query.reference_id}: {e}")
+
+    print(packages["professional"].get("name"), packages["professional"].get("price"), packages["professional"].get("total"))
 
     context = {
         'entries': queryset,
         'total_inflow': total_inflow,
         'total_outflow': total_outflow,
         'net_balance': net_balance,
-        'basic': AffiliatePackage.objects.all()[0],
-        'standard': AffiliatePackage.objects.all()[1],
-        'premium': AffiliatePackage.objects.all()[2],
-        'professional': AffiliatePackage.objects.all()[3],
-        'elite': AffiliatePackage.objects.all()[4],
+        "packages": packages
+        
     }
 
     return render(request, 'ledger/inventory.html', context)

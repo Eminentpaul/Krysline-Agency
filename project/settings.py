@@ -108,6 +108,7 @@ MY_APPS = [
     'monnify_verification',
     'krysline_admin', 
     'ledger',
+    'base',
 ]
 
 THIRD_PARTY_APPS = [
@@ -149,6 +150,7 @@ MIDDLEWARE = [
     'django_otp.middleware.OTPMiddleware', # 2FA
     'django.contrib.messages.middleware.MessageMiddleware',
     'authentication.middleware.IPBlacklistMiddleware', # Add this here!
+    # 'authentication.middleware.AutoLogoutMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'csp.middleware.CSPMiddleware',
 
@@ -157,6 +159,9 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware", #allauth middleware
 ]
 
+
+# Custom idle timeout (in minutes)
+IDLE_TIMEOUT_MINUTES = 2  # 30 minutes of inactivity
 
 
 # AUTHENTICATION_BACKENDS = [
@@ -192,23 +197,23 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get("DB_NAME"),
-        'USER': os.environ.get("DB_USERNAME"),
-        "PASSWORD": os.environ.get("DB_PASSWORD"),
-        "HOST": os.environ.get("DB_HOST"),
-        "PORT": "3306",
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'csdb.sqlite3',
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': os.environ.get("DB_NAME"),
+#         'USER': os.environ.get("DB_USERNAME"),
+#         "PASSWORD": os.environ.get("DB_PASSWORD"),
+#         "HOST": os.environ.get("DB_HOST"),
+#         "PORT": "3306",
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'csdb.sqlite3',
+    }
+}
 
 
 # Password validation

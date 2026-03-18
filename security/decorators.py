@@ -17,6 +17,52 @@ def get_client_ip(request):
         return x_forwarded_for.split(',')[0].strip()
     return request.META.get('REMOTE_ADDR')
 
+# def rate_limit(rate='100/hour', key_func=None):
+#     def decorator(view_func):
+#         @wraps(view_func)
+#         def wrapped_view(request, *args, **kwargs):
+#             ip = get_client_ip(request)
+#             key = key_func(request) if key_func else f"rl:{ip}:{view_func.__name__}"
+            
+#             try:
+#                 num_reqs_str, period = rate.split('/')
+#                 num_requests = int(num_reqs_str)
+#                 # Match Case for clean period parsing
+#                 match period.strip().lower():
+#                     case 'second': time_window = 1
+#                     case 'minute': time_window = 60
+#                     case 'hour':   time_window = 3600
+#                     case 'day':    time_window = 86400
+#                     case _:        time_window = 3600
+#             except (ValueError, AttributeError):
+#                 num_requests, time_window = 100, 3600
+
+#             # Atomic increment: Prevents the 'reset bug'
+#             # .incr() returns the new value; if key doesn't exist, it raises ValueError in some backends
+#             # so we use a safer pattern:
+#             if cache.get(key) is None:
+#                 cache.set(key, 1, timeout=time_window)
+#                 current = 1
+#             else:
+#                 current = cache.incr(key)
+
+#             try:
+#                 if current > num_requests:
+#                     logger.warning("rate_limit_exceeded", ip=ip, view=view_func.__name__)
+#                     return JsonResponse({
+#                         'error': 'Too many requests. Please try again later.',
+#                         'retry_after': f"{cache.ttl(key)}s"
+#                     }, status=429)
+#             except:
+#                 # Logout the user 
+#                 auth.logout(request)
+#                 return redirect('login')
+            
+#             return view_func(request, *args, **kwargs)
+#         return wrapped_view
+#     return decorator
+
+
 def rate_limit(rate='100/hour', key_func=None):
     def decorator(view_func):
         @wraps(view_func)
@@ -27,34 +73,43 @@ def rate_limit(rate='100/hour', key_func=None):
             try:
                 num_reqs_str, period = rate.split('/')
                 num_requests = int(num_reqs_str)
-                # Match Case for clean period parsing
-                match period.strip().lower():
-                    case 'second': time_window = 1
-                    case 'minute': time_window = 60
-                    case 'hour':   time_window = 3600
-                    case 'day':    time_window = 86400
-                    case _:        time_window = 3600
+                
+                # REPLACED match-case with if-elif for Python 3.6 compatibility
+                p = period.strip().lower()
+                if p == 'second':
+                    time_window = 1
+                elif p == 'minute':
+                    time_window = 60
+                elif p == 'hour':
+                    time_window = 3600
+                elif p == 'day':
+                    time_window = 86400
+                else:
+                    time_window = 3600
             except (ValueError, AttributeError):
                 num_requests, time_window = 100, 3600
 
-            # Atomic increment: Prevents the 'reset bug'
-            # .incr() returns the new value; if key doesn't exist, it raises ValueError in some backends
-            # so we use a safer pattern:
+            # Atomic increment check
             if cache.get(key) is None:
                 cache.set(key, 1, timeout=time_window)
                 current = 1
             else:
-                current = cache.incr(key)
+                try:
+                    current = cache.incr(key)
+                except ValueError:
+                    # Handle race condition if key expired between get and incr
+                    cache.set(key, 1, timeout=time_window)
+                    current = 1
 
             try:
                 if current > num_requests:
-                    logger.warning("rate_limit_exceeded", ip=ip, view=view_func.__name__)
+                    # Ensure your logger supports kwarg formatting or use standard logging
+                    logger.warning(f"rate_limit_exceeded: ip={ip}, view={view_func.__name__}")
                     return JsonResponse({
                         'error': 'Too many requests. Please try again later.',
-                        'retry_after': f"{cache.ttl(key)}s"
+                        'retry_after': "Please wait" # Note: cache.ttl() isn't standard in all Django backends
                     }, status=429)
-            except:
-                # Logout the user 
+            except Exception:
                 auth.logout(request)
                 return redirect('login')
             

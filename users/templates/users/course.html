@@ -1,0 +1,99 @@
+{% extends "user_dash_nav.html" %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+
+{% block content %}
+
+<main class="adminuiux-content has-sidebar"  onclick="contentClick()">
+    <!-- body content of pages -->
+
+    <!-- breadcrumb -->
+    {% if user.is_authenticated %}
+        <div class="container-fluid mt-4">
+        <div class="row gx-3 align-items-center">
+            <div class="col-12 col-sm">
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item bi"><a href="{% url "dashboard" %}">Home</a></li>
+                        <li class="breadcrumb-item active bi" aria-current="page">Subscription Plan</li>
+                    </ol>
+                </nav>
+                <h5>Subscription Plan</h5>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+    <!-- Content  -->
+    <div class="container mt-4" id="main-content">
+
+        
+        <br>
+            <!-- content -->
+        <div class="container" id="main-content">
+            <!-- filter area -->
+            
+            {% include "message.html" %}
+            <!-- appointment grid view list datatable-->
+            <div class="card adminuiux-card mt-4 mb-0">
+                <div class="card-body">
+                    <h3 class="text-success text-center">UPCOMING EVENTS</h3>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="card">
+                                <img src="https://picsum.photos/1000/600" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <p class="h5 card-title">Card title</p>
+                                    <p class="card-text text-secondary">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                    <a href="#" class="btn btn-theme">Button</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                                        
+                </div>
+            </div>
+
+
+        </div>
+        <br>
+        
+        <div class="container" id="main-content">
+            <!-- filter area -->
+            {% include "message.html" %}
+            <!-- appointment grid view list datatable-->
+            <div class="card adminuiux-card mt-4 mb-0">
+                <div class="card-body">
+                    <h3 class="text-danger">LIST OF AVAILABLE COURSES</h3>
+                    
+                    <hr/>
+                    <div class="row">
+                        <div class="col-12 col-md-6 col-lg-4">
+                            <div class="card">
+                                <img src="https://picsum.photos/1000/600" class="card-img-top" alt="...">
+                                <div class="card-body">
+                                    <p class="h5 card-title">Card title</p>
+                                    <p class="card-text text-secondary">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                                    <a href="#" class="btn btn-theme">Button</a>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                                        
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</main>
+
+</div>
+
+
+<script src="{% static 'assets/templates/basic/js/htmx.min.js' %}"></script>
+
+{% endblock content %}

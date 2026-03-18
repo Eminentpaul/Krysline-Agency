@@ -14,8 +14,8 @@ class EncryptedField(models.Field):
         kwargs['max_length'] = 500  # Extra space for encrypted overhead
         super().__init__(*args, **kwargs)
 
-    def _get_fernet(self):
-        return Fernet(settings.ENCRYPTION_KEY)
+    # def _get_fernet(self):
+    #     return Fernet(settings.ENCRYPTION_KEY)
 
     def get_prep_value(self, value):
         if value is None: return value

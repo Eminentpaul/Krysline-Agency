@@ -11,7 +11,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
     <title>Investment AdminUIUX - Bootstrap HTML Admin template - adminuiux.com</title>
-    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="{% static "assets/img/favicon.png" %}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,9 +36,9 @@
         <div class="row justify-content-center align-items-center text-center h-100">
             <div class="col-12 mb-auto pt-4"></div>
             <div class="col-auto">
-                <img src="{% static 'assets/img/logo.svg' %}" alt="" class="height-60 mb-3">
-                <p class="h6 mb-0">AdminUIUX</p>
-                <p class="h3 mb-4">Investment</p>
+                <img src="{% static 'assets/img/favicon.png' %}" alt="" class="height-60 mb-3">
+                <p class="h3 mb-4">Krysline</p>
+                <p class="h6 mb-0">Agency Ltd</p>
                 <div class="loader10 mb-2 mx-auto"></div>
             </div>
             <div class="col-12 mt-auto pb-4">
@@ -64,11 +64,11 @@
         <div class="container-fluid">
             <!-- logo -->
             <a class="navbar-brand" href="investment-dashboard.html">
-                <img data-bs-img="light" src="{% static 'assets/img/logo-light.svg' %}" alt="">
-                <img data-bs-img="dark" src="{% static 'assets/img/logo.svg' %}" alt="">
+                <img data-bs-img="light" src="{% static 'assets/img/favicon.png' %}" alt="">
+                <img data-bs-img="dark" src="{% static 'assets/img/favicon.png' %}" alt="">
                 <div class="">
-                    <span class="h4">Investment<b>UX</b></span>
-                    <p class="company-tagline">AdminUIUX HTML template</p>
+                    <span class="h4"><b>KRYLINE</b></span>
+                    <p class="">Agency Ltd.</p>
                 </div>
             </a>
 
@@ -194,7 +194,7 @@
                           <hr class="">
                         </div>
                       </div>
-                      <div class="row align-items-center">
+                      {% comment %} <div class="row align-items-center">
                         <div class="col">
                           <button class="btn btn-lg btn-outline-theme w-100 mb-3 text-start">
                             <img src="{% static 'assets/img/g-logo.png' %}" alt="" class="me-2"> Google
@@ -206,7 +206,7 @@
                           </button>
                           <!-- TODO: Sign up with other option -->
                         </div>
-                      </div>
+                      </div> {% endcomment %}
 
                     </div>
                   </div>
@@ -241,20 +241,11 @@
                         <div class="swiper-wrapper">
                           <!-- Slides -->
                           <div class="swiper-slide">
-                            <img src="{% static 'assets/img/investment/slider.png' %}" alt="" class="mw-100 mb-3">
-                            <h2 class="text-white mb-3">Create and Manage your Investment appointments easily at your own very personalized space.</h2>
-                            <p class="lead opacity-75">You are at the best Adminuiux Investment UX<br>HTML template demo preview</p>
+                            <img src="{% static 'assets/img/favicon.png' %}" alt="" class="mw-100 mb-3">
+                            <h2 class="text-white mb-3">Become your Own Boss with Krysline Agency Ltd. Affiliate Account, easily manage your account at your own very personalized space.</h2>
+                            <p class="lead opacity-75">You are at the best Real Estate Company</p>
                           </div>
-                          <div class="swiper-slide">
-                            <img src="{% static 'assets/img/investment/slider.png' %}" alt="" class="mw-100 mb-3">
-                            <h2 class="text-white mb-3">Create and Manage your Investment appointments easily at your own very personalized space.</h2>
-                            <p class="lead opacity-75">You are at the best Adminuiux Investment UX<br>HTML template demo preview</p>
-                          </div>
-                          <div class="swiper-slide">
-                            <img src="{% static 'assets/img/investment/slider.png' %}" alt="" class="mw-100 mb-3">
-                            <h2 class="text-white mb-3">Create and Manage your Investment appointments easily at your own very personalized space.</h2>
-                            <p class="lead opacity-75">You are at the best Adminuiux Investment UX<br>HTML template demo preview</p>
-                          </div>
+                          
                         </div>
                         <!-- pagination -->
                         <div class="swiper-pagination white bottom-0"></div>

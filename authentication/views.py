@@ -28,22 +28,22 @@ from .models import User
 @rate_limit(rate='5/minute')
 def login(request):
     if request.user.is_authenticated:
-        match getattr(request.user, 'user_type', 'default'):
-            case 'affiliate':
-                # print("User Dashboard")
-                return redirect('dashboard')
-
-            case 'manager':
-                return redirect('krysline_admin')
-
-            case 'secretary':
-                return redirect('krysline_admin')
-
-            case 'admin':
-                return redirect('/developer/eminent/account')
-
-            case _:
-                return redirect('login')
+        user_type = getattr(request.user, 'user_type', 'default')
+    
+        if user_type == 'affiliate':
+            return redirect('dashboard')
+        
+        elif user_type == 'manager':
+            return redirect('krysline_admin')
+        
+        elif user_type == 'secretary':
+            return redirect('krysline_admin')
+        
+        elif user_type == 'admin':
+            return redirect('/developer/eminent/account')
+        
+        else:
+            return redirect('login')
     
     
     # Getting the Initial url 
@@ -199,7 +199,6 @@ def register(request):
                     return render(request, 'authentication/verify_email_sent.html')
                 
             except Exception as e:
-                mg.error(request, 'Username or Email has been used! Try Again')
                 logger.error("registration_error", error=str(e))
                 form.add_error(None, "An internal error occurred. Please try again.")
         else:

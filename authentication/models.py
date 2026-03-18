@@ -9,7 +9,7 @@ from decimal import Decimal
 import hashlib
 import secrets
 import string
-from security.models import EncryptedField
+# from security.models import EncryptedField
 
 # Create your models here.
 

@@ -368,9 +368,9 @@
                       </div>
                     </div>
                     <div class="col">
-                      <h6 class="mb-0">{{basic.name}}</h6>
+                      <h6 class="mb-0">{{packages.basic.name|upper|default:"BASIC"}}</h6>
                       <p class="small text-secondary">
-                      {{basic|package_price|div:1000}}K
+                      {{packages.basic.price|default:"25000.00"|div:1000}}K
                       </p>
                     </div>
                   </div>
@@ -378,7 +378,7 @@
                 <div class="card-body">
                   <div class="row gx-3 align-items-center">
                     <div class="col">
-                      <h4 class="fw-medium mb-0">₦{{basic|package_income|floatformat:2|intcomma}}</h4>
+                      <h4 class="fw-medium mb-0">₦{{packages.basic.total|floatformat:2|intcomma|default:"0.00"|div:1000}}K</h4>
                       {% comment %} <p class="small">
                         5
                         <span class="text-theme-1 theme-green"
@@ -411,15 +411,15 @@
                       </div>
                     </div>
                     <div class="col">
-                      <h6 class="mb-0">{{standard.name}}</h6>
-                      {{standard|package_price|div:1000}}K
+                      <h6 class="mb-0">{{packages.standard.name|upper|default:"STANDARD"}}</h6>
+                      {{packages.standard.price|default:"50000.00"|div:1000}}K
                     </div>
                   </div>
                 </div>
                 <div class="card-body">
                   <div class="row gx-3 align-items-center">
                     <div class="col">
-                      <h4 class="fw-medium mb-0">₦{{standard|package_income|floatformat:2|intcomma}}</h4>
+                      <h4 class="fw-medium mb-0">₦{{packages.standard.total|floatformat:2|intcomma|div:1000|default:"0.00"}}K</h4>
                        
                     </div>
                     <div class="col-auto">
@@ -447,15 +447,15 @@
                       </div>
                     </div>
                     <div class="col">
-                      <h6 class="mb-0">{{premium.name}}</h6>
-                      {{premium|package_price|div:1000}}K
+                      <h6 class="mb-0">{{packages.premium.name|default:"PREMIUM"}}</h6>
+                      {{packages.premium.price|default:"100000.00"|div:1000}}K
                     </div>
                   </div>
                 </div>
                 <div class="card-body">
                   <div class="row gx-3 align-items-center">
                     <div class="col">
-                      <h4 class="fw-medium mb-0">₦{{standard|package_income|floatformat:2|intcomma}}</h4>
+                      <h4 class="fw-medium mb-0">₦{{packages.premium.price|floatformat:2|intcomma|div:1000|default:"0.00"}}K</h4>
                       <p class="small">
                        
                         
@@ -486,9 +486,9 @@
                       </div>
                     </div>
                     <div class="col">
-                      <h6 class="mb-0">{{professional.name|truncatechars:6}}</h6>
+                      <h6 class="mb-0">{{packages.professional.name|upper|default:"PROFESSIONAL"|truncatechars:6}}</h6>
                       <p class="small text-secondary">
-                       {{professional|package_price|div:1000}}K
+                       {{packages.professional.price|default:"200000.00"|div:1000}}K
                       </p>
                     </div>
                   </div>
@@ -496,7 +496,7 @@
                 <div class="card-body">
                   <div class="row gx-3 align-items-center">
                     <div class="col">
-                      <h4 class="fw-medium mb-0">₦{{professional|package_income|floatformat:2|intcomma}}</h4>
+                      <h4 class="fw-medium mb-0">₦{{packages.professional.price|floatformat:2|intcomma|default:"200000.00"|div:1000}}</h4>
                       {% comment %} <p class="small">
                         530.00
                         <span class="text-theme-1 theme-green"
@@ -529,9 +529,9 @@
                       </div>
                     </div>
                     <div class="col">
-                      <h6 class="mb-0">{{elite.name}}</h6>
+                      <h6 class="mb-0">{{packages.elite.name|upper|default:"ELITE"}}</h6>
                       <p class="small text-secondary">
-                       {{elite|package_price|div:1000}}K
+                       {{packages.elite.price|default:"500000.00"|div:1000}}K
                       </p>
                     </div>
                   </div>
@@ -539,7 +539,7 @@
                 <div class="card-body">
                   <div class="row gx-3 align-items-center">
                     <div class="col">
-                      <h4 class="fw-medium mb-0">₦{{elite|package_income|floatformat:2|intcomma}}</h4>
+                      <h4 class="fw-medium mb-0">₦{{packages.elite.price|floatformat:2|intcomma|default:"0.00"|div:1000}}K</h4>
                       
                     </div>
                     <div class="col-auto">

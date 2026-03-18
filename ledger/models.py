@@ -29,7 +29,8 @@ class FinancialEntry(models.Model):
     
     # Inventory Link (Optional: Link to specific physical assets if needed)
     description = models.TextField(help_text="Detailed reason for this transaction")
-    reference_id = models.CharField(max_length=100, unique=True, help_text="Internal TRX or Receipt Number")
+    reference_id = models.CharField(max_length=100, help_text="Internal TRX or Receipt Number")
+    # reference_id = models.CharField(max_length=100, unique=True, help_text="Internal TRX or Receipt Number")
     
     timestamp = models.DateTimeField(auto_now_add=True)
 

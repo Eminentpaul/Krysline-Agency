@@ -15,7 +15,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
 
     <title>Krysline Agency Ltd</title>
-    <link rel="icon" type="image/png" href="assets/img/favicon.png">
+    <link rel="icon" type="image/png" href="{% static "assets/img/favicon.png" %}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,14 +33,14 @@
 <script defer src="{% static 'assets/js/app.js' %}"></script>
 <link href="{% static 'assets/css/app.css' %}" rel="stylesheet"></head>
 
-<body class="main-bg main-bg-opac main-bg-blur adminuiux-sidebar-fill-white adminuiux-sidebar-boxed  theme-blue roundedui" data-theme="theme-blue" data-sidebarfill="adminuiux-sidebar-fill-white" data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" tabindex="0">
+<body id="normal" class="main-bg main-bg-opac main-bg-blur adminuiux-sidebar-fill-white adminuiux-sidebar-boxed  theme-blue roundedui" data-theme="theme-blue" data-sidebarfill="adminuiux-sidebar-fill-white" data-bs-spy="scroll" data-bs-target="#list-example" data-bs-smooth-scroll="true" tabindex="0">
     <!-- Pageloader -->
-{% comment %} <div class="pageloader">
+<div class="pageloader">
     <div class="container h-100">
         <div class="row justify-content-center align-items-center text-center h-100">
             <div class="col-12 mb-auto pt-4"></div>
             <div class="col-auto">
-                <img src="{% static 'assets/img/logo.svg' %}" alt="" class="height-60 mb-3">
+                <img src="{% static 'assets/img/favicon.png' %}" alt="" class="height-60 mb-3">
                 <p class="h6 mb-0">Krysline</p>
                 <p class="h3 mb-4">Agency Ltd</p>
                 <div class="loader10 mb-2 mx-auto"></div>
@@ -50,23 +50,25 @@
             </div>
         </div>
     </div>
-</div>  {% endcomment %}
+</div>  
         <!-- standard header -->
 <header class="adminuiux-header">
     <!-- Fixed navbar -->
     <nav class="navbar navbar-expand-lg fixed-top">
         <div class="container-fluid">
 
-            <!-- main sidebar toggle -->
-            <button class="btn btn-link btn-square sidebar-toggler" type="button" onclick="initSidebar()">
-                <i class="sidebar-svg" data-feather="menu"></i>
-            </button>
+            {% if user.is_authenticated %}
+                <!-- main sidebar toggle -->
+                <button class="btn btn-link btn-square sidebar-toggler" type="button" onclick="initSidebar()">
+                    <i class="sidebar-svg" data-feather="menu"></i>
+                </button>
+            {% endif %}
 
             <!-- logo -->
             {% if user.user_type == "manager" %}
                 <a class="navbar-brand" href="{% url "krysline_admin" %}">
-                    <img data-bs-img="light" src="{% static 'assets/img/logo-light.svg' %}" alt="">
-                    <img data-bs-img="dark" src="{% static 'assets/img/logo.svg' %}" alt="">
+                    <img data-bs-img="light" src="{% static 'assets/img/favicon.png' %}" alt="">
+                    <img data-bs-img="dark" src="{% static 'assets/img/favicon.png' %}" alt="">
                     <div class="">
                         <span class="h4"><b>Kryline Agency</b></span>
                         {% comment %} <p class="company-tagline"></p> {% endcomment %}
@@ -74,8 +76,8 @@
                 </a>
             {% else %}
                 <a class="navbar-brand" href="{% url "dashboard" %}">
-                    <img data-bs-img="light" src="{% static 'assets/img/logo-light.svg' %}" alt="">
-                    <img data-bs-img="dark" src="{% static 'assets/img/logo.svg' %}" alt="">
+                    <img data-bs-img="light" src="{% static 'assets/img/favicon.png' %}" alt="">
+                    <img data-bs-img="dark" src="{% static 'assets/img/favicon.png' %}" alt="">
                     <div class="">
                         <span class="h4"><b>Kryline Agency</b></span>
                         {% comment %} <p class="company-tagline"></p> {% endcomment %}
@@ -86,23 +88,36 @@
             <!-- navigation inline -->
             <div class="collapse navbar-collapse right-in-device justify-content-center" id="header-navbar">
                 <ul class="navbar-nav mx-lg-3 mb-2 mb-md-0 ">
-                    {% if user.user_type == "manager" %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url "krysline_admin" %}">Dashboard </a>
-                        </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url "all_transaction" %}">Transaction</a>
+                    {% if user.is_authenticated %}
+                    
+                        {% if user.user_type == "manager" %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url "krysline_admin" %}">Dashboard </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url "all_transaction" %}">Transaction</a>
+                                
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url "dashboard" %}">Dashboard</a>
+                            </li>
                             
-                        </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url "transaction_history" %}">Transaction</a>
+                            </li>
+                        {% endif %}
                     {% else %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url "dashboard" %}">Dashboard</a>
+                            <a class="nav-link" href="{% url "login" %}">Login</a>
                         </li>
                         
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url "transaction_history" %}">Transaction</a>
+                            <a class="nav-link" href="{% url "register" %}">Register</a>
                         </li>
+
                     {% endif %}
                     {% comment %} <li class="nav-item">
                         <a class="nav-link" href="investment-portfolio.html">Portfolio</a>
@@ -114,7 +129,8 @@
             </div>
 
             <!-- right icons button -->
-            <div class="ms-auto">
+            {% if user.is_authenticated %}
+                <div class="ms-auto">
                 <!-- global search toggle -->
                 {% comment %} <button class="btn btn-link btn-square btn-icon btn-link-header" type="button" onclick="openSearch()">
                     <i data-feather="search"></i>
@@ -205,17 +221,40 @@
             
 
                 <!-- notification dropdown -->
-                {% comment %} <div class="dropdown d-inline-block">
+               <div class="dropdown d-inline-block">
                     <button class="btn btn-link btn-square btn-icon btn-link-header dropdown-toggle no-caret" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                         <i data-feather="bell"></i>
                         <span class="position-absolute top-0 end-0 badge rounded-pill bg-danger p-1">
-                            <small>9+</small>
+                            <small>{{notification.count}}</small>
                             <span class="visually-hidden">unread messages</span>
                         </span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end notification-dd sm-mi-95px">
-                        <li>
-                            <a class="dropdown-item p-2" href="#">
+                        {% for notify in notification %}
+                            <li>
+                                <button type="button" class="dropdown-item p-2" data-bs-toggle="modal" data-bs-target="#standardmodal"
+                                hx-get="{% url "notify" notify.id %}"
+                                hx-target='#modalcontent'
+                                hx-trigger="click"
+                                >
+                                    <div class="row gx-3">
+                                        <div class="col-auto">
+                                            <figure class="avatar avatar-40 rounded-circle bg-pink">
+                                                <i class="bi bi-gift text-white"></i>
+                                            </figure>
+                                        </div>
+                                        <div class="col">
+                                            <p class="mb-2 small">{{notify.title}}.</p>
+                                            <span class="row">
+                                                <span class="col"><span class="badge badge-light rounded-pill text-bg-warning small">{{notify.notification_type}}</span></span>
+                                                <span class="col-auto small opacity-75">{{notify.time_since_created}}</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </button>
+                            </li>
+                        {% empty %}
+                            <li class="text-center">
                                 <div class="row gx-3">
                                     <div class="col-auto">
                                         <figure class="avatar avatar-40 rounded-circle bg-pink">
@@ -223,73 +262,28 @@
                                         </figure>
                                     </div>
                                     <div class="col">
-                                        <p class="mb-2 small">Congratulation! Your property <span class="fw-bold">#H10215</span> has reached 1000 views.</p>
-                                        <span class="row">
-                                            <span class="col"><span class="badge badge-light rounded-pill text-bg-warning small">Directory</span></span>
-                                            <span class="col-auto small opacity-75">1:00 am</span>
-                                        </span>
+                                        <p class="mb-2">No Notification.</p>
+                                        {% comment %} <span class="row">
+                                            <span class="col"><span class="badge badge-light rounded-pill text-bg-warning small">{{notify.notification_type}}</span></span>
+                                            <span class="col-auto small opacity-75">{{notify.time_since_created}}</span>
+                                        </span> {% endcomment %}
                                     </div>
                                 </div>
-                            </a>
                         </li>
-                        <li>
-                            <a class="dropdown-item p-2" href="#">
-                                <div class="row gx-3">
-                                    <div class="col-auto">
-                                        <figure class="avatar avatar-40 rounded-circle bg-success">
-                                            <i class="bi bi-patch-check text-white"></i>
-                                        </figure>
-                                    </div>
-                                    <div class="col">
-                                        <p class="mb-2 small">Your property <span class="fw-bold">#H10215</span> is published and live now.</p>
-                                        <span class="row">
-                                            <span class="col"><span class="badge badge-light rounded-pill text-bg-primary small">System</span></span>
-                                            <span class="col-auto small opacity-75">1:00 am</span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <a class="dropdown-item p-2" href="#">
-                                <div class="row gx-3">
-                                    <div class="col-auto">
-                                        <figure class="avatar avatar-40 rounded-circle bg-info">
-                                            <i class="bi bi-clipboard-check text-white"></i>
-                                        </figure>
-                                    </div>
-                                    <div class="col">
-                                        <p class="mb-2 small">User <span class="fw-bold">Rahana</span> has updated <span class="fw-bold">#H10215</span> property.</p>
-                                        <span class="row">
-                                            <span class="col"><span class="badge badge-light rounded-pill text-bg-success small">team</span></span>
-                                            <span class="col-auto small opacity-75">1:00 am</span>
-                                        </span>
-                                    </div>
-                                </div>
-                            </a>
-                        </li>
-                        <li>
-                            <div class="dropdown-item p-2">
-                                <div class="row gx-3">
-                                    <div class="col-auto">
-                                        <figure class="avatar avatar-40 rounded-circle bg-warning ">
-                                            <i class="bi bi-bell text-white"></i>
-                                        </figure>
-                                    </div>
-                                    <div class="col">
-                                        <p class="mb-2 small">Your subscription going to expire soon. Please <a href="profile-subscription.html">upgrade</a> to get service interrupt free.</p>
-                                        <p class="opacity-75 small">4 days ago</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="text-center">
-                            <button class="btn btn-link text-center" onclick="notifcationAll()">
-                                View all <i class="bi bi-arrow-right fs-14"></i>
-                            </button>
-                        </li>
+                        {% endfor %}
+                        
+                        {% if notification.count > 0 %}
+                            <li class="text-center">
+                                <button type="button" class="btn btn-link text-center" 
+                                    hx-post="{% url "mark_all_as_read" %}"
+                                    hx-trigger="click"
+                                >
+                                    Mark all as Read <i class="bi bi-book fs-14"></i>
+                                </button>
+                            </li>
+                        {% endif %}
                     </ul>
-                </div> {% endcomment %}
+                </div> 
 
                 <!-- profile dropdown -->
                 <div class="dropdown d-inline-block">
@@ -395,6 +389,7 @@
                     <i data-feather="x" class="closebtn"></i>
                 </button>
             </div>
+            {% endif %}
         </div>
     </nav>
 
@@ -595,7 +590,8 @@
 
                 <!-- Standard sidebar -->
                 <!-- Standard sidebar -->
-<div class="adminuiux-sidebar">
+{% if user.is_authenticated %}
+                <div class="adminuiux-sidebar">
     <div class="adminuiux-sidebar-inner">
         <!-- Profile -->
         <div class="px-3 not-iconic mt-3">
@@ -648,10 +644,19 @@
                         <span class="menu-name">Subscription Plan</span>
                     </a>
                 </li> 
+                {% if user.affiliate_record.package.price > 0 %}
+                    <li class="nav-item">
+                        <a href="{% url "courses" %}" class="nav-link">
+                            <i class="menu-icon bi bi-collection-fill"></i>
+                            <span class="menu-name">Courses</span>
+                        </a>
+                    </li>
+                {% endif %} 
                 
             <!-- User account -->
             <ul class="nav flex-column menu-active-line">
                 <!-- bottom sidebar menu -->
+               
                 <li class="nav-item">
                     <a href="{% url "referral_list" %}" class="nav-link">
                         <i class="menu-icon" data-feather="users"></i>
@@ -669,6 +674,7 @@
 
     </div>
 </div>
+{% endif %}
 
 {% block content %}
 
@@ -910,6 +916,7 @@
 
                     <!-- Page Level js -->
 <script src="{% static 'assets/js/investment/investment-wallet.js' %}"></script>
+<script src="{% static 'assets/templates/basic/js/htmx.min.js' %}"></script>
 
 
 
@@ -951,6 +958,20 @@
     })();
 </script>
 
+
+
+
+         
+            
+            <!-- Standard Modal -->
+            <div class="modal fade" id="standardmodal" tabindex="-1" aria-labelledby="standardmodalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content" id="modalcontent">
+                        
+                    </div>
+                </div>
+            </div>
+                                
 
     </body>
 

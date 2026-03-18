@@ -19,6 +19,7 @@ class AffiliatePackage(models.Model):
     Registration packages (₦25k, ₦50k, ₦100k, ₦200k, ₦500k).
     """
     PACKAGE_CHOICES = [
+        ('FREE', '₦0 - No Generation'),
         ('BASIC', '₦25,000 - 1 Generation'),
         ('STANDARD', '₦50,000 - 2 Generations'),
         ('PREMIUM', '₦100,000 - 2 Generations'),
@@ -27,8 +28,8 @@ class AffiliatePackage(models.Model):
     ]
 
     name = models.CharField(max_length=50, choices=PACKAGE_CHOICES, unique=True)
-    price = models.DecimalField(max_digits=12, decimal_places=2, validators=[MinValueValidator(Decimal('0.01'))])
-    generations = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(3)])
+    price = models.DecimalField(max_digits=12, decimal_places=2, validators=[MinValueValidator(Decimal('0.00'))])
+    generations = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(3)])
     
     # Store percentages like: {"1": 20.0, "2": 10.0, "3": 5.0}
     commissions = models.JSONField(default=dict, help_text="Format: {'1': 20, '2': 10}")
@@ -40,6 +41,7 @@ class AffiliatePackage(models.Model):
 
     def __str__(self):
         return f"{self.get_name_display()} (₦{self.price:,.2f})"
+    
     
 
 

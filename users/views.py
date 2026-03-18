@@ -13,7 +13,7 @@ import os
 import paystack
 from django.utils import timezone
 from monnify_verification.monnify_api import *
-from .models import Withdrawal, Transaction
+from .models import Withdrawal, Transaction, Notification
 from authentication.models import UserProfile
 from .forms import UserUpdateForm, PaymentUpdate
 from django.db.models import Sum
@@ -23,6 +23,7 @@ from krysline_admin.models import TransactionPIN
 from django.contrib import messages as mg
 from django.conf import settings
 from django.db import transaction
+from django.http import HttpResponse
 
 
 import uuid
@@ -36,11 +37,14 @@ load_dotenv()
 @login_required(login_url='login')
 @two_factor_required
 # @kyc_required  # Optional: Only if you want to block dashboard until KYC is done
-@rate_limit(rate='10/hour')
+@rate_limit(rate='100000/hour')
 @login_required
 def dashboard(request):
     user = request.user
     profile = user.profile
+    notification = Notification.objects.all().filter(user=user, is_read=False) 
+    # notification = user.notifications.members.all()
+    # print(notification.count())
 
     # 1. Fetch Affiliate Record Safely
     affiliate = getattr(user, 'affiliate_record', None)
@@ -118,10 +122,39 @@ def dashboard(request):
         'rank_msg': rank_msg,
         'latest_commissions': latest_commissions,
         'set_pin': set_pin,
-        'is_active': affiliate.is_active
+        'is_active': affiliate.is_active,
+        'notification': notification,
     }
 
     return render(request, 'users/user-dashboard.html', context)
+
+@login_required(login_url="login")
+def notify(request, pk):
+    notification = get_object_or_404(Notification, id=pk)
+    notification.mark_as_read()
+    context = {
+        "notification": notification
+    }
+
+    return render (request, 'notify.html', context)
+
+
+
+@login_required(login_url='login')
+@csrf_exempt
+def mark_all_as_read(request):
+    notify = Notification()
+    notify.mark_all_as_read(user=request.user)
+    return redirect("dashboard")
+
+
+
+def courses(request):
+
+    context = {
+
+    }
+    return render(request, 'users/course.html', context)
 
 
 @login_required(login_url='login')
@@ -158,182 +191,470 @@ def choose_package(request):
     return render(request, 'users/plans.html', context)
 
 
+@login_required(login_url="login")
+def free_account_activation(request, pk):
+    user = request.user
+    package = get_object_or_404(AffiliatePackage, id=pk)
+    affiliate = user.affiliate_record
+
+    affiliate.package = package
+    affiliate.duration = None
+    affiliate.is_active = True 
+    affiliate.save()
+
+    return redirect('dashboard')
+
+
+
+
 @login_required(login_url='login')
 def package_payment(request, pk):
     user = request.user
     package = get_object_or_404(AffiliatePackage, id=pk)
     now = timezone.localtime(timezone.now())
-    year = timezone.now()
-    year = str(datetime.now().date()).split("-")
-    get_user_invoice_id = UserInvoice.objects.filter(user=user).first().inovoice_reference.split("-")[1]
+    current_year = str(now.year)
 
     def generate_reference():
-        return f"KAL-{package.id}-{user.id}-{uuid.uuid4().hex[:8]}-{year[0]}"
+        return f"KAL-{package.id}-{user.id}-{uuid.uuid4().hex[:8]}-{current_year}"
 
     try:
         with transaction.atomic():
-
             # Lock row to prevent race condition
-            user_invoice = (
-                UserInvoice.objects
-                .select_for_update()
-                .get_or_create(user=user)[0]
+            user_invoice, _ = UserInvoice.objects.select_for_update().get_or_create(
+                user=user,
+                defaults={'inovoice_reference': ''}
             )
 
-            reference = user_invoice.inovoice_reference
+            reference = user_invoice.inovoice_reference or ''
+            need_new_invoice = False
 
-            # If reference exists → verify status
-            if reference and reference.split("-")[1] == package.id:
+            # Check if existing reference is valid and matches current package
+            if reference:
+                try:
+                    ref_parts = reference.split("-")
+                    ref_package_id = int(ref_parts[1]) if len(ref_parts) > 1 else None
+                except (IndexError, ValueError):
+                    ref_package_id = None
 
-                invoice, valid = get_invoice(reference)
+                if ref_package_id == package.id:
+                    invoice, valid = get_invoice(reference)
 
-                if valid:
+                    if valid:
+                        status = invoice.get("invoiceStatus")
 
-                    status = invoice.get("invoiceStatus")
+                        # Still pending → reuse checkout URL
+                        if status == "PENDING":
+                            response = HttpResponse()
+                            response['HX-Redirect'] = invoice.get("checkoutUrl")
+                            return response
 
-                    # 🔹 Still payable → reuse
-                    if status == "PENDING":
-                        return redirect(invoice.get("checkoutUrl"))
+                        # Already paid → check expiry
+                        if status == "PAID":
+                            expire_str = invoice.get('expiryDate')
+                            if expire_str:
+                                expire = datetime.strptime(expire_str, "%Y-%m-%d %H:%M:%S")
+                                if timezone.is_aware(now):
+                                    expire = timezone.make_aware(expire, now.tzinfo)
+                                
+                                if expire >= now:
+                                    # Still active subscription
+                                    messages.info(request, "You have an active subscription for this package.")
+                                    return redirect("payments")
+                            
+                            # Expired paid subscription → create new
+                            need_new_invoice = True
+                            reference = generate_reference()
 
-                    # 🔹 Already paid → stop duplicate payment
-                    if status == "PAID":
-                        expire = datetime.strptime(
-                            invoice['expiryDate'], "%Y-%m-%d %H:%M:%S")
-
-                        if timezone.is_aware(now):
-                            expire = timezone.make_aware(expire)
-
-                            if expire < now:
-                                reference = generate_reference()
-                                print("Paid alredy new reference", reference)
-                            else:
-                                return redirect("payments")
-
-                    # 🔹 Expired / Cancelled → create new reference
-                    if status in ["EXPIRED", "CANCELLED"]:
+                        # Expired or cancelled → create new
+                        elif status in ["EXPIRED", "CANCELLED"]:
+                            need_new_invoice = True
+                            reference = generate_reference()
+                        
+                        else:
+                            # Unknown status → create new
+                            need_new_invoice = True
+                            reference = generate_reference()
+                    else:
+                        # Invalid invoice response → create new
+                        need_new_invoice = True
                         reference = generate_reference()
-
                 else:
+                    # Different package → create new
+                    need_new_invoice = True
                     reference = generate_reference()
-
             else:
+                # No reference → create new
+                need_new_invoice = True
                 reference = generate_reference()
-                
 
-            local_now = timezone.localtime(settings.DURATION)
-            expiry_date = local_now.strftime("%Y-%m-%d %H:%M:%S")
+            # Create new invoice if needed
+            if need_new_invoice:
+                local_now = timezone.localtime(settings.DURATION)
+                expiry_date = local_now.strftime("%Y-%m-%d %H:%M:%S")
+                description = f"Subscription for {package.get_name_display()} Plan"
 
-            description = f"Subscription for {package.get_name_display()} Plan"
+                invoice, valid = create_invoice(
+                    amount=int(package.price),
+                    user=user,
+                    description=description,
+                    reference=reference,
+                    expiry_date=expiry_date
+                )
 
-            # 🔹 Create invoice externally
-            invoice, valid = create_invoice(
-                int(package.price),
-                user,
-                description,
-                reference,
-                expiry_date
-            )
+                if not valid:
+                    messages.error(request, "Unable to generate invoice. Please try again.")
+                    print("Not generating")
+                    return redirect("choose_package")
 
-            if not valid:
-                messages.error(request, "Unable to generate invoice.")
-                return redirect("choose_package")
+                # Save reference only after successful invoice creation
+                user_invoice.inovoice_reference = reference
+                user_invoice.save()
 
-            # 🔹 Save reference only after successful invoice creation
-            user_invoice.inovoice_reference = reference
-            user_invoice.save()
-
-            return redirect(invoice.get("checkoutUrl"))
+                response = HttpResponse()
+                response['HX-Redirect'] = invoice.get("checkoutUrl")
+                return response
+            
+            # Fallback - should not reach here
+            return redirect("choose_package")
 
     except Exception as e:
+        # Log the actual error for debugging
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Package payment error for user {user.id}, package {pk}: {str(e)}")
+        
         messages.error(request, "Something went wrong. Please try again.")
         return redirect("choose_package")
 
 
-@login_required(login_url='login')
-def payments(request):
-    reference = ""
-    payment_ref = request.GET.get('paymentReference')
+# def package_payment(request, pk):
+#     user = request.user
+#     package = get_object_or_404(AffiliatePackage, id=pk)
+#     now = timezone.localtime(timezone.now())
+#     year = timezone.now()
+#     year = str(datetime.now().date()).split("-")
+#     # get_user_invoice_id = UserInvoice.objects.filter(user=user).first().inovoice_reference.split("-")[1]
 
+#     def generate_reference():
+#         return f"KAL-{package.id}-{user.id}-{uuid.uuid4().hex[:8]}-{year[0]}"
+
+#     try:
+#         with transaction.atomic():
+
+#             # Lock row to prevent race condition
+#             user_invoice = (
+#                 UserInvoice.objects
+#                 .select_for_update()
+#                 .get_or_create(user=user)[0]
+#             )
+
+#             reference = user_invoice.inovoice_reference
+
+#             # If reference exists → verify status
+#             if reference and reference.split("-")[1] == package.id:
+
+#                 invoice, valid = get_invoice(reference)
+
+#                 if valid:
+
+#                     status = invoice.get("invoiceStatus")
+
+#                     # 🔹 Still payable → reuse
+#                     if status == "PENDING":
+#                         # return redirect(invoice.get("checkoutUrl"))
+#                         response = HttpResponse()
+#                         response['HX-Redirect'] = invoice.get("checkoutUrl")
+#                         return response
+
+
+#                     # 🔹 Already paid → stop duplicate payment
+#                     if status == "PAID":
+#                         expire = datetime.strptime(
+#                             invoice['expiryDate'], "%Y-%m-%d %H:%M:%S")
+
+#                         if timezone.is_aware(now):
+#                             expire = timezone.make_aware(expire)
+
+#                             if expire < now:
+#                                 reference = generate_reference()
+#                                 print("Paid alredy new reference", reference)
+#                             else:
+#                                 return redirect("payments")
+
+#                     # 🔹 Expired / Cancelled → create new reference
+#                     if status in ["EXPIRED", "CANCELLED"]:
+#                         reference = generate_reference()
+
+#                 else:
+#                     reference = generate_reference()
+
+#             else:
+#                 reference = generate_reference()
+                
+
+#             local_now = timezone.localtime(settings.DURATION)
+#             expiry_date = local_now.strftime("%Y-%m-%d %H:%M:%S")
+
+#             description = f"Subscription for {package.get_name_display()} Plan"
+
+#             # 🔹 Create invoice externally
+#             invoice, valid = create_invoice(
+#                 int(package.price),
+#                 user,
+#                 description,
+#                 reference,
+#                 expiry_date
+#             )
+
+#             if not valid:
+#                 messages.error(request, "Unable to generate invoice.")
+#                 return redirect("choose_package")
+
+#             # 🔹 Save reference only after successful invoice creation
+#             user_invoice.inovoice_reference = reference
+#             user_invoice.save()
+
+#             # return redirect(invoice.get("checkoutUrl"))
+#             response = HttpResponse()
+#             response['HX-Redirect'] = invoice.get("checkoutUrl")
+#             return response
+
+#     except Exception as e:
+#         messages.error(request, "Something went wrong. Please try again.")
+#         return redirect("choose_package")
+
+# @login_required(login_url='login')
+@csrf_exempt
+def payments(request):
+    """
+    Handle payment verification and activate affiliate subscription.
+    Supports both callback redirect (paymentReference) and manual check (user invoice).
+    """
+    
+    # Get reference from callback or user's current invoice
+    payment_ref = request.GET.get('paymentReference')
+    
     if payment_ref:
         reference = payment_ref
     else:
-        reference = request.user.invoice.inovoice_reference
-
-    try:
-        invoice, valid = get_invoice(reference)
-
-        if valid and invoice['invoiceStatus'] == 'PAID':
-
-            package_id = invoice['invoiceReference'].split('-')[1]
-
-            description = invoice['description'].lower()
-
-            if "subscription" in description:
-
-                with transaction.atomic():
-
-                    package = get_object_or_404(
-                        AffiliatePackage, id=package_id, price=float(invoice['amount']))
-                    print("Checking the Package:", package)
-
-                    user = get_object_or_404(
-                        User, email=invoice['customerEmail'])
-
-                    duration = settings.DURATION
-
-                    try:
-                        affiliate = Affiliate.objects.select_for_update().get(
-                            referral_code=str(user.affiliate_record.referral_code))
-
-                        if not affiliate.package:
-                            affiliate.package = package
-                            affiliate.save()
-
-                        if float(invoice['amount']) >= package.price:
-                            # SUCCESS: Activate user and trigger MLM Commissions
-                            affiliate.is_active = False
-                            affiliate.save()
-
-                            if not affiliate.is_active or affiliate.package.price < package.price:
-                                affiliate.is_active = True
-                                affiliate.duration = duration
-                                affiliate.package = package
-                                affiliate.save()
-
-                                if distribute_commissions(new_affiliate=affiliate, new=True):
-                                    Transaction.objects.create(
-                                        user=user,
-                                        amount=package.price,
-                                        transaction_type='package_purchase',
-                                        description=f"Subscription Approved (Ref: {package.get_name_display()})"
-                                    )
-                                    return redirect('dashboard')
-                            else:
-                                return redirect('dashboard')
-
-                    except Affiliate.DoesNotExist:
-                        affiliate2 = Affiliate.objects.create(
-                            user=user,
-                            package=package,
-                            duration=duration,
-                            is_active=True
-                        )
-                        affiliate2.save()
-
-                        if distribute_commissions(affiliate2):
-
-                            return redirect('dashboard')
-            else:
-                print("Put withdrawal completion here")
-                # TODO: verify payment for widthdrawal transfer
-        else:
-            messages.error(request, "Payment not successful")
+        try:
+            reference = request.user.invoice.inovoice_reference
+        except AttributeError:
+            messages.error(request, "No pending invoice found.")
             return redirect('choose_package')
 
-    except Exception as e:
-        print(f"Verification Error: {e}")
-        messages.error(request, "Payment Not successful")
+    # Verify invoice with Monnify
+    invoice_data, is_valid = get_invoice(reference)
+    
+    if not is_valid or invoice_data.get('invoiceStatus') != 'PAID':
+        messages.error(request, "Payment verification failed or payment not completed.")
         return redirect('choose_package')
+
+    # Parse invoice details
+    try:
+        invoice_ref = invoice_data.get('invoiceReference', '')
+        ref_parts = invoice_ref.split('-')
+        package_id = int(ref_parts[1]) if len(ref_parts) > 1 else None
+    except (IndexError, ValueError, AttributeError) as e:
+        logger.error(f"Invalid invoice reference format: {invoice_ref}, Error: {e}")
+        messages.error(request, "Invalid invoice reference.")
+        return redirect('choose_package')
+
+    amount = float(invoice_data.get('amount', 0))
+    customer_email = invoice_data.get('customerEmail', '')
+    description = (invoice_data.get('description') or '').lower()
+
+    # Handle subscription payments
+    if "subscription" in description:
+        return _process_subscription_payment(request, package_id, amount, customer_email, reference)
+    
+    # Handle other payment types (withdrawals, etc.)
+    logger.info(f"Non-subscription payment received: {description}")
+    # TODO: Implement withdrawal completion logic here
+    messages.info(request, "Payment received. Processing pending.")
+    return redirect('dashboard')
+
+
+def _process_subscription_payment(request, package_id, amount, customer_email, reference):
+    """Process successful subscription payment and activate affiliate."""
+    
+    try:
+        with transaction.atomic():
+            # Fetch and lock package
+            package = get_object_or_404(
+                AffiliatePackage, 
+                id=package_id, 
+                price=amount,
+                is_active=True
+            )
+            
+            # Fetch user by email from invoice
+            user = get_object_or_404(User, email=customer_email)
+            
+            duration = settings.DURATION
+            
+            # Get or create affiliate with row lock
+            affiliate, created = Affiliate.objects.select_for_update().get_or_create(
+                user=user,
+                defaults={
+                    'package': package,
+                    'duration': duration,
+                    'is_active': True,
+                    #'referral_code': generate_referral_code()  # Ensure this exists
+                }
+            )
+            
+            # Handle existing affiliate upgrade/renewal
+            if not created:
+                # Check if this is an upgrade to higher package
+                is_upgrade = (
+                    affiliate.package and 
+                    affiliate.package.price < package.price
+                )
+                
+                # Check if current subscription is still active
+                is_currently_active = (
+                    affiliate.is_active and 
+                    affiliate.duration and 
+                    affiliate.duration > timezone.now()
+                )
+                
+                if is_currently_active and not is_upgrade:
+                    # Already active with same or better package
+                    logger.info(f"User {user.id} already has active subscription")
+                    messages.info(request, "You already have an active subscription.")
+                    return redirect('dashboard')
+                
+                # Update affiliate with new package
+                affiliate.package = package
+                affiliate.duration = duration
+                affiliate.is_active = True
+                
+                # Reset expiry date for new subscription
+                # affiliate.expires_at = timezone.now() + duration
+                affiliate.save()
+
+            # Distribute MLM commissions
+            commissions_distributed = distribute_commissions(
+                new_affiliate=affiliate, 
+                new=True
+            )
+            
+            if commissions_distributed:
+                # Record successful transaction
+                Transaction.objects.create(
+                    user=user,
+                    amount=package.price,
+                    transaction_type='package_purchase',
+                    description=f"Subscription: {package.get_name_display()} (Ref: {reference})",
+                    #status='completed',
+                    # reference=reference
+                )
+                
+                messages.success(
+                    request, 
+                    f"Payment successful! {package.get_name_display()} subscription activated."
+                )
+                return redirect('dashboard')
+            else:
+                logger.error(f"Commission distribution failed for affiliate {affiliate.id}")
+                # Don't fail the payment, but log for manual review
+                messages.warning(
+                    request, 
+                    "Subscription activated. Bonus processing pending."
+                )
+                return redirect('dashboard')
+
+    except Exception as e:
+        logger.exception(f"Subscription processing error: {e}")
+        messages.error(request, "Payment verified but activation failed. Contact support.")
+        return redirect('choose_package')
+
+
+# def payments(request):
+#     reference = ""
+#     payment_ref = request.GET.get('paymentReference')
+
+#     if payment_ref:
+#         reference = payment_ref
+#     else:
+#         reference = request.user.invoice.inovoice_reference
+
+#     try:
+#         invoice, valid = get_invoice(reference)
+
+#         if valid and invoice['invoiceStatus'] == 'PAID':
+
+#             package_id = invoice['invoiceReference'].split('-')[1]
+
+#             description = invoice['description'].lower()
+
+#             if "subscription" in description:
+
+#                 with transaction.atomic():
+
+#                     package = get_object_or_404(
+#                         AffiliatePackage, id=package_id, price=float(invoice['amount']))
+#                     print("Checking the Package:", package)
+
+#                     user = get_object_or_404(
+#                         User, email=invoice['customerEmail'])
+
+#                     duration = settings.DURATION
+
+#                     try:
+#                         affiliate = Affiliate.objects.select_for_update().get(
+#                             referral_code=str(user.affiliate_record.referral_code))
+
+#                         if not affiliate.package:
+#                             affiliate.package = package
+#                             affiliate.save()
+
+#                         if float(invoice['amount']) >= package.price:
+#                             # SUCCESS: Activate user and trigger MLM Commissions
+#                             affiliate.is_active = False
+#                             affiliate.save()
+
+#                             if not affiliate.is_active or affiliate.package.price < package.price:
+#                                 affiliate.is_active = True
+#                                 affiliate.duration = duration
+#                                 affiliate.package = package
+#                                 affiliate.save()
+
+#                                 if distribute_commissions(new_affiliate=affiliate, new=True):
+#                                     Transaction.objects.create(
+#                                         user=user,
+#                                         amount=package.price,
+#                                         transaction_type='package_purchase',
+#                                         description=f"Subscription Approved (Ref: {package.get_name_display()})"
+#                                     )
+#                                     return redirect('dashboard')
+#                             else:
+#                                 return redirect('dashboard')
+
+#                     except Affiliate.DoesNotExist:
+#                         affiliate2 = Affiliate.objects.create(
+#                             user=user,
+#                             package=package,
+#                             duration=duration,
+#                             is_active=True
+#                         )
+#                         affiliate2.save()
+
+#                         if distribute_commissions(affiliate2):
+
+#                             return redirect('dashboard')
+#             else:
+#                 print("Put withdrawal completion here")
+#                 # TODO: verify payment for widthdrawal transfer
+#         else:
+#             messages.error(request, "Payment not successful")
+#             return redirect('choose_package')
+
+#     except Exception as e:
+#         print(f"Verification Error: {e}")
+#         messages.error(request, "Payment Not successful")
+#         return redirect('choose_package')
 
 
 @login_required(login_url='login')

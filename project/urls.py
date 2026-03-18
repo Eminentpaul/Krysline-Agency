@@ -17,14 +17,20 @@ urlpatterns = [
     
     path('developer/eminent/account/', admin.site.urls),
     path('user/', include("authentication.urls")),
+    path('', include("base.urls")),
     path('Dashboard/', include("users.urls")), 
     path('monnify/api', include("monnify_verification.urls")),
     path('kryline/agency/ltd/', include("krysline_admin.urls")),
     path('ledger/', include("ledger.urls")),
+    
 
     # 2FA 
     # path('', include(tf_urls)),
 ]
+
+
+# 404 handler
+handler404 = 'base.views._404'
 
 
 def check_expiration():

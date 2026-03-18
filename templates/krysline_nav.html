@@ -10,7 +10,7 @@
               content="width=device-width, initial-scale=1.0, viewport-fit=cover">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
         <title>Admin - Kryline Agency Ltd</title>
-        <link rel="icon" type="image/png" href="assets/img/favicon.png">
+        <link rel="icon" type="image/png" href="{% static "assets/img/favicon.png" %}">
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -47,7 +47,7 @@
                 <div class="row justify-content-center align-items-center text-center h-100">
                     <div class="col-12 mb-auto pt-4"></div>
                     <div class="col-auto">
-                        <img src="{% static 'assets/img/logo.svg' %}"
+                        <img src="{% static 'assets/img/favicon.png' %}"
                              alt=""
                              class="height-100 mb-3">
                         <p class="h3 mb-0">
@@ -82,9 +82,9 @@
                     <!-- logo -->
                     <a class="navbar-brand" href="{% url "krysline_admin" %}">
                         <img data-bs-img="light"
-                             src="{% static 'assets/img/logo-light.svg' %}"
+                             src="{% static 'assets/img/favicon.png' %}"
                              alt="">
-                        <img data-bs-img="dark" src="{% static 'assets/img/logo.svg' %}" alt="">
+                        <img data-bs-img="dark" src="{% static 'assets/img/favicon.png' %}" alt="">
                         <div class="">
                             <span class="h4 text-gradient"><span class="fw-bold">Kryline Agency</span></span>
                             {% comment %} <p class="company-tagline">Best HTML template</p> {% endcomment %}

@@ -1,0 +1,183 @@
+{% extends "user_dash_nav.html" %}
+{% load static %}
+{% load humanize %}
+{% load mathfilters %}
+
+{% block content %}
+
+<main class="adminuiux-content has-sidebar" onclick="contentClick()">
+    <!-- body content of pages -->
+
+    <!-- breadcrumb -->
+    {% if user.is_authenticated %}
+        <div class="container-fluid mt-4">
+        <div class="row gx-3 align-items-center">
+            <div class="col-12 col-sm">
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item bi"><a href="{% url "dashboard" %}">Home</a></li>
+                        <li class="breadcrumb-item active bi" aria-current="page">Subscription Plan</li>
+                    </ol>
+                </nav>
+                <h5>Subscription Plan</h5>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+    <!-- Content  -->
+    <div class="container mt-4" id="main-content">
+
+        
+        <br>
+            <!-- content -->
+        <div class="container" id="main-content">
+            <!-- filter area -->
+            
+            {% include "message.html" %}
+            <!-- appointment grid view list datatable-->
+            <div class="card adminuiux-card mt-4 mb-0">
+                <div class="card-body">
+                    
+                    <div class="row">
+                        {% for package in packages %}
+                    
+                            {% if is_active and user_package.package.name == package.name or user_package.package.price >= package.price and is_active %}
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="card adminuiux-card bg-r-gradient border border-theme-1 mb-4">
+                                        <div class="card-body px-xl-4">
+                                            <div class="text-center mb-4">
+                                            <span class="badge badge-light text-bg-theme-1">{{package.name}}</span>
+                                            </div>
+                                            <div class="row mb-4">
+                                            <div class="col-auto">
+                                                <i class="avatar avatar-60 rounded bg-theme-1-subtle text-theme-1 h4 bi bi-people vm"></i>
+                                            </div>
+                                            <div class="col">
+                                                <h4 class="mb-1">{{package.get_name_display}}</h4>
+                                                {% comment %} <p class="text-secondary">Multiple team & customer</p> {% endcomment %}
+                                            </div>
+                                            </div>
+                                            <div class="row align-items-center mb-4">
+                                            <div class="col-auto">
+                                                <h1 class="display-4"><span class="text-secondary">₦</span>{{package.price|floatformat:2|intcomma}}</h1>
+                                            </div>
+                                            <div class="col">
+                                                <p class="text-secondary">per year</p>
+                                            </div>
+                                            </div>
+                                            <h6>{{package.name|title}} includes:</h6>
+                                            <ul class="list-group adminuiux-list-group">
+                                                {{package.description|safe|linebreaks}}
+                                                
+                                                <li class="list-group-item text-secondary"><i class="bi bi-check-circle vm me-1"></i> 24/7 Customer Support</li>
+                                                
+                                                {% if not package.is_active %}
+                                                    <li class="list-group-item text-white bg-danger"><i class="bi bi-check-circle vm me-1"></i> INACTIVE</li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+
+                                        {% if user.user_type == 'manager' %}
+                                            <div class="card-footer text-center">
+                                                <a href="{% url "package_update" package.id %}" class="btn btn-theme" >Edit Plan</a>
+                                                
+                                            </div>
+                                        
+                                        {% else %}
+                                            <div class="card-footer text-center">
+                                                <button class="btn btn-theme" disabled>Subscribe Now</button>
+                                                
+                                            </div>
+                                        {% endif %}
+                                        
+                                            
+                                        
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="col-12 col-md-6 col-lg-4">
+                                    <div class="card adminuiux-card bg-r-gradient border border-theme-1 mb-4">
+                                        <div class="card-body px-xl-4">
+                                            <div class="text-center mb-4">
+                                            <span class="badge badge-light text-bg-theme-1">{{package.name}}</span>
+                                            </div>
+                                            <div class="row mb-4">
+                                            <div class="col-auto">
+                                                <i class="avatar avatar-60 rounded bg-theme-1-subtle text-theme-1 h4 bi bi-people vm"></i>
+                                            </div>
+                                            <div class="col">
+                                                <h4 class="mb-1">{{package.get_name_display}}</h4>
+                                                {% comment %} <p class="text-secondary">Multiple team & customer</p> {% endcomment %}
+                                            </div>
+                                            </div>
+                                            <div class="row align-items-center mb-4">
+                                            <div class="col-auto">
+                                                <h1 class="display-4"><span class="text-secondary">₦</span>{{package.price|floatformat:2|intcomma}}</h1>
+                                            </div>
+                                            <div class="col">
+                                                <p class="text-secondary">per year</p>
+                                            </div>
+                                            </div>
+                                            <h6>{{package.name|title}} includes:</h6>
+                                            <ul class="list-group adminuiux-list-group">
+                                                {{package.description|safe|linebreaks}}
+                                                
+                                                <li class="list-group-item text-secondary"><i class="bi bi-check-circle vm me-1"></i> 24/7 Customer Support</li>
+
+                                                {% if not package.is_active %}
+                                                    <li class="list-group-item text-white bg-danger"><i class="bi bi-check-circle vm me-1"></i> INACTIVE</li>
+                                                {% endif %}
+                                            </ul>
+                                        </div>
+                                        {% if user.user_type == 'manager' %}
+                                            <div class="card-footer text-center">
+                                                <a href="{% url "package_update" package.id %}" class="btn btn-theme" >Edit Plan</a>
+                                                
+                                            </div>
+                                        {% elif package.price <= 0 %}
+                                            <div class="card-footer text-center">
+                                                <a href="{% url "free_account" package.id %}" class="btn btn-theme" >Subscribe Now</a>
+                                                
+                                            </div>
+                                        {% else %}
+                                            {% if not package.is_active %}
+                                                    <div class="card-footer text-center">
+                                                        <button class="btn btn-theme" disabled>Subscribe Now</button>
+                                                        
+                                                    </div>
+                                            {% elif package.price <= 0 %}
+                                                <div class="card-footer text-center">
+                                                    <a href="{% url "free_account" package.id %}" class="btn btn-theme" >Subscribe Now</a>
+                                                    
+                                                </div>
+                                            {% else %}
+                                                <div class="card-footer text-center">
+                                                    <a href="{% url "package_payment" package.id %}" class="btn btn-theme" >Subscribe Now</a>
+                                                </div>
+                                            {% endif %}
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        
+                            
+                        {% empty %}
+                            <p>No active packages available at the moment. Check back later!</p>
+                        {% endfor %}
+                        
+                    </div>
+                                        
+                </div>
+            </div>
+
+
+        </div>
+        <br>
+        
+    </div>
+</main>
+
+</div>
+
+{% endblock content %}

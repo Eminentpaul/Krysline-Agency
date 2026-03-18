@@ -1,8 +1,8 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.db import transaction
-from .models import Withdrawal, Transaction
-from affiliation.models import Affiliate
+from .models import Withdrawal, Transaction, Notification
+from affiliation.models import Affiliate, CommissionLog
 
 @receiver(post_save, sender=Withdrawal)
 def create_withdrawal_transaction(sender, instance, created, **kwargs):
@@ -12,23 +12,23 @@ def create_withdrawal_transaction(sender, instance, created, **kwargs):
     # 1. Check if it's approved
     if instance.status == 'approved':
         # 2. Check if we ALREADY recorded this to prevent double-entry
-        already_recorded = Transaction.objects.filter(
-            user=instance.user,
-            transaction_type='withdrawal',
-            description__contains=f"Ref: {instance.transaction_id}"
-        ).exists()
+        # already_recorded = Transaction.objects.filter(
+        #     user=instance.user,
+        #     transaction_type='withdrawal',
+        #     description__contains=f"Ref: {instance.transaction_id}"
+        # ).exists()
 
-        if not already_recorded:
-            with transaction.atomic():
-                # Create the Ledger entry
-                Transaction.objects.create(
-                    user=instance.user,
-                    amount=instance.amount,
-                    transaction_type='withdrawal',
-                    description=f"Withdrawal Approved (Ref: {instance.transaction_id})"
-                )
-                # Note: We don't need 'instance.transaction = new_transaction' 
-                # unless you add a ForeignKey to your Withdrawal model.
+        # if not already_recorded:
+        with transaction.atomic():
+            # Create the Ledger entry
+            Transaction.objects.create(
+                user=instance.user,
+                amount=instance.amount,
+                transaction_type='withdrawal',
+                description=f"Withdrawal Approved (Ref: {instance.transaction_id})"
+            )
+            # Note: We don't need 'instance.transaction = new_transaction' 
+            # unless you add a ForeignKey to your Withdrawal model.
 
 @receiver(post_save, sender=Affiliate)
 def record_package_purchase(sender, instance, created, **kwargs):
@@ -49,3 +49,26 @@ def record_package_purchase(sender, instance, created, **kwargs):
                 transaction_type='package_purchase',
                 description=f"Payment for {instance.package.name} Package"
             )
+
+
+
+@receiver(post_save, sender=CommissionLog)
+def record_commission_earned(sender, instance, created, **kwargs):
+    if created:
+        commission = Transaction.objects.create(
+                user=instance.recipient_profile.user,
+                amount=instance.amount,
+                transaction_type='commission',
+                description=f"Commission Earned"
+            )
+        
+        note = Notification()
+        note.create_notification(
+            user=commission.user,
+            title=f"Commission from your Referral",
+            message=f"You received ₦{commission.amount} commission from your Referral",
+            notification_type=Notification.NotificationType.REFERRAL,
+            priority=Notification.Priority.NORMAL,
+        )
+
+        
