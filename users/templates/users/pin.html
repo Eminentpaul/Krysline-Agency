@@ -1,4 +1,4 @@
-{% extends "krysline_nav.html" %}
+{% extends "user_dash_nav.html" %}
 {% load static %}
 {% load humanize %}
 {% load mathfilters %}
@@ -46,19 +46,21 @@
                         <form action="" method="post">
                             {% csrf_token %}
                             {% include "message.html" %}
-                            <h6 class="mb-3 mb-lg-4">Old PIN Details</h6>
-                            <div class="row gx-3 gx-lg-4 mb-3">
-                                <div class="col-12 col-md-6 col-lg-4">
-                                    <div class="form-group mb-3 position-relative check-valid">
-                                        <div class="form-floating">
-                                            <input type="password" maxlength="4" id="digits-only" placeholder="Current PIN" name="current_pin" required class="form-control">
-                                            <label>Current PIN</label>
+                            {% if user.transaction_pin %}
+                                <h6 class="mb-3 mb-lg-4">Old PIN Details</h6>
+                                <div class="row gx-3 gx-lg-4 mb-3">
+                                    <div class="col-12 col-md-6 col-lg-4">
+                                        <div class="form-group mb-3 position-relative check-valid">
+                                            <div class="form-floating">
+                                                <input type="password" maxlength="4" id="digits-only" placeholder="Current PIN" name="current_pin" required class="form-control">
+                                                <label>Current PIN</label>
+                                            </div>
                                         </div>
+                                        <div class="invalid-feedback">Please enter valid input</div>
                                     </div>
-                                    <div class="invalid-feedback">Please enter valid input</div>
+                                    
                                 </div>
-                                
-                            </div>
+                            {% endif %}
                             <h6 class="mb-3 mb-lg-4">New PIN Details</h6>
                             <div class="row gx-3 gx-lg-4 mb-3">
                                 <div class="col-12 col-md-6 col-lg-4">
@@ -83,10 +85,17 @@
                             </div>
                             
                             <div class="row gx-3">
-                                <div class="col">
-                                    <!-- submit button -->
-                                    <button class="btn btn-theme" type="submit">Change PIN</button>
-                                </div>
+                                {% if user.transaction_pin %}
+                                    <div class="col">
+                                        <!-- submit button -->
+                                        <button class="btn btn-theme" type="submit">Change PIN</button>
+                                    </div>
+                                {% else %}
+                                    <div class="col">
+                                        <!-- submit button -->
+                                        <button class="btn btn-theme" type="submit">Set PIN</button>
+                                    </div>
+                                {% endif %}
                                 {% comment %} <div class="col-auto">
                                     <button class="btn btn-link theme-red" type="button">Cancel</button>
                                 </div> {% endcomment %}

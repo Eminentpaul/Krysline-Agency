@@ -41,6 +41,10 @@ load_dotenv()
 @login_required
 def dashboard(request):
     user = request.user
+    if user.user_type == 'investor':
+        return redirect('investment_dashboard')
+
+
     profile = user.profile
     notification = Notification.objects.all().filter(user=user, is_read=False) 
     # notification = user.notifications.members.all()
@@ -101,13 +105,14 @@ def dashboard(request):
 
     # 6. Rank Logic
     plan_name = affiliate.package.get_name_display()
-    match str(affiliate.package.name).lower():
-        case 'elite':
-            rank_msg = "Elite Member (Max Depth + Spillover)"
-        case 'professional' | 'premium':
-            rank_msg = "Pro Member (3 Generations)"
-        case _:
-            rank_msg = "Basic Member (1 Generation)"
+    plan_type = str(affiliate.package.name).lower()
+
+    if plan_type == 'elite':
+        rank_msg = "Elite Member (Max Depth + Spillover)"
+    elif plan_type in ['professional', 'premium']:
+        rank_msg = "Pro Member (3 Generations)"
+    else:
+        rank_msg = "Basic Member (1 Generation)"
 
     context = {
         'affiliate': affiliate,
@@ -129,6 +134,7 @@ def dashboard(request):
     return render(request, 'users/user-dashboard.html', context)
 
 @login_required(login_url="login")
+@log_security_event(action="READING_A_NOTIFICATION")
 def notify(request, pk):
     notification = get_object_or_404(Notification, id=pk)
     notification.mark_as_read()
@@ -142,13 +148,14 @@ def notify(request, pk):
 
 @login_required(login_url='login')
 @csrf_exempt
+@log_security_event(action="MARKING_ALL_AS_READ")
 def mark_all_as_read(request):
     notify = Notification()
     notify.mark_all_as_read(user=request.user)
     return redirect("dashboard")
 
 
-
+@login_required(login_url="login")
 def courses(request):
 
     context = {

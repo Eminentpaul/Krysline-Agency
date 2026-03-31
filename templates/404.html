@@ -309,15 +309,15 @@
         <!-- Error code with glitch effect -->
         <div class="error-code">404</div>
         
-        <h1 class="error-title">Page Lost in Space</h1>
+        <h1 class="error-title">Somthing Went Wrong!</h1>
         
         <p class="error-message">
-            Houston, we have a problem! The page you're looking for has drifted into a black hole.<br>
-            Don't worry, our astronaut is on a rescue mission.
+            The page doesn't exist or removed.
+Please check url or we suggest to go back to home.
         </p>
 
         <!-- Search box -->
-        <div class="search-box">
+        {% comment %} <div class="search-box">
             <input type="text" placeholder="Search for what you need..." id="searchInput">
             <button onclick="handleSearch()" title="Search">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e3c72" stroke-width="2">
@@ -325,7 +325,7 @@
                     <path d="m21 21-4.35-4.35"></path>
                 </svg>
             </button>
-        </div>
+        </div> {% endcomment %}
 
         <!-- Action buttons -->
         <div class="actions">
@@ -336,7 +336,7 @@
                 </svg>
                 Back to Home
             </a>
-            <a href="/dashboard" class="btn">
+            <a href="{% url "dashboard" %}" class="btn">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <rect x="3" y="3" width="7" height="7"></rect>
                     <rect x="14" y="3" width="7" height="7"></rect>
@@ -345,13 +345,13 @@
                 </svg>
                 Dashboard
             </a>
-            <a href="/contact" class="btn">
+            {% comment %} <a href="/contact" class="btn">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
                     <polyline points="22,6 12,13 2,6"></polyline>
                 </svg>
                 Contact Support
-            </a>
+            </a> {% endcomment %}
         </div>
     </div>
 

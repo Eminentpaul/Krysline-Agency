@@ -18,6 +18,7 @@ class User(AbstractUser):
    
     USER_TYPE = (
         ('affiliate', 'affiliate'),
+        ('investor', 'investor'),
         ('admin', 'admin'),
         ('manager', 'manager'),
         ('secretary', 'secretary'),
