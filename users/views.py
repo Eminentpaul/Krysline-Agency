@@ -26,7 +26,7 @@ from django.db import transaction
 from django.http import HttpResponse
 
 
-import uuid
+import uuid 
 
 
 load_dotenv()
@@ -683,6 +683,13 @@ def withdraw_funds(request):
         # Build the URL: /user/profile/update/?next=/user/withdraw/
         dest_url = reverse('payment_update')
         return redirect(f"{dest_url}?next={request.path}")
+    
+    if not user_pin:
+        messages.warning(
+            request, "Please set your transaction PIN to be able to place withdrawal")
+        # Build the URL: /user/profile/update/?next=/user/withdraw/
+        dest_url = reverse('change_pin')
+        return redirect(f"{dest_url}?next={request.path}")
 
     if request.method == 'POST':
         try:
@@ -710,20 +717,21 @@ def withdraw_funds(request):
             # We use select_for_update() to lock the profile row during the math
             user_profile = UserProfile.objects.select_for_update().get(id=profile.id)
 
-            # Deduct from balance immediately (Hold the funds)
-            user_profile.balance -= amount
-            user_profile.save()
+            with transaction.atomic():
+                # Deduct from balance immediately (Hold the funds)
+                user_profile.balance -= amount
+                user_profile.save()
 
-            # Create the withdrawal record
-            Withdrawal.objects.create(
-                user=request.user,
-                amount=amount,
-                status='pending'
-            )
+                # Create the withdrawal record
+                Withdrawal.objects.create(
+                    user=request.user,
+                    amount=amount,
+                    status='pending'
+                )
 
-            messages.success(
-                request, f"Withdrawal request for ₦{amount:,.2f} submitted successfully.")
-            return redirect('dashboard')
+                messages.success(
+                    request, f"Withdrawal request for ₦{amount:,.2f} submitted successfully.")
+                return redirect('dashboard')
 
         except ValueError:
             messages.error(request, "Invalid amount entered.")

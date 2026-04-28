@@ -1,0 +1,405 @@
+{% extends "user_dash_nav.html" %}
+{% load static %}
+{% load mathfilters %}
+{% load humanize %}
+
+{% block content %}
+<main class="adminuiux-content has-sidebar" onclick="contentClick()">
+    <!-- breadcrumb -->
+    <div class="container-fluid mt-4">
+        <div class="row gx-3 align-items-center">
+            <div class="col-12 col-sm">
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item bi">
+                            <a href="{% url 'dashboard' %}">
+                                <i class="bi bi-house-door me-1 fs-14"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item bi">
+                            <a href="{% url 'investment_plans' %}">Investment Plans</a>
+                        </li>
+                        <li class="breadcrumb-item active bi" aria-current="page">Create Investment</li>
+                    </ol>
+                </nav>
+                <h5>Create Investment - {{ plan.get_name_display }}</h5>
+            </div>
+            <div class="col-12 col-sm-auto text-end py-3 py-sm-0">
+                <a href="{% url 'investment_plans' %}" class="btn btn-outline-theme">
+                    <i class="bi bi-arrow-left me-1"></i>Back to Plans
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="container mt-4" id="main-content">
+        <div class="row">
+            <!-- Investment Summary Sidebar -->
+            <div class="col-12 col-md-12 col-xl-4">
+                <div class="card adminuiux-card mb-4">
+                    <div class="card-header bg-theme-1 text-white">
+                        <h6 class="mb-0"><i class="bi bi-bank me-2"></i>Plan Summary</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center mb-4">
+                            <div class="avatar avatar-80 rounded-circle bg-theme-1-subtle mx-auto mb-3">
+                                {% if plan.cover_image %}
+                                    <img src="{{ plan.cover_image.url }}" alt="{{ plan.name }}" class="rounded-circle">
+                                {% else %}
+                                    <i class="bi bi-bank h2 text-theme-1"></i>
+                                {% endif %}
+                            </div>
+                            <h4 class="text-theme-1">{{ plan.get_name_display }} Plan</h4>
+                            <span class="badge badge-light text-bg-theme-1">{{ plan.duration_display }}</span>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-secondary">Investment Range:</span>
+                                <strong>{{ plan.investment_range_display }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-secondary">Duration:</span>
+                                <strong>{{ plan.duration_display }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-secondary">Payout Structure:</span>
+                                <strong>{{ plan.payout_structure_display }}</strong>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-secondary">Returns:</span>
+                                <strong class="text-success">{{ plan.returns_display }}</strong>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info mt-3">
+                            <h6 class="mb-2"><i class="bi bi-info-circle me-1"></i>How It Works</h6>
+                            <ul class="small mb-0 ps-3">
+                                <li>Invest once, receive structured payouts</li>
+                                <li>{{ plan.total_payouts }} payouts over {{ plan.duration_display|lower }}</li>
+                                <li>Each payout includes principal + returns</li>
+                                <li>Predictable income, reduced risk</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Security Note -->
+                <div class="card adminuiux-card border-success">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center">
+                            <div class="avatar avatar-50 bg-success-subtle text-success rounded me-3">
+                                <i class="bi bi-shield-check h4"></i>
+                            </div>
+                            <div>
+                                <h6 class="mb-1">Secure Investment</h6>
+                                <p class="text-secondary small mb-0">Your investment is protected with structured payout schedules.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Form -->
+            <div class="col-12 col-md-12 col-xl-8">
+                <div class="card adminuiux-card mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="bi bi-calculator me-2"></i>Investment Calculator</h6>
+                    </div>
+                    <div class="card-body">
+                        <form method="POST" action="{% url 'create_investment' plan.slug %}" id="investmentForm">
+                            {% csrf_token %}
+                            {% include "message.html" %}
+                            <!-- Amount Selection -->
+                            <div class="row mb-4">
+                                <div class="col-12">
+                                    <label class="form-label fw-medium">Investment Amount (₦)</label>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text bg-theme-1 text-white">₦</span>
+                                        <input type="number" 
+                                               class="form-control form-control-lg" 
+                                               id="investmentAmount" 
+                                               name="amount"
+                                               value="{{ plan.min_amount|intcomma }}" 
+                                               min="{{ plan.min_amount }}" 
+                                               {% if plan.max_amount %}max="{{ plan.max_amount }}"{% endif %}
+                                               step="1000000"
+                                               required>
+                                    </div>
+                                    <div class="d-flex justify-content-between text-secondary small">
+                                        <span>Min: ₦{{ plan.min_amount|floatformat:0|intcomma }}</span>
+                                        {% if plan.max_amount %}
+                                            <span>Max: ₦{{ plan.max_amount|floatformat:0|intcomma }}</span>
+                                        {% else %}
+                                            <span>No maximum limit</span>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Quick Amount Buttons -->
+                                    <div class="mt-3">
+                                        <label class="form-label small text-secondary">Quick Select:</label>
+                                        <div class="btn-group w-100 flex-wrap" role="group">
+                                            <button type="button" class="btn btn-outline-theme" onclick="setAmount({{ plan.min_amount }})">
+                                                Min (₦{{ plan.min_amount|floatformat:0|intcomma }})
+                                            </button>
+                                            {% if plan.max_amount %}
+                                                <button type="button" class="btn btn-outline-theme" onclick="setAmount({{ plan.max_amount }})">
+                                                    Max (₦{{ plan.max_amount|floatformat:0|intcomma }})
+                                                </button>
+                                                <button type="button" class="btn btn-outline-theme" onclick="setAmount({{ plan.min_amount|add:plan.max_amount|div:2 }})">
+                                                    Mid (₦{{ plan.min_amount|add:plan.max_amount|div:2|floatformat:0|intcomma }})
+                                                </button>
+                                            {% else %}
+                                                <button type="button" class="btn btn-outline-theme" onclick="setAmount({{ plan.min_amount|mul:2 }})">
+                                                    2x Min
+                                                </button>
+                                                <button type="button" class="btn btn-outline-theme" onclick="setAmount({{ plan.min_amount|mul:5 }})">
+                                                    5x Min
+                                                </button>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Calculator Results -->
+                            <div class="card bg-theme-1-subtle mb-4">
+                                <div class="card-body">
+                                    <h6 class="mb-3">Projected Returns</h6>
+                                    <div class="row">
+                                        <div class="col-6 col-md-3 mb-3">
+                                            <div class="text-center">
+                                                <h5 class="text-theme-1 mb-1" id="displayAmount">₦{{ plan.min_amount|floatformat:0|intcomma }}</h5>
+                                                <small class="text-secondary">Your Investment</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-3 mb-3">
+                                            <div class="text-center">
+                                                <h5 class="text-success mb-1" id="displayROI">{{ plan.roi_percentage }}%</h5>
+                                                <small class="text-secondary">Total ROI</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-3 mb-3">
+                                            <div class="text-center">
+                                                <h5 class="text-success mb-1" id="displayTotalReturn">₦{{ plan.example_return|floatformat:0|intcomma }}</h5>
+                                                <small class="text-secondary">Total Returns</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-6 col-md-3 mb-3">
+                                            <div class="text-center">
+                                                <h5 class="text-theme-1 mb-1" id="displayPayout">₦{{ plan.example_payout_amount|floatformat:0|intcomma }}</h5>
+                                                <small class="text-secondary">Per Payout ({{ plan.total_payouts }})</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <hr>
+                                    
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span class="fw-medium">Total Value at Maturity:</span>
+                                                <h4 class="text-theme-1 mb-0" id="displayMaturityValue">
+                                                    ₦{{ plan.min_amount|add:plan.example_return|floatformat:0|intcomma }}
+                                                </h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Payout Schedule Preview -->
+                            <div class="mb-4">
+                                <h6 class="mb-3"><i class="bi bi-calendar-week me-2"></i>Payout Schedule Preview</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Payout #</th>
+                                                <th>Scheduled Date</th>
+                                                <th>Principal</th>
+                                                <th>Returns</th>
+                                                <th>Total Payout</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="payoutScheduleBody">
+                                            <!-- Populated by JavaScript -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            
+                            <!-- Terms Agreement -->
+                            <div class="mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="agreeTerms" name="agree_terms" required>
+                                    <label class="form-check-label" for="agreeTerms">
+                                        I agree to the <a href="#" target="_blank">Investment Terms</a> and understand that 
+                                        this investment will be locked for {{ plan.duration_display }} with structured payouts.
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Submit Buttons -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <a href="{% url 'investment_plans' %}" class="btn btn-outline-secondary">Cancel</a>
+                                <button type="submit" class="btn btn-theme btn-lg" id="submitBtn" disabled>
+                                    <i class="bi bi-check-circle me-2"></i>Confirm Investment
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                
+                <!-- FAQ or Help -->
+                <div class="card adminuiux-card">
+                    <div class="card-header">
+                        <h6 class="mb-0"><i class="bi bi-question-circle me-2"></i>Frequently Asked Questions</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="accordion" id="faqAccordion">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                        When will I receive my first payout?
+                                    </button>
+                                </h2>
+                                <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Your first payout will be scheduled {{ plan.payout_frequency_months }} months after your investment is activated.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                        Can I withdraw my investment early?
+                                    </button>
+                                </h2>
+                                <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Early withdrawal is not permitted. Investments are locked for the full {{ plan.duration_display }} duration with structured payouts.
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                        How are payouts processed?
+                                    </button>
+                                </h2>
+                                <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                    <div class="accordion-body">
+                                        Payouts are processed automatically to your registered bank account on the scheduled dates.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% block extra_js %}
+<script>
+    // Plan data from Django
+    const planData = {
+        minAmount: {{ plan.min_amount }},
+        maxAmount: {{ plan.max_amount|default:"null" }},
+        roiPercentage: {{ plan.roi_percentage }},
+        isAnnualROI: {{ plan.is_annual_roi|yesno:"true,false" }},
+        durationMonths: {{ plan.duration_months }},
+        totalPayouts: {{ plan.total_payouts }},
+        payoutFrequencyMonths: {{ plan.payout_frequency_months }}
+    };
+
+    // Format currency
+    function formatCurrency(amount) {
+        return '₦' + Math.round(amount).toLocaleString('en-NG');
+    }
+
+    // Set amount from quick buttons
+    function setAmount(amount) {
+        document.getElementById('investmentAmount').value = amount;
+        calculateReturns();
+    }
+
+    // Calculate returns
+    function calculateReturns() {
+        const amount = parseFloat(document.getElementById('investmentAmount').value) || 0;
+        
+        // Validate range
+        if (amount < planData.minAmount) {
+            document.getElementById('investmentAmount').value = planData.minAmount;
+            return;
+        }
+        if (planData.maxAmount && amount > planData.maxAmount) {
+            document.getElementById('investmentAmount').value = planData.maxAmount;
+            return;
+        }
+        
+        // Calculate ROI
+        let totalROI = planData.roiPercentage;
+        if (planData.isAnnualROI) {
+            totalROI = planData.roiPercentage * (planData.durationMonths / 12);
+        }
+        
+        const totalReturn = amount * (totalROI / 100);
+        const totalPayout = amount + totalReturn;
+        const perPayout = totalPayout / planData.totalPayouts;
+        const principalPerPayout = amount / planData.totalPayouts;
+        const returnPerPayout = totalReturn / planData.totalPayouts;
+        
+        // Update display
+        document.getElementById('displayAmount').textContent = formatCurrency(amount);
+        document.getElementById('displayROI').textContent = totalROI.toFixed(1) + '%';
+        document.getElementById('displayTotalReturn').textContent = formatCurrency(totalReturn);
+        document.getElementById('displayPayout').textContent = formatCurrency(perPayout);
+        document.getElementById('displayMaturityValue').textContent = formatCurrency(totalPayout);
+        
+        // Generate payout schedule
+        generatePayoutSchedule(amount, principalPerPayout, returnPerPayout, perPayout);
+    }
+
+    // Generate payout schedule table
+    function generatePayoutSchedule(amount, principalPerPayout, returnPerPayout, totalPerPayout) {
+        const tbody = document.getElementById('payoutScheduleBody');
+        tbody.innerHTML = '';
+        
+        const startDate = new Date();
+        
+        for (let i = 1; i <= planData.totalPayouts; i++) {
+            const payoutDate = new Date(startDate);
+            payoutDate.setMonth(payoutDate.getMonth() + (i * planData.payoutFrequencyMonths));
+            
+            const row = `
+                <tr>
+                    <td>${i}</td>
+                    <td>${payoutDate.toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' })}</td>
+                    <td>${formatCurrency(principalPerPayout)}</td>
+                    <td class="text-success">${formatCurrency(returnPerPayout)}</td>
+                    <td class="fw-medium">${formatCurrency(totalPerPayout)}</td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        }
+    }
+
+    // Enable/disable submit based on terms checkbox
+    document.getElementById('agreeTerms').addEventListener('change', function() {
+        document.getElementById('submitBtn').disabled = !this.checked;
+    });
+
+    // Real-time calculation
+    document.getElementById('investmentAmount').addEventListener('input', calculateReturns);
+
+    // Initial calculation
+    calculateReturns();
+</script>
+{% endblock %}
+{% endblock content %}

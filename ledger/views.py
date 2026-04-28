@@ -9,6 +9,7 @@ from affiliation.models import AffiliatePackage
 from .forms import ExpenseForm, ExpenseAddForm
 from django.contrib import messages as mg
 from security.decorators import *
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 
@@ -17,6 +18,7 @@ from security.decorators import *
 @login_required(login_url="login")
 @rate_limit("20/hour")
 @log_security_event(action="INVENTORY_VIEW")
+@staff_member_required
 def inventory_report(request):
     queryset = FinancialEntry.objects.all()
 
@@ -110,6 +112,7 @@ def expenses(request):
 @login_required(login_url="login")
 @rate_limit("10/hour")
 @log_security_event(action="VIEW_EDIT_EXPENSE")
+@staff_member_required
 def view_expense(request, pk):
     expense = get_object_or_404(Expense, id=pk)
 
@@ -197,6 +200,7 @@ def add_expense(request):
 @login_required(login_url="login")
 @rate_limit("10/hour")
 @log_security_event(action="APPROVE_EXPENSE")
+@staff_member_required
 def approve_expense(request, pk):
     expense = get_object_or_404(Expense, id=pk)
     expense.status = 'approved'

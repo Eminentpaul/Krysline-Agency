@@ -1,0 +1,194 @@
+{% extends "user_dash_nav.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<main class="adminuiux-content has-sidebar" onclick="contentClick()">
+    <!-- breadcrumb -->
+    <div class="container-fluid mt-4">
+        <div class="row gx-3 align-items-center">
+            <div class="col-12 col-sm">
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item bi">
+                            <a href="{% url 'dashboard' %}">
+                                <i class="bi bi-house-door me-1 fs-14"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active bi" aria-current="page">My Investments</li>
+                    </ol>
+                </nav>
+                <h5>My Investments</h5>
+            </div>
+            <div class="col-12 col-sm-auto text-end py-3 py-sm-0">
+                <a href="{% url 'investment_plans' %}" class="btn btn-theme">
+                    <i class="bi bi-plus-lg me-1"></i>New Investment
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="container mt-4" id="main-content">
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card adminuiux-card bg-theme-1 h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="avatar avatar-40 bg-white-opacity rounded me-2">
+                                <i class="bi bi-briefcase text-white"></i>
+                            </div>
+                            <h6 class="text-white mb-0">Total Invested</h6>
+                        </div>
+                        <h4 class="text-white mb-0">₦{{ total_invested|floatformat:2|intcomma }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card adminuiux-card bg-success h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="avatar avatar-40 bg-white-opacity rounded me-2">
+                                <i class="bi bi-graph-up-arrow text-white"></i>
+                            </div>
+                            <h6 class="text-white mb-0">Returns Earned</h6>
+                        </div>
+                        <h4 class="text-white mb-0">₦{{ total_returns_earned|floatformat:2|intcomma }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card adminuiux-card bg-warning h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="avatar avatar-40 bg-white-opacity rounded me-2">
+                                <i class="bi bi-clock-history text-white"></i>
+                            </div>
+                            <h6 class="text-white mb-0">Pending</h6>
+                        </div>
+                        <h4 class="text-white mb-0">₦{{ pending_returns|floatformat:2|intcomma }}</h4>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3 mb-3">
+                <div class="card adminuiux-card bg-info h-100">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-2">
+                            <div class="avatar avatar-40 bg-white-opacity rounded me-2">
+                                <i class="bi bi-check-circle text-white"></i>
+                            </div>
+                            <h6 class="text-white mb-0">Payouts</h6>
+                        </div>
+                        <h4 class="text-white mb-0">{{ total_payouts_received }}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Tabs -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <ul class="nav nav-pills" id="investmentTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="all-tab" data-bs-toggle="pill" data-bs-target="#all" type="button" role="tab">
+                            All <span class="badge bg-secondary ms-1">{{ investments|length }}</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="active-tab" data-bs-toggle="pill" data-bs-target="#active" type="button" role="tab">
+                            Active <span class="badge bg-success ms-1">{{ active_count }}</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="pending-tab" data-bs-toggle="pill" data-bs-target="#pending" type="button" role="tab">
+                            Pending <span class="badge bg-warning ms-1">{{ pending_count }}</span>
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="completed-tab" data-bs-toggle="pill" data-bs-target="#completed" type="button" role="tab">
+                            Completed <span class="badge bg-info ms-1">{{ completed_count }}</span>
+                        </button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Investments List -->
+        <div class="tab-content" id="investmentTabContent">
+            <!-- All Investments -->
+            <div class="tab-pane fade show active" id="all" role="tabpanel">
+                <div class="row">
+                    {% for investment in investments %}
+                    <div class="col-12 mb-4">
+                        {% include "base/investments/investment_card.html" with investment=investment %}
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="card adminuiux-card text-center py-5">
+                            <div class="card-body">
+                                <i class="bi bi-briefcase h1 text-secondary mb-3"></i>
+                                <h5>No Investments Yet</h5>
+                                <p class="text-secondary mb-3">Start building your portfolio with our structured investment plans.</p>
+                                <a href="{% url 'investment_plans' %}" class="btn btn-theme">View Investment Plans</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Active Investments -->
+            <div class="tab-pane fade" id="active" role="tabpanel">
+                <div class="row">
+                    {% for investment in investments %}
+                        {% if investment.status == 'active' %}
+                        <div class="col-12 mb-4">
+                            {% include "base/investments/investment_card.html" with investment=investment %}
+                        </div>
+                        {% endif %}
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info">No active investments.</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Pending Investments -->
+            <div class="tab-pane fade" id="pending" role="tabpanel">
+                <div class="row">
+                    {% for investment in investments %}
+                        {% if investment.status == 'pending' %}
+                        <div class="col-12 mb-4">
+                            {% include "base/investments/investment_card.html" with investment=investment %}
+                        </div>
+                        {% endif %}
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info">No pending investments.</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Completed Investments -->
+            <div class="tab-pane fade" id="completed" role="tabpanel">
+                <div class="row">
+                    {% for investment in investments %}
+                        {% if investment.status == 'completed' %}
+                        <div class="col-12 mb-4">
+                            {% include "base/investments/investment_card.html" with investment=investment %}
+                        </div>
+                        {% endif %}
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="alert alert-info">No completed investments yet.</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock content %}

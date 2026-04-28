@@ -1,0 +1,137 @@
+{% load humanize %}
+
+{% if investment %}
+<div class="card adminuiux-card {% if investment.status == 'pending' %}border-warning{% elif investment.status == 'completed' %}border-success{% endif %}">
+    <div class="card-body">
+        <div class="row align-items-center">
+            <!-- Plan Info -->
+            <div class="col-12 col-md-3 mb-3 mb-md-0">
+                <div class="d-flex align-items-center">
+                    <div class="avatar avatar-60 rounded bg-theme-1-subtle me-3">
+                        {% if investment.plan.cover_image %}
+                            <img src="{{ investment.plan.cover_image.url }}" alt="{{ investment.plan.name }}" class="rounded">
+                        {% else %}
+                            <i class="bi bi-bank h3 text-theme-1"></i>
+                        {% endif %}
+                    </div>
+                    <div>
+                        <h6 class="mb-1">{{ investment.plan.get_name_display }}</h6>
+                        <span class="badge 
+                            {% if investment.status == 'active' %}bg-success
+                            {% elif investment.status == 'pending' %}bg-warning
+                            {% elif investment.status == 'completed' %}bg-info
+                            {% else %}bg-secondary{% endif %}">
+                            {{ investment.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Investment Details -->
+            <div class="col-6 col-md-2 mb-3 mb-md-0 text-center">
+                <h6 class="mb-1">₦{{ investment.amount|floatformat:2|intcomma }}</h6>
+                <small class="text-secondary">Invested</small>
+            </div>
+
+            <!-- Returns -->
+            <div class="col-6 col-md-2 mb-3 mb-md-0 text-center">
+                <h6 class="mb-1 text-success">₦{{ investment.total_paid_out|floatformat:2|intcomma }}</h6>
+                <small class="text-secondary">Returned</small>
+            </div>
+
+            <!-- Progress -->
+            <div class="col-12 col-md-3 mb-3 mb-md-0">
+                <div class="text-center mb-2">
+                    <small class="text-secondary">{{ investment.payouts_completed }} of {{ investment.plan.total_payouts }} payouts</small>
+                </div>
+                <div class="progress" style="height: 10px;">
+                    <div class="progress-bar 
+                        {% if investment.status == 'completed' %}bg-success
+                        {% else %}bg-theme-1{% endif %}" 
+                        role="progressbar" 
+                        style="width: {{ investment.progress_percentage }}%"
+                        aria-valuenow="{{ investment.progress_percentage }}" 
+                        aria-valuemin="0" 
+                        aria-valuemax="100">
+                    </div>
+                </div>
+                <div class="d-flex justify-content-between mt-1">
+                    <small class="text-secondary">{{ investment.progress_percentage|floatformat:0 }}%</small>
+                    {% if investment.next_payout_date %}
+                        <small class="text-warning">Next: {{ investment.next_payout_date|date:"d M" }}</small>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="col-12 col-md-2 text-md-end">
+                {% if investment.status == 'pending' %}
+                    <a href="{% url 'upload_payment_proof' investment_id=investment.id %}" class="btn btn-warning btn-sm w-100 mb-2">
+                        <i class="bi bi-upload me-1"></i>Upload Proof
+                    </a>
+                {% endif %}
+                
+                <a href="{% url 'investment_plans' %}" class="btn btn-outline-theme btn-sm w-100">
+                    <i class="bi bi-eye me-1"></i>Details
+                </a>
+            </div>
+        </div>
+
+        <!-- Expanded Details -->
+        <div class="row mt-3 pt-3 border-top">
+            <div class="col-6 col-md-3">
+                <small class="text-secondary d-block">Reference</small>
+                <strong class="font-monospace">{{ investment.reference_code }}</strong>
+            </div>
+            <div class="col-6 col-md-3">
+                <small class="text-secondary d-block">Start Date</small>
+                <strong>{{ investment.start_date|date:"d M Y"|default:"Pending" }}</strong>
+            </div>
+            <div class="col-6 col-md-3">
+                <small class="text-secondary d-block">Maturity</small>
+                <strong>{{ investment.maturity_date|date:"d M Y"|default:"--" }}</strong>
+            </div>
+            <div class="col-6 col-md-3">
+                <small class="text-secondary d-block">Expected Total</small>
+                <strong class="text-success">₦{{ investment.total_expected_return|floatformat:2|intcomma }}</strong>
+            </div>
+        </div>
+
+        <!-- Recent Payouts Preview -->
+        {% if investment.recent_payouts %}
+        <div class="row mt-3">
+            <div class="col-12">
+                <h6 class="small text-secondary mb-2">Recent Payouts</h6>
+                <div class="table-responsive">
+                    <table class="table table-sm table-borderless mb-0">
+                        <tbody>
+                            {% for payout in investment.recent_payouts %}
+                            <tr>
+                                <td class="ps-0" style="width: 100px;">
+                                    <span class="badge 
+                                        {% if payout.status == 'completed' %}bg-success
+                                        {% elif payout.status == 'scheduled' %}bg-warning
+                                        {% else %}bg-secondary{% endif %}">
+                                        #{{ payout.payout_number }}
+                                    </span>
+                                </td>
+                                <td>{{ payout.scheduled_date|date:"d M Y" }}</td>
+                                <td class="text-end">₦{{ payout.total_amount|floatformat:2|intcomma }}</td>
+                                <td class="text-end pe-0" style="width: 100px;">
+                                    {% if payout.status == 'completed' %}
+                                        <i class="bi bi-check-circle text-success"></i> Paid
+                                    {% else %}
+                                        <span class="text-secondary">{{ payout.get_status_display }}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endif %}

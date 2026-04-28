@@ -96,7 +96,7 @@
                                                         <li><a class="dropdown-item text-danger" href="{% url "unblock_pin" iuser.id %}">Unblock PIN</a></li>
                                                         {% comment %} <li><a class="dropdown-item" href="javascript:void(0)">Move</a></li> {% endcomment %}
                                                         
-                                                        <li><a class="dropdown-item text-danger" href="{% url "delete_user" iuser.id %}">Delete</a></li>
+                                                        {% comment %} <li><a class="dropdown-item text-danger" href="{% url "delete_user" iuser.id %}">Block Account</a></li> {% endcomment %}
                                                     </ul>
                                                 </div>
                                             </td>

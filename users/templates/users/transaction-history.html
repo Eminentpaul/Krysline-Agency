@@ -65,7 +65,7 @@
                                                     <td>
                                                         <p class="mb-0 fw-medium">{{ comm.transaction_type|default:"Withdraw"|title }}</p>
                                                     </td>
-                                                    {% if comm.transaction_type == 'package_purchase' %}
+                                                    {% if comm.transaction_type == 'package_purchase'  %}
                                                         <td>
                                                             <span class="badge badge-light rounded-pill fw-bold text-bg-warning">{{comm.get_transaction_type_display|title}}</span>
                                                             
@@ -73,6 +73,10 @@
                                                     {% elif comm.transaction_type == 'commission' %}
                                                         <td>
                                                             <span class="badge badge-light rounded-pill fw-bold text-bg-info">{{comm.get_transaction_type_display|title}}</span>
+                                                        </td>
+                                                    {% elif comm.transaction_type == 'investment' %}
+                                                        <td>
+                                                            <span class="badge badge-light rounded-pill fw-bold text-bg-success">{{comm.get_transaction_type_display|title}}</span>
                                                         </td>
                                                     {% else %}
                                                         <td>

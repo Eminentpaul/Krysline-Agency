@@ -127,10 +127,51 @@
                             <label for="code">Code</label>
                             </div> {% endcomment %}
                             <div class="form-floating">
-                            <input type="text" name="username" class="form-control" id="phonen" placeholder="Enter your Username">
+                            <input type="text" name="username" class="form-control" id="phonen" placeholder="Enter your Username" required>
                             <label for="phonen">Username</label>
                             </div>
                         </div>
+
+                        
+                        <div class="input-group mb-3">
+                            {% comment %} <div class="form-floating maxwidth-100">
+                            <select class="form-select" id="code" aria-label="Country code">
+                                <option value="1">+1</option>
+                                <option selected>+44</option>
+                                <option value="3">+66</option>
+                                <option value="2">+91</option>
+                            </select>
+                            <label for="code">Code</label>
+                            </div> {% endcomment %}
+                            <div class="form-floating">
+                            {% if invest %}
+                              <input type="text" name="user_type" value="investor" class="form-control" id="phonen" placeholder="Enter your Username" readonly required>
+                            {% else %}
+                              <input type="text" name="user_type" value="affiliate" class="form-control" id="phonen" placeholder="Enter your Username" readonly required>
+                            {% endif %}
+                            <label for="phonen">Account Type</label>
+                            </div>
+                        </div>
+                        {% comment %} <div class="col-12 col-md-6 col-lg-12 mb-3">
+                             
+                            <div class="form-floating">
+                            {% comment %} <input type="text" name="username" class="form-control" id="phonen" placeholder="Enter your Username"> 
+                            <select name="user_type" required class="form-select form-control" id="code" aria-label="Country code">
+                                <option value="" selected disabled>---Choose Account Type---</option>
+                              <option value="affiliate">Affiliates</option>
+                              <option value="investor">Investors</option>
+                            </select>
+                            <label for="code">Account Type</label>
+                            </div>
+                        </div> {% endcomment %}
+                        {% comment %} <div class="col-12 col-md-6 col-lg-12">
+                          <select name="user_type" class="form-select form-select-lg mb-3" aria-label="Large select example" required>
+                              <option selected>Type of User</option>
+                              <option value="affiliate">Affiliate</option>
+                              <option value="investor">Investor</option>
+                              
+                          </select>
+                      </div> {% endcomment %}
 
                         <div class="position-relative">
                             <div class="form-floating mb-3">
@@ -177,7 +218,7 @@
                         </div>
 
                         {% comment %} <a href="investment-signup-success.html" class="btn btn-lg btn-theme w-100 mb-4">Sign up</a> {% endcomment %}
-                        <button class="btn btn-lg btn-theme w-100 mb-4">Register</button> 
+                        <button type="submit" class="btn btn-lg btn-theme w-100 mb-4">Register</button> 
                       </form>
                       <div class="text-center mb-3">
                         Already have account? <a href="{% url "login" %}" class=" ">Login</a> here.

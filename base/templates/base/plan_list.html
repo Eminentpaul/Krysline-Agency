@@ -1,0 +1,306 @@
+{% extends "user_dash_nav.html" %}
+{% load static %}
+{% load humanize %}
+{% load investment_filters %}
+
+{% block content %}
+<main class="adminuiux-content has-sidebar" onclick="contentClick()">
+    <!-- breadcrumb -->
+    <div class="container-fluid mt-4">
+        <div class="row gx-3 align-items-center">
+            <div class="col-12 col-sm">
+                <nav aria-label="breadcrumb" class="mb-2">
+                    <ol class="breadcrumb mb-0">
+                        <li class="breadcrumb-item bi">
+                            <a href="{% url 'dashboard' %}">
+                                <i class="bi bi-house-door me-1 fs-14"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="breadcrumb-item active bi" aria-current="page">Investment Plans</li>
+                    </ol>
+                </nav>
+                <h5>Investment Plans</h5>
+            </div>
+            <div class="col-12 col-sm-auto text-end py-3 py-sm-0">
+                <a href="{% url 'my_investments' %}" class="btn btn-outline-theme">My Investments</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content -->
+    <div class="container mt-4" id="main-content">
+        <div class="row">
+            <!-- Investment Calculator Sidebar -->
+            <div class="col-12 col-md-12 col-xl-3">
+                <div class="row align-items-center mb-4">
+                    <div class="col">
+                        <h5>Investment Calculator</h5>
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-sm btn-square btn-outline-theme" onclick="resetCalculator()">
+                            <i class="bi bi-arrow-counterclockwise"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="card adminuiux-card mb-4">
+                    <div class="card-body pb-0">
+                        <div class="row">
+                            <div class="col-12 col-sm-6 col-xl-12 mb-3">
+                                <div class="form-floating">
+                                    <input type="number" class="form-control" id="amount" 
+                                           placeholder="Amount" value="500000" min="500000" step="100000">
+                                    <label for="amount">Investment Amount (₦)</label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-xl-12 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" id="planType">
+                                        <option value="basic" selected>Basic (₦500K - ₦5M)</option>
+                                        <option value="standard">Standard (₦5M - ₦20M)</option>
+                                        <option value="professional">Professional (₦20M+)</option>
+                                    </select>
+                                    <label for="planType">Select Plan</label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-xl-12 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" id="duration">
+                                        {% for plan in plans %}
+                                            <option value="{{ plan.duration_months }}">
+                                                {{ plan.duration_display }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    <label for="duration">Investment Duration</label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-xl-12 mb-3">
+                                <div class="form-floating">
+                                    <select class="form-select" id="payoutFrequency">
+                                        <option value="4">Every 4 Months</option>
+                                        <option value="6" selected>Every 6 Months</option>
+                                        <option value="12">Yearly</option>
+                                    </select>
+                                    <label for="payoutFrequency">Payout Frequency</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Calculator Results -->
+                        <div class="alert alert-theme-1 mt-3">
+                            <h6 class="mb-2">Projected Returns</h6>
+                            <p class="mb-1">Total ROI: <strong id="calculatedROI">15%</strong></p>
+                            <p class="mb-1">Total Return: <strong id="calculatedReturn">₦75,000</strong></p>
+                            <p class="mb-0">Per Payout: <strong id="calculatedPayout">₦25,000</strong></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Quick Links -->
+                <div class="list-group adminuiux-list-group list-group-flush bg-none mb-4">
+                    <a href="{% url 'my_investments' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-briefcase me-2"></i>My Investments
+                    </a>
+                    <a href="{% url 'dashboard' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-graph-up me-2"></i>Dashboard
+                    </a>
+                    <a href="{% url 'transaction_history' %}" class="list-group-item list-group-item-action">
+                        <i class="bi bi-clock-history me-2"></i>Payout History
+                    </a>
+                </div>
+            </div>
+
+            <!-- Plans List -->
+            <div class="col-12 col-md-12 col-xl-9">
+                <h5 class="mb-4 text-center">Best Investment Plans</h5>
+                {% include "message.html" %}
+                {% for plan in plans %}
+                <div class="card adminuiux-card mb-3 {% if plan.is_featured %}border border-theme-1 theme-orange position-relative{% endif %}">
+                    {% if plan.is_featured %}
+                    <span class="ribbon bg-theme-1 position-absolute top-0 {% if forloop.counter|divisibleby:2 %}end-0{% else %}start-0{% endif %} z-index-1">
+                        Featured
+                    </span>
+                    {% endif %}
+                    
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <!-- Plan Info -->
+                            <div class="col-12 col-sm-9 col-xxl mb-3 mb-xxl-0">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <div class="avatar avatar-60 rounded coverimg bg-theme-1-subtle">
+                                            {% if plan.cover_image %}
+                                                <img src="{{ plan.cover_image.url }}" alt="{{ plan.name }}">
+                                            {% else %}
+                                                <i class="bi bi-bank h3 text-theme-1"></i>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col">
+                                        <h6>{{ plan.get_name_display }} Plan</h6>
+                                        <span class="badge badge-sm badge-light text-bg-theme-1">
+                                            {{ plan.duration_display }}
+                                        </span>
+                                        <span class="badge badge-sm badge-light text-bg-success mx-1">
+                                            {{ plan.payout_structure_display }}
+                                        </span>
+                                        {% if plan.is_annual_roi %}
+                                            <span class="badge badge-sm badge-light text-bg-warning">Annual ROI</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Investment Range -->
+                            <div class="col-12 col-sm-3 col-xxl-auto mb-3 mb-sm-0 text-center">
+                                <h6>{{ plan.investment_range_display }}</h6>
+                                <p class="text-secondary small">Investment Range</p>
+                            </div>
+                            
+                            <!-- Returns Info -->
+                            <div class="col-12 col-md-9 col-xxl-4 mb-3 mb-md-0">
+                                <div class="card bg-theme-1-subtle">
+                                    <div class="card-body">
+                                        <div class="row align-items-center justify-content-between">
+                                            <div class="col-auto text-start">
+                                                <h6 class="mb-1">{{ plan.returns_display }}
+                                                    <small>
+                                                        <span class="badge badge-sm badge-light text-bg-success mx-1 fw-normal">
+                                                            Structured Payout
+                                                        </span>
+                                                    </small>
+                                                </h6>
+                                                <p class="text-secondary small">You earn</p>
+                                            </div>
+                                            <div class="col-auto text-end">
+                                                {% with example_amount=plan.min_amount %}
+                                                    <h6>₦{{ plan|calculate_return:example_amount|floatformat:2|intcomma }}</h6>
+                                                    <p class="text-secondary small">on ₦{{ example_amount|floatformat:2|intcomma }}</p>
+                                                {% endwith %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Button -->
+                            {% if active_investment %}
+                            
+                            <div class="col-auto">
+                                <button class="btn btn-outline-theme" disabled>
+                                    Invest Now
+                                </button>
+                            </div>
+                            {% else %}
+
+                            <div class="col-auto">
+                                <a href="{% url 'create_investment' plan.slug %}" class="btn btn-outline-theme">
+                                    Invest Now
+                                </a>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Additional Details -->
+                        <div class="row mt-3 pt-3 border-top">
+                            <div class="col-12">
+                                <p class="text-secondary small mb-2">
+                                    <i class="bi bi-check-circle-fill text-success me-1"></i>
+                                    {{ plan.total_payouts }} structured payouts over {{ plan.duration_display|lower }}
+                                </p>
+                                <p class="text-secondary small mb-0">
+                                    <i class="bi bi-shield-check text-success me-1"></i>
+                                    Predictable income and reduced risk exposure
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="card adminuiux-card">
+                    <div class="card-body text-center py-5">
+                        <i class="bi bi-bank h1 text-secondary mb-3"></i>
+                        <h5>No Investment Plans Available</h5>
+                        <p class="text-secondary">Please check back later for new investment opportunities.</p>
+                    </div>
+                </div>
+                {% endfor %}
+                
+                <!-- Investment Info Note -->
+                <div class="alert alert-info mt-4">
+                    <h6><i class="bi bi-info-circle me-2"></i>How It Works</h6>
+                    <p class="mb-2 small">Structured payouts ensure predictable income and reduced risk exposure.</p>
+                    <ul class="small mb-0">
+                        <li>Choose your preferred investment plan based on your budget</li>
+                        <li>Make a one-time investment payment</li>
+                        <li>Receive scheduled payouts throughout the investment period</li>
+                        <li>Each payout includes portion of principal + returns</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+{% block extra_js %}
+<script>
+    // Investment Calculator
+    const plans = {
+        {% for plan in plans %}
+        '{{ plan.name }}': {
+            min: {{ plan.min_amount }},
+            max: {{ plan.max_amount|default:"null" }},
+            duration: {{ plan.duration_months }},
+            roi: {{ plan.roi_percentage }},
+            isAnnual: {{ plan.is_annual_roi|yesno:"true,false" }},
+            payouts: {{ plan.total_payouts }},
+            frequency: {{ plan.payout_frequency_months }}
+        }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+    };
+
+    function calculateReturns() {
+        const amount = parseFloat(document.getElementById('amount').value) || 0;
+        const planType = document.getElementById('planType').value;
+        const plan = plans[planType];
+        
+        if (!plan || amount < plan.min) {
+            return;
+        }
+        
+        let totalROI = plan.roi;
+        if (plan.isAnnual) {
+            totalROI = plan.roi * (plan.duration / 12);
+        }
+        
+        const totalReturn = amount * (totalROI / 100);
+        const perPayout = (amount + totalReturn) / plan.payouts;
+        
+        document.getElementById('calculatedROI').textContent = totalROI.toFixed(1) + '%';
+        document.getElementById('calculatedReturn').textContent = '₦' + totalReturn.toLocaleString('en-NG', {maximumFractionDigits: 0});
+        document.getElementById('calculatedPayout').textContent = '₦' + perPayout.toLocaleString('en-NG', {maximumFractionDigits: 0});
+    }
+
+    function resetCalculator() {
+        document.getElementById('amount').value = 500000;
+        document.getElementById('planType').value = 'basic';
+        calculateReturns();
+    }
+
+    // Event listeners
+    document.getElementById('amount').addEventListener('input', calculateReturns);
+    document.getElementById('planType').addEventListener('change', function() {
+        const plan = plans[this.value];
+        if (plan) {
+            document.getElementById('amount').min = plan.min;
+            document.getElementById('amount').value = plan.min;
+        }
+        calculateReturns();
+    });
+
+    // Initial calculation
+    calculateReturns();
+</script>
+{% endblock %}
+{% endblock content %}

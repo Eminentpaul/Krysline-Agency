@@ -1,6 +1,8 @@
 # admin.py
 from django.contrib import admin
 from .models import InvestmentPlan, Investment, InvestmentPayout
+from django.utils import timezone
+from django.contrib import messages
 
 @admin.register(InvestmentPlan)
 class InvestmentPlanAdmin(admin.ModelAdmin):
@@ -26,6 +28,21 @@ class InvestmentPlanAdmin(admin.ModelAdmin):
         }),
     )
 
+
+    @admin.action(description="Verify selected sales and pay commissions")
+    def record_approved_by(self, request, queryset):
+        for tx in queryset:
+            if tx.status != 'active':
+                tx.payment_verified_by = request.user
+                tx.payment_verified_at = timezone.now()
+                tx.save()
+
+                # Triggers the MLM math
+                
+
+        self.message_user(
+            request, "Selected sales verified and commissions paid.")
+
 @admin.register(Investment)
 class InvestmentAdmin(admin.ModelAdmin):
     list_display = [
@@ -38,13 +55,26 @@ class InvestmentAdmin(admin.ModelAdmin):
 
 @admin.register(InvestmentPayout)
 class InvestmentPayoutAdmin(admin.ModelAdmin):
-    list_display = [
-        'investment', 'payout_number', 'total_amount',
-        'scheduled_date', 'status'
-    ]
+    list_display = ['investment', 'payout_number', 'total_amount', 'scheduled_date', 'status']
     list_filter = ['status', 'scheduled_date']
-    actions = ['mark_completed']
+    actions = ['process_selected_payouts']
     
-    def mark_completed(self, request, queryset):
-        queryset.update(status='completed')
-    mark_completed.short_description = "Mark selected payouts as completed"
+    def process_selected_payouts(self, request, queryset):
+        from django.core.management import call_command
+        from io import StringIO
+        
+        out = StringIO()
+        for payout in queryset:
+            if payout.status == 'scheduled':
+                payout.status = 'completed'
+                payout.processed_date = timezone.now()
+                payout.save()
+                
+                # Update investment
+                inv = payout.investment
+                inv.total_paid_out += payout.total_amount
+                inv.payouts_completed += 1
+                inv.save()
+        
+        messages.success(request, f'Processed {queryset.count()} payouts')
+    process_selected_payouts.short_description = "Process selected payouts immediately"

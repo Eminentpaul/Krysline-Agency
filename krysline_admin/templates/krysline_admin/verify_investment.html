@@ -1,0 +1,212 @@
+{% extends "krysline_nav.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Verify Investment - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_investment_list' %}">Investments</a></li>
+                    <li class="breadcrumb-item active">Verify #{{ investment.reference_code }}</li>
+                </ol>
+            </nav>
+            <h4 class="mb-0">Verify Investment Payment</h4>
+        </div>
+        <div>
+            <a href="{% url 'admin_investment_list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column: Payment Proof -->
+        <div class="col-lg-8 mb-4">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0"><i class="bi bi-receipt me-2"></i>Payment Proof</h6>
+                    <span class="badge bg-warning">Pending Verification</span>
+                </div>
+                <div class="card-body p-0">
+                    {% if investment.payment_proof %}
+                        <div class="proof-viewer" style="min-height: 500px; background: #f8f9fa;">
+                            {% if investment.payment_proof.url|lower|slice:"-4:" == '.pdf' %}
+                                <embed src="{{ investment.payment_proof.url }}" 
+                                       type="application/pdf" 
+                                       width="100%" 
+                                       height="600px"
+                                       class="w-100">
+                            {% else %}
+                                <img src="{{ investment.payment_proof.url }}" 
+                                     class="img-fluid w-100 h-100 object-fit-contain" 
+                                     alt="Payment Proof"
+                                     style="max-height: 600px; cursor: zoom-in;"
+                                     onclick="window.open(this.src, '_blank')">
+                            {% endif %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="bi bi-exclamation-triangle h1 text-warning mb-3 d-block"></i>
+                            <h5>No Payment Proof Uploaded</h5>
+                            <p class="text-secondary">This investment is missing payment documentation.</p>
+                        </div>
+                    {% endif %}
+                </div>
+                {% if investment.payment_proof %}
+                <div class="card-footer">
+                    <a href="{{ investment.payment_proof.url }}" 
+                       target="_blank" 
+                       class="btn btn-outline-primary">
+                        <i class="bi bi-fullscreen me-1"></i>Open Full Size
+                    </a>
+                    <a href="{{ investment.payment_proof.url }}" 
+                       download 
+                       class="btn btn-outline-secondary ms-2">
+                        <i class="bi bi-download me-1"></i>Download
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Right Column: Investment Details & Actions -->
+        <div class="col-lg-4">
+            <!-- Investment Summary -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-info-circle me-2"></i>Investment Details</h6>
+                </div>
+                <div class="card-body">
+                    <table class="table table-sm table-borderless mb-0">
+                        <tr>
+                            <td class="text-secondary">Reference</td>
+                            <td class="text-end font-monospace fw-medium">{{ investment.reference_code }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary">Amount</td>
+                            <td class="text-end">
+                                <span class="h5 mb-0">₦{{ investment.amount|floatformat:2|intcomma }}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary">Plan</td>
+                            <td class="text-end">
+                                <span class="badge bg-theme-1">{{ investment.plan.get_name_display }}</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary">Duration</td>
+                            <td class="text-end">{{ investment.plan.duration_display }}</td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary">ROI</td>
+                            <td class="text-end text-success">+{{ investment.plan.roi_percentage }}%</td>
+                        </tr>
+                        <tr>
+                            <td class="text-secondary">Submitted</td>
+                            <td class="text-end">
+                                {{ investment.created_at|date:"d M Y" }}<br>
+                                <small class="text-secondary">{{ investment.created_at|time:"H:i" }}</small>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Investor Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-person me-2"></i>Investor Information</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="avatar avatar-50 rounded-circle bg-primary me-3">
+                            <span class="text-white h5 mb-0">{{ investment.user.first_name|first|default:"U" }}</span>
+                        </div>
+                        <div>
+                            <h6 class="mb-0">{{ investment.user.get_full_name|default:investment.user.username }}</h6>
+                            <small class="text-secondary">{{ investment.user.email }}</small>
+                        </div>
+                    </div>
+                    <hr class="my-3">
+                    <p class="mb-1"><strong>Phone:</strong> {{ investment.user.phone|default:"Not provided" }}</p>
+                    <p class="mb-0"><strong>Member since:</strong> {{ investment.user.date_joined|date:"M Y" }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="" class="btn btn-sm btn-outline-primary w-100">
+                        <i class="bi bi-person-lines-fill me-1"></i>View Full Profile
+                    </a>
+                </div>
+            </div>
+
+            <!-- Verification Actions -->
+            <div class="card border-success mb-4">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0"><i class="bi bi-check-circle me-2"></i>Approve Investment</h6>
+                </div>
+                <div class="card-body">
+                    <p class="small text-secondary mb-3">
+                        Confirm that payment has been received and verified. This will activate the investment and schedule payouts.
+                    </p>
+                    <form method="POST" action="{% url 'verify_investment' investment.id %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label small">Verification Notes (Optional)</label>
+                            <textarea name="verification_notes" class="form-control form-control-sm" rows="2" 
+                                      placeholder="e.g., Bank transfer confirmed, Receipt #12345"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">
+                            <i class="bi bi-check-lg me-1"></i>Approve & Activate
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Rejection Action -->
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h6 class="mb-0"><i class="bi bi-x-circle me-2"></i>Reject Investment</h6>
+                </div>
+                <div class="card-body">
+                    <p class="small text-secondary mb-3">
+                        Reject if payment proof is invalid, insufficient, or payment not received.
+                    </p>
+                    <form method="POST" action="">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label class="form-label small">Rejection Reason <span class="text-danger">*</span></label>
+                            <textarea name="rejection_reason" class="form-control form-control-sm" rows="3" required
+                                      placeholder="Explain why this investment is being rejected..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-outline-danger w-100" 
+                                onclick="return confirm('Are you sure you want to reject this investment?')">
+                            <i class="bi bi-x-lg me-1"></i>Reject Investment
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Simple image zoom functionality
+    document.querySelector('.proof-viewer img')?.addEventListener('click', function() {
+        this.classList.toggle('zoomed');
+        if (this.classList.contains('zoomed')) {
+            this.style.transform = 'scale(1.5)';
+            this.style.cursor = 'zoom-out';
+        } else {
+            this.style.transform = 'scale(1)';
+            this.style.cursor = 'zoom-in';
+        }
+    });
+</script>
+{% endblock %}

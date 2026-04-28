@@ -125,9 +125,15 @@
                     <button class="btn btn-lg btn-theme w-100 mb-4">Login</button>
                     <!-- <button class="btn btn-lg btn-theme w-100 mb-4">Login</button> -->
                 </form>
-                <div class="text-center mb-3">
-                    Don't have account? <a href="{% url "register" %}" class=" ">Create Account</a>
-                </div>
+                {% if "investments" in request.META.HTTP_REFERER %}
+                    <div class="text-center mb-3">
+                        Don't have account? <a href="{% url "invest_register" %}" class=" ">Create Account</a>
+                    </div>
+                {% else %}
+                    <div class="text-center mb-3">
+                        Don't have account? <a href="{% url "register" %}" class=" ">Create Account</a>
+                    </div>
+                {% endif %}
 
                 {% comment %} <div class="row align-items-center mb-3">
                     <div class="col">
@@ -187,7 +193,9 @@
                                                             <img src="{% static 'assets/img/favicon.png' %}" alt="" class="mw-100 mb-3">
                                                             <h2 class="text-white mb-3">Login to Krysline Agency Ltd. Affiliate Account, easily manage your account at your own very personalized space.</h2>
                                                             <p class="lead opacity-75">You are at the best Real Estate Company</p>
+                                                            
                                                         </div>
+
                                                     
                                                 </div>
                                                 <!-- pagination -->

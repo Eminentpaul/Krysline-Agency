@@ -10,6 +10,7 @@ class Transaction(models.Model):
     TRANSACTION_TYPES = (
         ('deposit', 'Deposit'),
         ('withdrawal', 'Withdrawal'),
+        ('investment', 'Investment'),
         ('package_purchase', 'Package Purchase'),
         ('commission', 'Commission Earned'),
     )

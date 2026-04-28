@@ -11,6 +11,7 @@ class FinancialEntry(models.Model):
     
     CATEGORIES = (
         ('package', 'Package Purchase'),
+        ('investment', 'Investment'),
         ('commission', 'Commission Payout'),
         ('referral', 'Referral Bonus'),
         ('salary', 'Staff Salary'),

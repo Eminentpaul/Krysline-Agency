@@ -15,6 +15,11 @@ from django.utils import timezone
 from affiliation.services import distribute_commissions
 from ledger.models import Expense
 from django.conf import settings
+from base.models import *
+from django.contrib.admin.views.decorators import staff_member_required
+from django.db.models import Sum, Count, Q
+from django.core.paginator import Paginator
+from datetime import date
 
 from django_otp.decorators import otp_required
 # Create your views here.
@@ -23,6 +28,7 @@ from django_otp.decorators import otp_required
 @login_required(login_url="login")
 @rate_limit("20/hour")
 @log_security_event(action="LOGIN")
+@staff_member_required
 def home(request):
 
     set_pin = False
@@ -95,6 +101,7 @@ def home(request):
 @login_required(login_url="login")
 @rate_limit("1000/hour")
 @log_security_event(action="USER_PACKAGE_VIEW")
+@staff_member_required
 def view_user_package(request, pk):
     if request.user.user_type != "manager":
         return redirect('dashboard')
@@ -128,6 +135,7 @@ def view_user_package(request, pk):
 
 @login_required(login_url="login")
 @rate_limit("10/hour")
+@staff_member_required
 def active_user(request):
     if request.user.user_type != "manager":
         return redirect('dashboard')
@@ -144,6 +152,7 @@ def active_user(request):
 
 @login_required(login_url="login")
 @rate_limit("10/hour")
+@staff_member_required
 def inactive_user(request):
     if request.user.user_type not in ["manager", 'admin']:
         return redirect('dashboard')
@@ -161,6 +170,7 @@ def inactive_user(request):
 @login_required(login_url="login")
 @rate_limit("10/hour")
 @log_security_event(action="PROFILE_UPDATE")
+@staff_member_required
 def updateUser(request, pk):
     user = get_object_or_404(User, id=pk)
     error_msg = None
@@ -195,6 +205,7 @@ def updateUser(request, pk):
 @login_required(login_url="login")
 @rate_limit("10/hour")
 @log_security_event(action="USER_DELETE")
+@staff_member_required
 def delete_user(request, pk):
     user = get_object_or_404(User, id=pk)
     user.delete()
@@ -206,6 +217,7 @@ def delete_user(request, pk):
 @login_required(login_url="login")
 @rate_limit("5/hour")
 @log_security_event(action="TRANSACTION_VIEW")
+@staff_member_required
 def transaction_history(request):
     transactions = Transaction.objects.all()
 
@@ -218,6 +230,7 @@ def transaction_history(request):
 @login_required(login_url="login")
 @rate_limit("5/hour")
 @log_security_event(action="WITHDRAWAL_VIEW")
+@staff_member_required
 def withdrawal(request):
     withdrawals = Withdrawal.objects.all().filter(status="approved")
 
@@ -231,6 +244,7 @@ def withdrawal(request):
 @login_required(login_url="login")
 @rate_limit("50/hour")
 @log_security_event(action="WITHDRAWAL_VIEW")
+@staff_member_required
 def pending_withdrawal(request):
     pending_withdrawal = Withdrawal.objects.all().filter(
         status__in=["pending", "rejected"])
@@ -246,6 +260,7 @@ def pending_withdrawal(request):
 @login_required(login_url="login")
 @rate_limit("50/hour")
 @log_security_event(action="WITHDRAWAL_EDIT")
+@staff_member_required
 def edit_withdraw(request, trans_id):
     withdrawal = get_object_or_404(Withdrawal, transaction_id=trans_id)
     form = WithdrawUpdateForm(instance=withdrawal)
@@ -295,6 +310,7 @@ def edit_withdraw(request, trans_id):
 @login_required(login_url="login")
 @rate_limit("20/hour")
 @log_security_event(action="PACKAGE_UPDATE")
+@staff_member_required
 def package_update(request, pk):
     package = get_object_or_404(AffiliatePackage, id=pk)
 
@@ -350,6 +366,7 @@ def property(request):
 @login_required(login_url="login")
 @rate_limit("50/hour")
 @log_security_event(action="VIEW_PROPERTY_TRANSACTION")
+@staff_member_required
 def Verified_property(request):
     properties = PropertyTransaction.objects.all().filter(is_verified=True)
 
@@ -424,6 +441,7 @@ def add_property_transaction(request):
 @login_required(login_url="login")
 @rate_limit("50/hour")
 @log_security_event(action="DELETE_PROPERTY_TRANSACTION")
+@staff_member_required
 def delete_property_transaction(request, pk):
     property = get_object_or_404(PropertyTransaction, id=pk)
     property_name = str(property.transaction_id)
@@ -436,6 +454,7 @@ def delete_property_transaction(request, pk):
 
 @log_security_event(action="UNBLOCKING_PIN")
 @login_required(login_url="login")
+@staff_member_required
 def unblock_pin(request, pk):
 
     pin = get_object_or_404(TransactionPIN, user__id=pk)
@@ -448,6 +467,7 @@ def unblock_pin(request, pk):
 @login_required(login_url="login")
 @rate_limit("50/hour")
 @log_security_event(action="VERIFY_APPROVE_PROPERTY_TRANSACTION")
+@staff_member_required
 def verify_property_transaction(request, pk):
     property = get_object_or_404(PropertyTransaction, id=pk)
     property_name = str(property.transaction_id)
@@ -462,3 +482,124 @@ def verify_property_transaction(request, pk):
 
         mg.success(request, f"{property_name} has been successfully Verfied!")
         return redirect('properties')
+
+
+
+# Admin/Staff Views
+
+@staff_member_required
+def admin_investment_list(request):
+    """Admin view to manage all investments"""
+    
+    # Base queryset
+    investments = Investment.objects.all().select_related(
+        'user', 'plan', 'payment_verified_by'
+    ).order_by('-created_at')
+    
+    # Filters
+    status = request.GET.get('status')
+    plan_id = request.GET.get('plan')
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+    search = request.GET.get('q')
+    
+    if status:
+        investments = investments.filter(status=status)
+    if plan_id:
+        investments = investments.filter(plan_id=plan_id)
+    if date_from:
+        investments = investments.filter(created_at__date__gte=date_from)
+    if date_to:
+        investments = investments.filter(created_at__date__lte=date_to)
+    if search:
+        investments = investments.filter(
+            Q(reference_code__icontains=search) |
+            Q(user__email__icontains=search) |
+            Q(user__first_name__icontains=search) |
+            Q(user__last_name__icontains=search)
+        )
+    
+    # Statistics
+    stats = {
+        'total_count': Investment.objects.count(),
+        'total_value': Investment.objects.aggregate(Sum('amount'))['amount__sum'] or 0,
+        'pending_count': Investment.objects.filter(status='pending').count(),
+        'pending_value': Investment.objects.filter(status='pending').aggregate(Sum('amount'))['amount__sum'] or 0,
+        'active_count': Investment.objects.filter(status='active').count(),
+        'active_value': Investment.objects.filter(status='active').aggregate(Sum('amount'))['amount__sum'] or 0,
+    }
+    
+    # Today's payouts
+    today_payouts = InvestmentPayout.objects.filter(
+        scheduled_date__date=date.today(),
+        status='scheduled'
+    ).aggregate(
+        count=Count('id'),
+        total=Sum('total_amount')
+    )
+    
+    # Pagination
+    paginator = Paginator(investments, 25)
+    page = request.GET.get('page')
+    investments = paginator.get_page(page)
+    
+    context = {
+        'investments': investments,
+        'stats': stats,
+        'today_payouts': {
+            'count': today_payouts['count'] or 0,
+            'total': today_payouts['total'] or 0
+        },
+        'status_choices': InvestmentStatus.choices,
+        'plans': InvestmentPlan.objects.filter(is_active=True),
+    }
+    
+    return render(request, 'krysline_admin/admin_list.html', context)
+
+
+@staff_member_required
+def verify_investment(request, investment_id):
+    """Admin verification of investment payment"""
+    investment = get_object_or_404(
+        Investment, 
+        id=investment_id, 
+        status=InvestmentStatus.PENDING
+    )
+
+    if request.method == 'POST':
+        # Check which form was submitted based on URL or hidden field
+        # The template has separate forms for approve and reject
+        
+        # Check if this is a rejection (reject form submits to reject_investment URL)
+        # or approval (approve form submits to verify_investment URL)
+        
+        # Since template posts approve to verify_investment and reject to reject_investment,
+        # we only handle approval here. Rejection is handled by reject_investment view.
+        
+        notes = request.POST.get('verification_notes', '')
+
+        with transaction.atomic():
+            investment.status = InvestmentStatus.ACTIVE
+            investment.payment_verified_by = request.user
+            investment.payment_verified_at = timezone.now()
+            investment.admin_notes = notes
+            investment.save()  # This triggers start_date and maturity_date calculation
+
+            # Update first payout to scheduled
+            first_payout = investment.payouts.first()
+            if first_payout:
+                first_payout.status = InvestmentPayout.PayoutStatus.SCHEDULED
+                first_payout.save()
+
+        mg.success(
+            request, 
+            f"Investment {investment.reference_code} approved and activated."
+        )
+        return redirect('admin_investment_list')
+
+    context = {
+        'investment': investment,
+        # Add any additional context needed by template
+        'status_choices': InvestmentStatus.choices if hasattr(InvestmentStatus, 'choices') else [],
+    }
+    return render(request, 'krysline_admin/verify_investment.html', context)

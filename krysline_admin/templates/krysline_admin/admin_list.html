@@ -1,0 +1,449 @@
+{% extends "krysline_nav.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}KAL - Investment Management - Admin{% endblock %}
+
+{% block content %}
+<div class="container-fluid p-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-end align-items-end mb-4">
+        
+        <div>
+            <a href="" class="btn btn-outline-primary me-2">
+                <i class="bi bi-download me-1"></i>Export Report
+            </a>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#bulkActionModal">
+                <i class="bi bi-check-all me-1"></i>Bulk Actions
+            </button>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <div class="card bg-primary text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="text-white-50">Total Investments</h6>
+                            <h3 class="mb-0">{{ stats.total_count }}</h3>
+                        </div>
+                        <div class="avatar avatar-50 bg-white-opacity rounded">
+                            <i class="bi bi-briefcase h4 text-white"></i>
+                        </div>
+                    </div>
+                    <p class="mb-0 mt-2 small">₦{{ stats.total_value|floatformat:2|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-warning text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="text-white-50">Pending Verification</h6>
+                            <h3 class="mb-0">{{ stats.pending_count }}</h3>
+                        </div>
+                        <div class="avatar avatar-50 bg-white-opacity rounded">
+                            <i class="bi bi-hourglass-split h4 text-white"></i>
+                        </div>
+                    </div>
+                    <p class="mb-0 mt-2 small">₦{{ stats.pending_value|floatformat:2|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="text-white-50">Active</h6>
+                            <h3 class="mb-0">{{ stats.active_count }}</h3>
+                        </div>
+                        <div class="avatar avatar-50 bg-white-opacity rounded">
+                            <i class="bi bi-check-circle h4 text-white"></i>
+                        </div>
+                    </div>
+                    <p class="mb-0 mt-2 small">₦{{ stats.active_value|floatformat:2|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card bg-info text-white">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="text-white-50">Today's Payouts</h6>
+                            <h3 class="mb-0">{{ today_payouts.count }}</h3>
+                        </div>
+                        <div class="avatar avatar-50 bg-white-opacity rounded">
+                            <i class="bi bi-cash-stack h4 text-white"></i>
+                        </div>
+                    </div>
+                    <p class="mb-0 mt-2 small">₦{{ today_payouts.total|floatformat:2|intcomma }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <form method="GET" class="row g-3">
+                <div class="col-md-2">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="">All Status</option>
+                        {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if request.GET.status == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Plan</label>
+                    <select name="plan" class="form-select">
+                        <option value="">All Plans</option>
+                        {% for plan in plans %}
+                        <option value="{{ plan.id }}" {% if request.GET.plan == plan.id|stringformat:"s" %}selected{% endif %}>
+                            {{ plan.get_name_display }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Date From</label>
+                    <input type="date" name="date_from" class="form-control" value="{{ request.GET.date_from }}">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Date To</label>
+                    <input type="date" name="date_to" class="form-control" value="{{ request.GET.date_to }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Search</label>
+                    <input type="text" name="q" class="form-control" placeholder="Reference, email, name..." value="{{ request.GET.q }}">
+                </div>
+                <div class="col-md-1">
+                    <label class="form-label">&nbsp;</label>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search"></i>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Investments Table -->
+    <div class="card">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center">
+                <h6 class="mb-0">Investments ({{ investments.paginator.count }})</h6>
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="selectAll">
+                    <label class="form-check-label" for="selectAll">Select All</label>
+                </div>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th width="40">
+                                <input type="checkbox" class="form-check-input" id="selectAllHeader">
+                            </th>
+                            <th>Reference</th>
+                            <th>Investor</th>
+                            <th>Plan</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Payment Proof</th>
+                            <th>Date</th>
+                            <th>Verified By</th>
+                            <th width="150">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for investment in investments %}
+                        <tr class="{% if investment.status == 'pending' %}table-warning{% endif %}">
+                            <td>
+                                <input type="checkbox" class="form-check-input row-checkbox" 
+                                       name="selected_investments" value="{{ investment.id }}">
+                            </td>
+                            <td>
+                                <span class="font-monospace fw-medium">{{ investment.reference_code }}</span>
+                                <br>
+                                <small class="text-secondary">{{ investment.id|truncatechars:8 }}</small>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar avatar-40 rounded-circle bg-secondary me-2">
+                                        <span class="text-white">{{ investment.user.first_name|first|default:"U" }}</span>
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">{{ investment.user.get_full_name|default:investment.user.username }}</h6>
+                                        <small class="text-secondary">{{ investment.user.email }}</small>
+                                        <br>
+                                        <small class="text-secondary">{{ investment.user.phone|default:"No phone" }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-theme-1">{{ investment.plan.get_name_display }}</span>
+                                <br>
+                                <small class="text-secondary">{{ investment.plan.duration_display }}</small>
+                            </td>
+                            <td>
+                                <h6 class="mb-0">₦{{ investment.amount|floatformat:2|intcomma }}</h6>
+                                <small class="text-success">ROI: {{ investment.plan.roi_percentage }}%</small>
+                            </td>
+                            <td>
+                                <span class="badge 
+                                    {% if investment.status == 'active' %}bg-success
+                                    {% elif investment.status == 'pending' %}bg-warning
+                                    {% elif investment.status == 'completed' %}bg-info
+                                    {% elif investment.status == 'cancelled' %}bg-danger
+                                    {% else %}bg-secondary{% endif %}">
+                                    {{ investment.get_status_display }}
+                                </span>
+                                <br>
+                                {% if investment.status == 'active' %}
+                                <small class="text-secondary">{{ investment.payouts_completed }}/{{ investment.plan.total_payouts }} payouts</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if investment.payment_proof %}
+                                <button class="btn btn-sm btn-outline-primary" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#proofModal{{ investment.id }}">
+                                    <i class="bi bi-eye me-1"></i>View
+                                </button>
+                                {% else %}
+                                <span class="badge bg-secondary">No proof</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small>{{ investment.created_at|date:"d M Y" }}</small>
+                                <br>
+                                <small class="text-secondary">{{ investment.created_at|time:"H:i" }}</small>
+                            </td>
+                            <td>
+                                {% if investment.payment_verified_by %}
+                                <small>{{ investment.payment_verified_by.get_full_name|default:investment.payment_verified_by.username }}</small>
+                                <br>
+                                <small class="text-secondary">{{ investment.payment_verified_at|date:"d M Y" }}</small>
+                                {% else %}
+                                <span class="text-secondary">-</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if investment.status == 'pending' %}
+                                <div class="btn-group">
+                                    <a href="{% url 'verify_investment' investment.id %}" 
+                                       class="btn btn-sm btn-success">
+                                        <i class="bi bi-check-lg"></i>
+                                    </a>
+                                    <button type="button" 
+                                            class="btn btn-sm btn-danger"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#rejectModal{{ investment.id }}">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </div>
+                                {% else %}
+                                <a href="" 
+                                   class="btn btn-sm btn-outline-primary">
+                                    <i class="bi bi-eye me-1"></i>View
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        <!-- Payment Proof Modal -->
+                        {% if investment.payment_proof %}
+                        <div class="modal fade" id="proofModal{{ investment.id }}" tabindex="-1">
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Payment Proof - {{ investment.reference_code }}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                {% if investment.payment_proof.url|lower|slice:"-4:" == '.pdf' %}
+                                                <iframe src="{{ investment.payment_proof.url }}" width="100%" height="500px"></iframe>
+                                                {% else %}
+                                                <img src="{{ investment.payment_proof.url }}" class="img-fluid rounded" alt="Payment Proof">
+                                                {% endif %}
+                                            </div>
+                                            <div class="col-md-4">
+                                                <h6>Investment Details</h6>
+                                                <p><strong>Amount:</strong> ₦{{ investment.amount|floatformat:2|intcomma }}</p>
+                                                <p><strong>Investor:</strong> {{ investment.user.get_full_name }}</p>
+                                                <p><strong>Date:</strong> {{ investment.created_at|date:"d M Y H:i" }}</p>
+                                                {% if investment.admin_notes %}
+                                                <hr>
+                                                <h6>Notes</h6>
+                                                <p class="text-secondary">{{ investment.admin_notes|linebreaks }}</p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="{{ investment.payment_proof.url }}" target="_blank" class="btn btn-outline-primary">
+                                            <i class="bi bi-download me-1"></i>Download
+                                        </a>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Reject Modal -->
+                        <div class="modal fade" id="rejectModal{{ investment.id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <form method="POST" action="">
+                                        {% csrf_token %}
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Reject Investment</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Are you sure you want to reject this investment?</p>
+                                            <p><strong>Reference:</strong> {{ investment.reference_code }}</p>
+                                            <p><strong>Amount:</strong> ₦{{ investment.amount|floatformat:2|intcomma }}</p>
+                                            <div class="mb-3">
+                                                <label class="form-label">Rejection Reason (required)</label>
+                                                <textarea name="rejection_reason" class="form-control" rows="3" required></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-danger">Reject Investment</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% empty %}
+                        <tr>
+                            <td colspan="10" class="text-center py-5">
+                                <i class="bi bi-inbox h1 text-secondary mb-3 d-block"></i>
+                                <h5>No investments found</h5>
+                                <p class="text-secondary">Try adjusting your filters</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Pagination -->
+        {% if investments.has_other_pages %}
+        <div class="card-footer">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if investments.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ investments.previous_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Previous</a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for num in investments.paginator.page_range %}
+                    {% if investments.number == num %}
+                    <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                    {% elif num > investments.number|add:'-3' and num < investments.number|add:'3' %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+                    
+                    {% if investments.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ investments.next_page_number }}{% for key, value in request.GET.items %}{% if key != 'page' %}&{{ key }}={{ value }}{% endif %}{% endfor %}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Bulk Action Modal -->
+<div class="modal fade" id="bulkActionModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="" id="bulkActionForm">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Bulk Actions</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="selectedCount">0 investments selected</p>
+                    <input type="hidden" name="selected_ids" id="selectedIds">
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Action</label>
+                        <select name="action" class="form-select" required>
+                            <option value="">Select action...</option>
+                            <option value="approve">Approve Selected</option>
+                            <option value="reject">Reject Selected</option>
+                            <option value="export">Export to CSV</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3" id="bulkNotesContainer">
+                        <label class="form-label">Notes (for rejections)</label>
+                        <textarea name="bulk_notes" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Apply Action</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Select all checkbox
+    document.getElementById('selectAllHeader').addEventListener('change', function() {
+        const checkboxes = document.querySelectorAll('.row-checkbox');
+        checkboxes.forEach(cb => cb.checked = this.checked);
+        updateSelectedCount();
+    });
+    
+    // Individual checkboxes
+    document.querySelectorAll('.row-checkbox').forEach(cb => {
+        cb.addEventListener('change', updateSelectedCount);
+    });
+    
+    function updateSelectedCount() {
+        const selected = document.querySelectorAll('.row-checkbox:checked');
+        document.getElementById('selectedCount').textContent = selected.length + ' investments selected';
+        
+        const ids = Array.from(selected).map(cb => cb.value).join(',');
+        document.getElementById('selectedIds').value = ids;
+    }
+    
+    // Show/hide notes based on action
+    document.querySelector('select[name="action"]').addEventListener('change', function() {
+        const notesContainer = document.getElementById('bulkNotesContainer');
+        notesContainer.style.display = this.value === 'reject' ? 'block' : 'none';
+    });
+</script>
+{% endblock %}

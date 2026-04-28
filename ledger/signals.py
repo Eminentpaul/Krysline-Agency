@@ -3,7 +3,8 @@ from django.dispatch import receiver
 from django.db import transaction
 from .models import FinancialEntry, Expense
 from affiliation.models import Affiliate, PropertyTransaction, AffiliatePackage
-from users.models import Withdrawal, Notification
+from users.models import Withdrawal, Notification, Transaction
+from base.models import Investment, InvestmentPayout, InvestmentStatus
 
 
 @receiver(post_save, sender=Affiliate)
@@ -25,6 +26,34 @@ def track_package_inflow(sender, instance, created, **kwargs):
             description=f"Revenue from {instance.package.name} package purchase by {instance.user.get_full_name()}",
             reference_id=ref
         )
+
+
+@receiver(post_save, sender=Investment)
+def track_investment_inflow(sender, instance, created, **kwargs):
+    """
+    AUTOMATIC INFLOW: Triggers when an Investment is activated 
+    after paying for a Investment.
+    """
+    if instance.status == InvestmentStatus.ACTIVE:
+        ref = f"INVEST-{str(instance.user.username).capitalize()}-{instance.plan.name}"
+        with transaction.atomic():
+            FinancialEntry.objects.create(
+                actor=instance.user,
+                entry_type='inflow',
+                category='investment',
+                amount=instance.amount,
+                description=f"Investment from {instance.plan.name} Invested by {instance.user.get_full_name()}",
+                reference_id=ref
+            )
+
+            # Create Transaction
+            Transaction.objects.create(
+                    user=instance.user,
+                    amount=instance.amount,
+                    transaction_type='investment',
+                    description=f"Investment for {instance.plan.name})"
+                )
+
 
 
 

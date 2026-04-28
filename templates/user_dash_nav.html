@@ -338,22 +338,42 @@
                                     </div>
                                 </a>
                             </div>
-                            <div>
-                                <a class="dropdown-item" href="{% url "referral_list" %}">
-                                    <i data-feather="dollar-sign" class="avatar avatar-18 me-1"></i> Earning
-                                </a>
-                            </div>
-                            <div>
-                                <a class="dropdown-item" href="{% url "choose_package" %}">
-                                    <div class="row">
-                                        <div class="col"><i data-feather="gift" class="avatar avatar-18 me-1"></i> Subscription</div>
-                                        <div class="col-auto">
-                                            <p class="small text-success">Upgrade</p>
+                            {% if user.user_type == "investor" %}
+                                {% comment %} <div>
+                                    <a class="dropdown-item" href="{% url "referral_list" %}">
+                                        <i data-feather="dollar-sign" class="avatar avatar-18 me-1"></i> Earning
+                                    </a>
+                                </div> {% endcomment %}
+                                <div>
+                                    <a class="dropdown-item" href="{% url "my_investments" %}">
+                                        
+                                        <div class="row">
+                                            <div class="col"><i data-feather="gift" class="avatar avatar-18 me-1"></i> My Investement</div>
+                                            <div class="col-auto">
+                                                <p class="small text-success">Upgrade</p>
+                                            </div>
+                                            <div class="col-auto"><span class="arrow bi bi-chevron-right"></span></div>
                                         </div>
-                                        <div class="col-auto"><span class="arrow bi bi-chevron-right"></span></div>
-                                    </div>
-                                </a>
-                            </div>
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div>
+                                    <a class="dropdown-item" href="{% url "referral_list" %}">
+                                        <i data-feather="dollar-sign" class="avatar avatar-18 me-1"></i> Earning
+                                    </a>
+                                </div>
+                                <div>
+                                    <a class="dropdown-item" href="{% url "choose_package" %}">
+                                        <div class="row">
+                                            <div class="col"><i data-feather="gift" class="avatar avatar-18 me-1"></i> Subscription</div>
+                                            <div class="col-auto">
+                                                <p class="small text-success">Upgrade</p>
+                                            </div>
+                                            <div class="col-auto"><span class="arrow bi bi-chevron-right"></span></div>
+                                        </div>
+                                    </a>
+                                </div>
+                            {% endif %}
                             {% comment %} <div class="dropdown open-left dropdown-dontclose">
                                 <a class="dropdown-item" data-bs-toggle="dropdown" aria-expanded="false" role="button">
                                     <div class="row">
@@ -638,20 +658,56 @@
                         <span class="menu-name">Withdraw Funds</span>
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a href="{% url "choose_package" %}" class="nav-link">
-                        <i class="menu-icon bi bi-gift"></i>
-                        <span class="menu-name">Subscription Plan</span>
-                    </a>
-                </li> 
-                {% if user.affiliate_record.package.price > 0 %}
+                {% if user.user_type == "investor" %}
+
                     <li class="nav-item">
-                        <a href="{% url "courses" %}" class="nav-link">
-                            <i class="menu-icon bi bi-collection-fill"></i>
-                            <span class="menu-name">Courses</span>
+                        <a href="{% url "my_investments" %}" class="nav-link">
+                            <i class="menu-icon bi bi-gift"></i>
+                            <span class="menu-name">My Investment Plan</span>
                         </a>
-                    </li>
-                {% endif %} 
+                    </li> 
+
+                    <li class="nav-item">
+                        <a href="{% url "investment_plans" %}" class="nav-link">
+                            <i class="menu-icon bi bi-gift"></i>
+                            <span class="menu-name">Investment Plans</span>
+                        </a>
+                    </li> 
+
+                    <ul class="nav flex-column menu-active-line">
+                <!-- bottom sidebar menu -->
+               
+                {% comment %} <li class="nav-item">
+                    <a href="{% url "referral_list" %}" class="nav-link">
+                        <i class="menu-icon" data-feather="users"></i>
+                        <span class="menu-name">Referral</span>
+                    </a>
+                </li> {% endcomment %}
+                <li class="nav-item">
+                    <a href="{% url "profile_update" %}" class="nav-link">
+                        <i class="menu-icon" data-feather="settings"></i>
+                        <span class="menu-name">Settings</span>
+                    </a>
+                </li>
+            </ul>
+
+
+                {% else %}
+                    <li class="nav-item">
+                        <a href="{% url "choose_package" %}" class="nav-link">
+                            <i class="menu-icon bi bi-gift"></i>
+                            <span class="menu-name">Subscription Plan</span>
+                        </a>
+                    </li> 
+                    {% if user.affiliate_record.package.price > 0 %}
+                        <li class="nav-item">
+                            <a href="{% url "courses" %}" class="nav-link">
+                                <i class="menu-icon bi bi-collection-fill"></i>
+                                <span class="menu-name">Courses</span>
+                            </a>
+                        </li>
+                    {% endif %} 
+                
                 
             <!-- User account -->
             <ul class="nav flex-column menu-active-line">
@@ -670,6 +726,7 @@
                     </a>
                 </li>
             </ul>
+            {% endif %}
         {% endif %}
 
     </div>

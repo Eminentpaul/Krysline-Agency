@@ -201,6 +201,7 @@ def register(request):
             except Exception as e:
                 logger.error("registration_error", error=str(e))
                 form.add_error(None, "An internal error occurred. Please try again.")
+                mg.error(request, "An internal error occurred. Please try again.")
         else:
             errors = form.errors.get_json_data(escape_html=True)
             for error in errors:

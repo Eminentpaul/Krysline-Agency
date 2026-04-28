@@ -15,7 +15,7 @@ class TransactionAdmin(admin.ModelAdmin):
     
     @admin.display(description='Amount')
     def amount_display(self, obj):
-        color = "green" if obj.transaction_type in ['deposit', 'commission', 'package_purchase'] else "red"
+        color = "green" if obj.transaction_type in ['deposit', 'investment', 'commission', 'package_purchase'] else "red"
         
         # 1. Format the number separately first
         formatted_amount = "{:,.2f}".format(obj.amount)

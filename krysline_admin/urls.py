@@ -20,4 +20,6 @@ urlpatterns = [
     path('Property/unerified/Transactions/', views.unverified_property, name="unverified_property"),
     path('delete/<str:pk>/property/transaction/', views.delete_property_transaction, name='delete_property'), 
     path('verify/<str:pk>/property/transaction/', views.verify_property_transaction, name='verify_property'),  
+    path('investments/list/', views.admin_investment_list, name="admin_investment_list"),
+    path('investments/<str:investment_id>/verify/', views.verify_investment, name='verify_investment'),
 ]
