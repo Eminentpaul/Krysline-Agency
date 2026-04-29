@@ -1,0 +1,402 @@
+{% extends "krysline_nav.html" %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Investment {{ investment.reference_code }} - Admin{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-1">
+                    <li class="breadcrumb-item"><a href="{% url 'admin_investment_list' %}">Investments</a></li>
+                    <li class="breadcrumb-item active">{{ investment.reference_code }}</li>
+                </ol>
+            </nav>
+            <h4 class="mb-0">Investment Details</h4>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'admin_investment_list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left me-1"></i>Back
+            </a>
+            {% if investment.status == 'pending' %}
+            <a href="{% url 'verify_investment' investment.id %}" class="btn btn-success" >
+                <i class="bi bi-check-lg me-1"></i>Verify
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Left Column: Investment Overview -->
+        <div class="col-lg-8">
+            <!-- Status Banner -->
+            <div class="alert alert-{% if investment.status == 'active' %}success{% elif investment.status == 'pending' %}warning{% elif investment.status == 'completed' %}info{% elif investment.status == 'cancelled' %}danger{% else %}secondary{% endif %} d-flex align-items-center mb-4">
+                <i class="bi bi-{% if investment.status == 'active' %}check-circle{% elif investment.status == 'pending' %}hourglass-split{% elif investment.status == 'completed' %}trophy{% elif investment.status == 'cancelled' %}x-circle{% else %}question-circle{% endif %} fs-4 me-3"></i>
+                <div>
+                    <strong class="text-uppercase">{{ investment.get_status_display }}</strong>
+                    {% if investment.status == 'active' %}
+                    <span class="mx-2">|</span>
+                    <span>{{ investment.payouts_completed }}/{{ investment.plan.total_payouts }} payouts completed</span>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Investment Summary Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-briefcase me-2"></i>Investment Summary</h6>
+                </div>
+                <div class="card-body">
+                    <div class="row g-4">
+                        <div class="col-md-4 text-center border-end">
+                            <p class="text-secondary mb-1">Principal Amount</p>
+                            <h3 class="mb-0">₦{{ investment.amount|floatformat:2|intcomma }}</h3>
+                        </div>
+                        <div class="col-md-4 text-center border-end">
+                            <p class="text-secondary mb-1">Expected Returns</p>
+                            <h3 class="mb-0 text-success">₦{{ investment.total_expected_return|floatformat:2|intcomma }}</h3>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <p class="text-secondary mb-1">Total Payout</p>
+                            <h3 class="mb-0 text-primary">₦{{ investment.total_paid_out|floatformat:2|intcomma }}</h3>
+                        </div>
+                    </div>
+                    <hr class="my-4">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-sm table-borderless mb-0">
+                                <tr>
+                                    <td class="text-secondary" width="40%">Reference</td>
+                                    <td class="font-monospace fw-medium">{{ investment.reference_code }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-secondary">Investment Plan</td>
+                                    <td>
+                                        <span class="badge bg-theme-1">{{ investment.plan.get_name_display }}</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-secondary">Duration</td>
+                                    <td>{{ investment.plan.duration_display }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-secondary">ROI Rate</td>
+                                    <td class="text-success">+{{ investment.plan.roi_percentage }}%</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-sm table-borderless mb-0">
+                                <tr>
+                                    <td class="text-secondary" width="40%">Start Date</td>
+                                    <td>
+                                        {% if investment.start_date %}
+                                        {{ investment.start_date|date:"d M Y" }}
+                                        {% else %}
+                                        <span class="text-secondary">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-secondary">Maturity Date</td>
+                                    <td>
+                                        {% if investment.maturity_date %}
+                                        {{ investment.maturity_date|date:"d M Y" }}
+                                        {% else %}
+                                        <span class="text-secondary">—</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-secondary">Created</td>
+                                    <td>{{ investment.created_at|date:"d M Y H:i" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-secondary">Last Updated</td>
+                                    <td>{{ investment.updated_at|date:"d M Y H:i" }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payout Schedule -->
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0"><i class="bi bi-calendar-check me-2"></i>Payout Schedule</h6>
+                    <span class="badge bg-secondary">{{ investment.payouts.count }} scheduled</span>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0 align-middle">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Scheduled Date</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Paid At</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payout in payouts %}
+                                <tr class="{% if payout.status == 'completed' %}table-success{% elif payout.status == 'processing' %}table-info{% elif payout.status == 'overdue' %}table-danger{% endif %}">
+                                    <td>{{ forloop.counter }}</td>
+                                    <td>{{ payout.scheduled_date|date:"d M Y" }}</td>
+                                    <td>₦{{ payout.principal_amount|floatformat:2|intcomma }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if payout.status == 'completed' %}bg-success
+                                            {% elif payout.status == 'scheduled' %}bg-secondary
+                                            {% elif payout.status == 'processing' %}bg-info
+                                            {% elif payout.status == 'overdue' %}bg-danger
+                                            {% else %}bg-warning{% endif %}">
+                                            {{ payout.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if payout.processed_date %}
+                                        {{ payout.processed_date|date:"d M Y H:i" }}
+                                        {% else %}
+                                        <span class="text-secondary">—</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if payout.status == 'scheduled' or payout.status == 'overdue' %}
+                                        <form method="POST" action="{% url "complete_payout" payout.id %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-success">
+                                                <i class="bi bi-check-lg"></i> Pay
+                                            </button>
+                                        </form>
+                                        {% elif payout.status == 'processing' %}
+                                        <span class="text-info small"><i class="bi bi-clock me-1"></i>Processing</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-secondary">
+                                        <i class="bi bi-calendar-x h4 d-block mb-2"></i>
+                                        No payouts scheduled
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Proof -->
+            {% if investment.payment_proof %}
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h6 class="mb-0"><i class="bi bi-receipt me-2"></i>Payment Proof</h6>
+                    <div>
+                        <a href="{{ investment.payment_proof.url }}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-fullscreen me-1"></i>View
+                        </a>
+                        <a href="{{ investment.payment_proof.url }}" download class="btn btn-sm btn-outline-secondary ms-1">
+                            <i class="bi bi-download"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body text-center bg-light">
+                    {% if investment.payment_proof.url|lower|slice:"-4:" == '.pdf' %}
+                    <embed src="{{ investment.payment_proof.url }}" type="application/pdf" width="100%" height="400px">
+                    {% else %}
+                    <img src="{{ investment.payment_proof.url }}" class="img-fluid rounded" style="max-height: 400px;" alt="Payment Proof">
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Admin Notes -->
+            {% if investment.admin_notes %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-journal-text me-2"></i>Admin Notes</h6>
+                </div>
+                <div class="card-body">
+                    <div class="bg-light p-3 rounded">
+                        <p class="mb-0 text-secondary">{{ investment.admin_notes|linebreaks }}</p>
+                    </div>
+                    {% if investment.payment_verified_by %}
+                    <small class="text-secondary mt-2 d-block">
+                        — {{ investment.payment_verified_by.get_full_name|default:investment.payment_verified_by.username }}, 
+                        {{ investment.payment_verified_at|date:"d M Y H:i" }}
+                    </small>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Right Column: Investor Profile & Quick Stats -->
+        <div class="col-lg-4">
+            <!-- Investor Card -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="mb-0"><i class="bi bi-person me-2"></i>Investor</h6>
+                </div>
+                <div class="card-body text-center">
+                    <div class="avatar avatar-80 rounded-circle bg-primary mx-auto mb-3">
+                        <span class="text-white h2 mb-0">{{ investment.user.first_name|first|default:"U" }}</span>
+                    </div>
+                    <h5 class="mb-1">{{ investment.user.get_full_name|default:investment.user.username }}</h5>
+                    <p class="text-secondary mb-3">{{ investment.user.email }}</p>
+                    
+                    <div class="d-flex justify-content-center gap-3 mb-3">
+                        <div class="text-center">
+                            <h6 class="mb-0">{{ user_investment_count }}</h6>
+                            <small class="text-secondary">Investments</small>
+                        </div>
+                        <div class="vr"></div>
+                        <div class="text-center">
+                            <h6 class="mb-0">{{ user_total_invested|floatformat:0|intcomma }}</h6>
+                            <small class="text-secondary">Total (₦)</small>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    <p class="mb-1"><i class="bi bi-telephone me-2 text-secondary"></i>{{ investment.user.phone|default:"Not provided" }}</p>
+                    <p class="mb-0"><i class="bi bi-calendar me-2 text-secondary"></i>Joined {{ investment.user.date_joined|date:"M Y" }}</p>
+                </div>
+                <div class="card-footer">
+                    <a href="" class="btn btn-outline-primary w-100">
+                        <i class="bi bi-person-lines-fill me-1"></i>View Full Profile
+                    </a>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card mb-4 bg-primary text-white">
+                <div class="card-body">
+                    <h6 class="text-white-50 mb-3">Investment Progress</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span>Completed</span>
+                        <span>{{ investment.payouts_completed }} / {{ investment.plan.total_payouts }}</span>
+                    </div>
+                    <div class="progress mb-3" style="height: 8px;">
+                        <div class="progress-bar bg-white" 
+                             role="progressbar" 
+                             style="width: {{ payout_progress_percentage }}%">
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between text-white-50 small">
+                        <span>Next Payout</span>
+                        <span>
+                            {% if next_payout %}
+                            {{ next_payout.due_date|date:"d M Y" }}
+                            {% else %}
+                            Completed
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Verification Info -->
+            {% if investment.payment_verified_by %}
+            <div class="card mb-4 border-success">
+                <div class="card-header bg-success text-white">
+                    <h6 class="mb-0"><i class="bi bi-shield-check me-2"></i>Verification</h6>
+                </div>
+                <div class="card-body">
+                    <p class="mb-1"><strong>Verified By</strong></p>
+                    <p class="text-secondary">{{ investment.payment_verified_by.get_full_name|default:investment.payment_verified_by.username }}</p>
+                    
+                    <p class="mb-1"><strong>Verified At</strong></p>
+                    <p class="text-secondary">{{ investment.payment_verified_at|date:"d M Y H:i" }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Danger Zone -->
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h6 class="mb-0"><i class="bi bi-exclamation-triangle me-2"></i>Danger Zone</h6>
+                </div>
+                <div class="card-body">
+                    <p class="small text-secondary mb-3">Irreversible actions for this investment.</p>
+                    {% if investment.status == 'active' %}
+                    <button class="btn btn-outline-danger w-100 mb-2" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                        <i class="bi bi-x-octagon me-1"></i>Cancel Investment
+                    </button>
+                    {% endif %}
+                    <button class="btn btn-outline-secondary w-100" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                        <i class="bi bi-trash me-1"></i>Delete Record
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cancel Investment Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{% url "reject_investment" investment.id %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title">Cancel Investment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        This will stop all pending payouts and mark the investment as cancelled.
+                    </div>
+                    <p><strong>Reference:</strong> {{ investment.reference_code }}</p>
+                    <p><strong>Amount:</strong> ₦{{ investment.amount|floatformat:2|intcomma }}</p>
+                    <div class="mb-3">
+                        <label class="form-label">Reason for Cancellation</label>
+                        <textarea name="rejection_reason" class="form-control" rows="3" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Cancel Investment</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Record Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form method="POST" action="{% url "admin_investment_delete" investment.id %}">
+                {% csrf_token %}
+                <div class="modal-header">
+                    <h5 class="modal-title text-danger">Delete Investment Record</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger">
+                        <i class="bi bi-exclamation-octagon-fill me-2"></i>
+                        This action cannot be undone. All associated payouts will also be deleted.
+                    </div>
+                    <p>Are you sure you want to permanently delete investment <strong>{{ investment.reference_code }}</strong>?</p>
+                    <div class="mb-3">
+                        <label class="form-label">Type <strong>DELETE</strong> to confirm</label>
+                        <input type="text" name="confirm_delete" class="form-control" required pattern="DELETE">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger">Permanently Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from authentication.models import User, UserProfile
 from affiliation.models import AffiliatePackage, Affiliate, PropertyTransaction
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.http import require_POST
 from security.decorators import *
 from users.models import Withdrawal, Transaction
 import base64
@@ -265,10 +266,10 @@ def edit_withdraw(request, trans_id):
     withdrawal = get_object_or_404(Withdrawal, transaction_id=trans_id)
     form = WithdrawUpdateForm(instance=withdrawal)
 
-    bname = '999992-OPay Digital Services Limited (OPay)'
-    accnumber = '8143122946'
+    # bname = '999992-OPay Digital Services Limited (OPay)'
+    # accnumber = '8143122946'
 
-    initiate_transfer(accountNumber=accnumber, bankName=bname) 
+    # initiate_transfer(accountNumber=accnumber, bankName=bname) 
 
     # code = get_bank_code(bank_name=bname)
     # print(code)
@@ -603,3 +604,336 @@ def verify_investment(request, investment_id):
         'status_choices': InvestmentStatus.choices if hasattr(InvestmentStatus, 'choices') else [],
     }
     return render(request, 'krysline_admin/verify_investment.html', context)
+
+
+@user_passes_test(lambda u: u.is_staff)
+def reject_investment(request, investment_id):
+    """Handle investment rejection"""
+    investment = get_object_or_404(
+        Investment, 
+        id=investment_id
+    )
+
+    if request.method == 'POST':
+        reason = request.POST.get('rejection_reason', '')
+        
+        if not reason:
+            mg.error(request, "Rejection reason is required.")
+            # return redirect('verify_investment', investment_id=investment_id)
+
+        investment.status = InvestmentStatus.CANCELLED
+        investment.admin_notes = reason
+        investment.save()
+        
+        mg.info(
+            request, 
+            f"Investment {investment.reference_code} rejected."
+        )
+        return redirect('admin_investment_list')
+
+    # GET request - show confirmation page (optional, template uses modal)
+    return redirect('verify_investment', investment_id=investment_id)
+
+
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_investment_detail(request, investment_id):
+    """Admin view for a specific user investment"""
+    investment = get_object_or_404(
+        Investment.objects.select_related('user', 'plan', 'payment_verified_by')
+                          .prefetch_related('payouts'),
+        id=investment_id
+    )
+
+    # Get payouts ordered by due date
+    payouts = investment.payouts.all().order_by('processed_date')
+
+    # Calculate payout progress percentage
+    total_payouts = investment.plan.total_payouts
+    payouts_completed = investment.payouts.filter(status='completed').count()
+    payout_progress_percentage = (
+        (payouts_completed / total_payouts * 100) if total_payouts else 0
+    )
+
+
+    # Get next upcoming payout
+    next_payout = investment.payouts.filter(
+        status__in=['scheduled', 'overdue']
+    ).order_by('processed_date').first()
+
+
+    # User investment statistics
+    user_investment_count = Investment.objects.filter(user=investment.user).count()
+    user_total_invested = (
+        Investment.objects.filter(user=investment.user)
+        .aggregate(total=Sum('amount'))['total'] or 0
+    )
+
+    # Calculate expected returns and total payout
+    expected_returns = (
+        investment.amount * (investment.plan.roi_percentage / 100)
+    )
+    total_payout = 0
+
+    context = {
+        'investment': investment,
+        'payouts': payouts,
+        'payout_progress_percentage': round(payout_progress_percentage, 1),
+        'next_payout': next_payout,
+        'user_investment_count': user_investment_count,
+        'user_total_invested': user_total_invested,
+        'expected_returns': expected_returns,
+        'total_payout': total_payout,
+    }
+    return render(request, 'krysline_admin/investment_detail.html', context)
+
+
+
+
+@user_passes_test(lambda u: u.is_staff)
+def complete_payout(request, payout_id):
+    """Admin marks a payout as completed/paid"""
+    payout = get_object_or_404(
+        InvestmentPayout,
+        id=payout_id,
+        status__in=['scheduled', 'overdue', 'processing']
+    )
+    
+    investment = payout.investment
+    user = investment.user
+
+    if request.method == 'POST':
+        with transaction.atomic():
+
+            # Update payout
+            payout.status = 'completed'
+            payout.processed_date = timezone.now()
+            payout.payment_reference = f'AUTO-{timezone.now().strftime("%Y%m%d%H%M%S")}-{payout.id}'
+            payout.save()
+            
+            # Update investment totals
+            investment.total_paid_out += payout.total_amount
+            investment.payouts_completed += 1
+            investment.save(update_fields=['total_paid_out', 'payouts_completed'])
+
+            # Update user account balance for withdrawing 
+            user.profile.balance += payout.total_amount
+            user.profile.save()
+
+            # Update payout status
+            # payout.status = InvestmentPayout.PayoutStatus.COMPLETED
+            # payout.processed_date = timezone.now()
+            # payout.processed_by = request.user
+            # # payout.total_amount = 
+            # payout.save()
+
+            # Update investment completed payout count
+            completed_count = investment.payouts.filter(
+                status=InvestmentPayout.PayoutStatus.COMPLETED
+            ).count()
+            investment.payouts_completed = completed_count
+
+            # Check if all payouts are now completed
+            if completed_count >= investment.plan.total_payouts:
+                investment.status = InvestmentStatus.COMPLETED
+                investment.completed_at = timezone.now()
+                investment.processed_date = timezone.now()
+
+                mg.success(
+                    request, 
+                    f"Final payout processed. Investment {investment.reference_code} is now completed."
+                )
+            else:
+                mg.success(
+                    request, 
+                    f"Payout #{payout.payout_number} of ₦{payout.principal_amount:,.2f} marked as paid."
+                )
+
+            investment.save()
+
+        return redirect('admin_investment_detail', investment_id=investment.id)
+
+    # GET request - redirect back to detail
+    return redirect('admin_investment_detail', investment_id=investment.id)
+
+
+
+
+
+
+@user_passes_test(lambda u: u.is_staff)
+def admin_investment_delete(request, investment_id):
+    investment = get_object_or_404(Investment, id=investment_id)
+    investment.delete()
+
+    mg.info(request, "Investment Record has been deleted successfully")
+    return redirect(admin_investment_list)
+
+
+
+
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff)
+def admin_plan_list(request):
+    """List all investment plans with statistics"""
+    # Filter by status if provided
+    status_filter = request.GET.get('status')
+    plans_qs = InvestmentPlan.objects.annotate(
+        investment_count=Count('investments'),
+        total_invested=Sum('investments__amount', filter=Q(investments__status__in=['active', 'completed']))
+    )
+    
+    if status_filter == 'active':
+        plans_qs = plans_qs.filter(is_active=True)
+    elif status_filter == 'inactive':
+        plans_qs = plans_qs.filter(is_active=False)
+    
+    plans = plans_qs.order_by('display_order', 'name')
+    
+    # Calculate statistics
+    stats = {
+        'total_plans': InvestmentPlan.objects.count(),
+        'active_plans': InvestmentPlan.objects.filter(is_active=True).count(),
+        'total_invested': Investment.objects.filter(
+            status__in=['active', 'completed']
+        ).aggregate(total=Sum('amount'))['total'] or 0,
+        'active_investors': Investment.objects.filter(
+            status='active'
+        ).values('user').distinct().count(),
+    }
+    
+    context = {
+        'plans': plans,
+        'stats': stats,
+    }
+    return render(request, 'krysline_admin/investment_plans.html', context)
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff)
+def create_plan(request):
+    """Create a new investment plan"""
+    if request.method == 'POST':
+        try:
+            plan = InvestmentPlan.objects.create(
+                name=request.POST.get('name', '').strip(),
+                display_name=request.POST.get('display_name', '').strip() or None,
+                description=request.POST.get('description', '').strip(),
+                duration_days=int(request.POST.get('duration_days', 30)),
+                roi_percentage=float(request.POST.get('roi_percentage', 0)),
+                total_payouts=int(request.POST.get('total_payouts', 1)),
+                min_amount=float(request.POST.get('min_amount', 0)),
+                max_amount=float(request.POST.get('max_amount')) if request.POST.get('max_amount') else None,
+                payout_interval_days=int(request.POST.get('payout_interval_days', 30)),
+                is_active=request.POST.get('is_active') == '1',
+            )
+            mg.success(request, f"Plan '{plan.name}' created successfully.")
+        except (ValueError, TypeError) as e:
+            mg.error(request, f"Error creating plan: {str(e)}")
+        
+        return redirect('admin_plan_list')
+    
+    return redirect('admin_plan_list')
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff)
+def update_plan(request, plan_id):
+    """Update an existing investment plan"""
+    plan = get_object_or_404(InvestmentPlan, id=plan_id)
+    
+    if request.method == 'POST':
+        try:
+            plan.name = request.POST.get('name', plan.name).strip()
+            plan.duration_months = int(request.POST.get('duration_days', plan.duration_months))
+            plan.roi_percentage = float(request.POST.get('roi_percentage', plan.roi_percentage))
+            plan.total_payouts = int(request.POST.get('total_payouts', plan.total_payouts))
+            plan.min_amount = float(request.POST.get('min_amount', plan.min_amount))
+            plan.max_amount = float(request.POST.get('max_amount')) if request.POST.get('max_amount') else None
+            plan.payout_frequency_months = int(request.POST.get('payout_interval_days', plan.payout_frequency_months))
+            plan.is_active = request.POST.get('is_active') == '1'
+            plan.save()
+            
+            mg.success(request, f"Plan '{plan.name}' updated successfully.")
+        except (ValueError, TypeError) as e:
+            mg.error(request, f"Error updating plan: {str(e)}")
+    
+    return redirect('admin_plan_list')
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff)
+@require_POST
+def toggle_plan_status(request, plan_id):
+    """AJAX toggle for plan active/inactive status"""
+    plan = get_object_or_404(InvestmentPlan, id=plan_id)
+    
+    try:
+        data = json.loads(request.body)
+        plan.is_active = data.get('is_active', not plan.is_active)
+        plan.save()
+        return JsonResponse({
+            'success': True,
+            'is_active': plan.is_active,
+            'message': f"Plan '{plan.name}' is now {'active' if plan.is_active else 'inactive'}."
+        })
+    except (json.JSONDecodeError, ValueError) as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=400)
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff)
+def delete_plan(request, plan_id):
+    """Delete an investment plan (only if no investments exist)"""
+    plan = get_object_or_404(InvestmentPlan, id=plan_id)
+    
+    if request.method == 'POST':
+        # Check for existing investments
+        investment_count = plan.investments.count()
+        
+        if investment_count > 0:
+            mg.error(
+                request, 
+                f"Cannot delete '{plan.name}'. It has {investment_count} investment(s) associated with it."
+            )
+            return redirect('admin_plan_list')
+        
+        plan_name = plan.name
+        plan.delete()
+        mg.success(request, f"Plan '{plan_name}' deleted successfully.")
+    
+    return redirect('admin_plan_list')
+
+
+@login_required(login_url='login')
+@user_passes_test(lambda u: u.is_staff)
+def admin_plan_detail(request, plan_id):
+    """Detailed view of a specific plan with all related investments"""
+    plan = get_object_or_404(
+        InvestmentPlan.objects.annotate(
+            investment_count=Count('investments'),
+            total_invested=Sum('investments__amount', filter=Q(investments__status__in=['active', 'completed']))
+        ),
+        id=plan_id
+    )
+    
+    # Get investments using this plan
+    investments = plan.investments.select_related('user').order_by('-created_at')
+    
+    # Status breakdown
+    status_breakdown = plan.investments.values('status').annotate(
+        count=Count('id'),
+        total=Sum('amount')
+    ).order_by('status')
+    
+    context = {
+        'plan': plan,
+        'investments': investments,
+        'status_breakdown': status_breakdown,
+    }
+    return render(request, 'investments/admin_plan_detail.html', context)

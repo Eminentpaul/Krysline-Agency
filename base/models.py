@@ -31,7 +31,7 @@ class InvestmentPlan(models.Model):
 
     # Payout structure
     payout_frequency_months = models.PositiveIntegerField(
-        help_text="Months between payouts (e.g., 4 for every 4 months)"
+        help_text="Months between payouts (e.g., 4 for every 4 months or 3 for every 3 months)"
     )
     total_payouts = models.PositiveIntegerField(
         help_text="Total number of payouts over the duration"
@@ -117,6 +117,28 @@ class InvestmentPlan(models.Model):
         principal_per_payout = investment_amount / self.total_payouts
         return_per_payout = total_return / self.total_payouts
         return principal_per_payout + return_per_payout
+    
+    # @property
+    # def duration_days(self):
+    #     """Human-readable duration"""
+    #     if self.duration_days >= 365:
+    #         years = self.duration_days // 365
+    #         return f"{years} year{'s' if years > 1 else ''}"
+    #     elif self.duration_days >= 30:
+    #         months = self.duration_days // 30
+    #         return f"{months} month{'s' if months > 1 else ''}"
+    #     elif self.duration_days >= 7:
+    #         weeks = self.duration_days // 7
+    #         return f"{weeks} week{'s' if weeks > 1 else ''}"
+    #     return f"{self.duration_days} day{'s' if self.duration_days > 1 else ''}"
+    
+    @property
+    def roi_amount(self):
+        """Calculate ROI on minimum amount for display"""
+        return self.min_amount * (self.roi_percentage / 100)
+    
+    # def get_name_display(self):
+    #     return self.get_name_display or self.name
 
 
 class InvestmentStatus(models.TextChoices):

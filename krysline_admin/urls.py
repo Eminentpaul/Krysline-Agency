@@ -22,4 +22,17 @@ urlpatterns = [
     path('verify/<str:pk>/property/transaction/', views.verify_property_transaction, name='verify_property'),  
     path('investments/list/', views.admin_investment_list, name="admin_investment_list"),
     path('investments/<str:investment_id>/verify/', views.verify_investment, name='verify_investment'),
+    path('investments/<str:investment_id>/reject/', views.reject_investment, name='reject_investment'),
+    path('investments/<str:investment_id>/details/', views.admin_investment_detail, name='admin_investment_detail'),
+    path('payouts/<str:payout_id>/complete/', views.complete_payout, name='complete_payout'),
+    path('investments/<str:investment_id>/delete/', views.admin_investment_delete, name='admin_investment_delete'),
+
+
+    # Investment plan urls
+    path('plans/', views.admin_plan_list, name='admin_plan_list'),
+    path('plans/create/', views.create_plan, name='create_plan'),
+    path('plans/<str:plan_id>/', views.admin_plan_detail, name='admin_plan_detail'),
+    path('plans/<str:plan_id>/update/', views.update_plan, name='update_plan'),
+    path('plans/<str:plan_id>/toggle/', views.toggle_plan_status, name='toggle_plan_status'),
+    path('plans/<str:plan_id>/delete/', views.delete_plan, name='delete_plan'),
 ]
