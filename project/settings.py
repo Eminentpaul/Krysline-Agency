@@ -109,6 +109,9 @@ MY_APPS = [
     'krysline_admin', 
     'ledger',
     'base',
+
+    # API
+    'api',
 ]
 
 THIRD_PARTY_APPS = [
@@ -133,7 +136,10 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount.providers.google',
 
      # The MFA app:
-    'allauth.mfa'
+    'allauth.mfa',
+
+    # Django Rest_framework
+    "rest_framework",
     
     
 ]

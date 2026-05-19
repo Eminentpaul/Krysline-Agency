@@ -21,5 +21,8 @@ urlpatterns = [
     # path('admin/investments/', views.admin_investment_list, name='admin_investment_list'),
     # path('admin/investments/<uuid:investment_id>/verify/', views.verify_investment, name='verify_investment'),
     # path('admin/payouts/<uuid:payout_id>/process/', views.process_payout, name='process_payout'),
+
+    path('terms-and-condition/', views.terms_and_condition, name='term_and_condition'),
+    path('privacy-policy/', views.policy, name='policy')
 ]
 

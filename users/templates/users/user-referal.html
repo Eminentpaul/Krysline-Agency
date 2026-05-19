@@ -33,7 +33,8 @@
             </div>
             <div class="col-12 py-2"></div>
             <!-- copy code-->
-            {% if user.affiliate_record.is_active and user.affiliate_record.package.price > 0 %}
+            {% if user.affiliate_record.is_active %}
+            {% comment %} {% if user.affiliate_record.is_active and user.affiliate_record.package.price > 0 %} {% endcomment %}
                 <div class="col-12 col-md-8 col-lg-6 col-xxl-5 mb-4">
                     <p>Copy and Share your referral link with your network</p>
                     <div class="input-group mb-3">

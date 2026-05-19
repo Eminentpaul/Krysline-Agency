@@ -334,10 +334,10 @@
         const amount = parseFloat(document.getElementById('investmentAmount').value) || 0;
         
         // Validate range
-        if (amount < planData.minAmount) {
-            document.getElementById('investmentAmount').value = planData.minAmount;
-            return;
-        }
+        //if (amount < planData.minAmount) {
+           // document.getElementById('investmentAmount').value = planData.minAmount;
+           // return;
+      //  }
         if (planData.maxAmount && amount > planData.maxAmount) {
             document.getElementById('investmentAmount').value = planData.maxAmount;
             return;

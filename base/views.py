@@ -543,6 +543,13 @@ def verify_investment(request, investment_id):
 
 
 
+def terms_and_condition(request):
+    return render(request, 'terms.html')
+
+def policy(request):
+    return render(request, 'privacy.html')
+
+
 
 def _404(request, exception):
     return render(request, '404.html', {})

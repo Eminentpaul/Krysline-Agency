@@ -1,0 +1,393 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - KAL Affiliate System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+</head>
+<body class="bg-light">
+    <!-- Paste content here, replace template tags -->
+     <div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-9">
+            <!-- Header -->
+            <div class="text-center mb-5">
+                <img src="{% static 'images/kal-logo.png' %}" alt="KAL" class="mb-3" height="60" onerror="this.style.display='none'">
+                <h1 class="display-5 fw-bold mb-2">Privacy Policy</h1>
+                <p class="text-secondary mb-0">KAL Affiliate System — Krysline Agency Ltd</p>
+                <span class="badge bg-primary mt-2">Effective Date: {{ current_date|default:"May 2026" }}</span>
+            </div>
+
+            <!-- Intro -->
+            <div class="alert alert-primary d-flex align-items-start mb-4">
+                <i class="bi bi-shield-check fs-4 me-3 mt-1"></i>
+                <div>
+                    <strong>Your Privacy Matters</strong>
+                    <p class="mb-0">At KAL (Krysline Agency Ltd), we value your privacy and are committed to protecting the personal information shared with us through our affiliate system, website, WhatsApp platforms, and related services.</p>
+                </div>
+            </div>
+
+            <!-- Agreement Notice -->
+            <div class="card border-primary mb-4">
+                <div class="card-body text-center">
+                    <p class="mb-0">By using the KAL Affiliate System, you agree to the terms outlined in this Privacy Policy.</p>
+                </div>
+            </div>
+
+            <!-- Section 1: Information We Collect -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="h4 text-primary mb-4">
+                        <span class="badge bg-primary me-2">1</span>Information We Collect
+                    </h2>
+                    <p class="text-secondary mb-3">We may collect the following information from affiliates, clients, and users:</p>
+                    
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <div class="card h-100 border-info">
+                                <div class="card-header bg-info text-white">
+                                    <h6 class="mb-0"><i class="bi bi-person-vcard me-2"></i>Personal Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item px-0"><i class="bi bi-check2 text-info me-2"></i>Full name</li>
+                                        <li class="list-group-item px-0"><i class="bi bi-check2 text-info me-2"></i>Phone number</li>
+                                        <li class="list-group-item px-0"><i class="bi bi-check2 text-info me-2"></i>Email address</li>
+                                        <li class="list-group-item px-0"><i class="bi bi-check2 text-info me-2"></i>Residential location</li>
+                                        <li class="list-group-item px-0"><i class="bi bi-check2 text-info me-2"></i>Bank/payment details (where applicable)</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card h-100 border-success">
+                                <div class="card-header bg-success text-white">
+                                    <h6 class="mb-0"><i class="bi bi-briefcase me-2"></i>Business & Usage Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <ul class="list-group list-group-flush">
+                                        <li class="list-group-item px-0"><i class="bi bi-check2 text-success me-2"></i>Referral activities</li>
+                                        <li class="list-group-item px-0"><i class="bi bi-check2 text-success me-2"></i>Transaction records</li>
+                                        <li class="list-group-item px-0"><i class="bi bi-check2 text-success me-2"></i>Communication history</li>
+                                        <li class="list-group-item px-0"><i class="bi bi-check2 text-success me-2"></i>Device or login information</li>
+                                        <li class="list-group-item px-0"><i class="bi bi-check2 text-success me-2"></i>Social media or promotional activity related to KAL</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: How We Use Your Information -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="h4 text-primary mb-4">
+                        <span class="badge bg-primary me-2">2</span>How We Use Your Information
+                    </h2>
+                    <p class="text-secondary mb-3">Your information may be used to:</p>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start p-3 bg-light rounded h-100">
+                                <i class="bi bi-person-gear text-primary fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="mb-1">Account Management</h6>
+                                    <p class="small text-secondary mb-0">Register and manage affiliate accounts</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start p-3 bg-light rounded h-100">
+                                <i class="bi bi-cash-stack text-success fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="mb-1">Payments</h6>
+                                    <p class="small text-secondary mb-0">Process commissions and transactions</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start p-3 bg-light rounded h-100">
+                                <i class="bi bi-mortarboard text-info fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="mb-1">Support</h6>
+                                    <p class="small text-secondary mb-0">Provide updates, training, and support</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start p-3 bg-light rounded h-100">
+                                <i class="bi bi-graph-up-arrow text-warning fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="mb-1">Improvement</h6>
+                                    <p class="small text-secondary mb-0">Improve KAL services and operations</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start p-3 bg-light rounded h-100">
+                                <i class="bi bi-megaphone text-danger fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="mb-1">Communication</h6>
+                                    <p class="small text-secondary mb-0">Communicate important announcements</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="d-flex align-items-start p-3 bg-light rounded h-100">
+                                <i class="bi bi-shield-exclamation text-secondary fs-4 me-3"></i>
+                                <div>
+                                    <h6 class="mb-1">Security</h6>
+                                    <p class="small text-secondary mb-0">Prevent fraud, abuse, or unauthorized activities</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 3: Information Sharing -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="h4 text-primary mb-4">
+                        <span class="badge bg-primary me-2">3</span>Information Sharing
+                    </h2>
+                    
+                    <div class="alert alert-success d-flex align-items-center mb-4">
+                        <i class="bi bi-shield-lock fs-4 me-3"></i>
+                        <div>
+                            <strong>KAL does not sell personal information to third parties.</strong>
+                        </div>
+                    </div>
+                    
+                    <p class="text-secondary mb-3">However, information may be shared:</p>
+                    
+                    <div class="list-group">
+                        <div class="list-group-item d-flex align-items-center">
+                            <span class="badge bg-primary rounded-pill me-3">1</span>
+                            <span>When required by law</span>
+                        </div>
+                        <div class="list-group-item d-flex align-items-center">
+                            <span class="badge bg-primary rounded-pill me-3">2</span>
+                            <span>For payment processing purposes</span>
+                        </div>
+                        <div class="list-group-item d-flex align-items-center">
+                            <span class="badge bg-primary rounded-pill me-3">3</span>
+                            <span>With authorized internal team members for operational support</span>
+                        </div>
+                        <div class="list-group-item d-flex align-items-center">
+                            <span class="badge bg-primary rounded-pill me-3">4</span>
+                            <span>To protect the rights, safety, or integrity of KAL and its users</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Data Protection -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="h4 text-primary mb-4">
+                        <span class="badge bg-primary me-2">4</span>Data Protection
+                    </h2>
+                    
+                    <p class="mb-3">We take reasonable measures to protect user information from:</p>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-6 col-md-3">
+                            <div class="text-center p-3 border rounded">
+                                <i class="bi bi-person-x text-danger fs-2 mb-2"></i>
+                                <h6 class="mb-0 small">Unauthorized access</h6>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="text-center p-3 border rounded">
+                                <i class="bi bi-database-x text-warning fs-2 mb-2"></i>
+                                <h6 class="mb-0 small">Data loss</h6>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="text-center p-3 border rounded">
+                                <i class="bi bi-shield-x text-info fs-2 mb-2"></i>
+                                <h6 class="mb-0 small">Misuse</h6>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="text-center p-3 border rounded">
+                                <i class="bi bi-file-earmark-x text-secondary fs-2 mb-2"></i>
+                                <h6 class="mb-0 small">Alteration or disclosure</h6>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-warning mb-0">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        While we strive to secure all data, no online system can guarantee complete security.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Affiliate Responsibilities -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="h4 text-primary mb-4">
+                        <span class="badge bg-primary me-2">5</span>Affiliate Responsibilities
+                    </h2>
+                    
+                    <p class="text-secondary mb-3">Affiliates are responsible for:</p>
+                    
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="card h-100 border-primary">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-key text-primary fs-2 mb-3"></i>
+                                    <h6>Account Security</h6>
+                                    <p class="small text-secondary mb-0">Keeping account information secure</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 border-success">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-lock text-success fs-2 mb-3"></i>
+                                    <h6>Data Confidentiality</h6>
+                                    <p class="small text-secondary mb-0">Avoiding unauthorized sharing of client or team data</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 border-info">
+                                <div class="card-body text-center">
+                                    <i class="bi bi-hand-thumbs-up text-info fs-2 mb-3"></i>
+                                    <h6>Ethical Use</h6>
+                                    <p class="small text-secondary mb-0">Using KAL platforms responsibly and ethically</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 6: Communication Consent -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="h4 text-primary mb-4">
+                        <span class="badge bg-primary me-2">6</span>Communication Consent
+                    </h2>
+                    
+                    <p class="mb-3">By joining the KAL Affiliate System, you consent to receiving:</p>
+                    
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center p-3 bg-success bg-opacity-10 rounded">
+                                <i class="bi bi-whatsapp text-success fs-4 me-3"></i>
+                                <span>WhatsApp updates</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center p-3 bg-info bg-opacity-10 rounded">
+                                <i class="bi bi-bell text-info fs-4 me-3"></i>
+                                <span>Training notifications</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center p-3 bg-warning bg-opacity-10 rounded">
+                                <i class="bi bi-megaphone text-warning fs-4 me-3"></i>
+                                <span>Promotional announcements</span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center p-3 bg-primary bg-opacity-10 rounded">
+                                <i class="bi bi-envelope text-primary fs-4 me-3"></i>
+                                <span>Business-related communication from KAL</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mb-0">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        Users may request removal from non-essential communications at any time.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 7: Third-Party Platforms -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="h4 text-primary mb-4">
+                        <span class="badge bg-primary me-2">7</span>Third-Party Platforms
+                    </h2>
+                    
+                    <p class="mb-3">KAL may use third-party platforms such as:</p>
+                    
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        <span class="badge bg-success fs-6 px-3 py-2"><i class="bi bi-whatsapp me-1"></i>WhatsApp</span>
+                        <span class="badge bg-primary fs-6 px-3 py-2"><i class="bi bi-credit-card me-1"></i>Payment processors</span>
+                        <span class="badge bg-info fs-6 px-3 py-2"><i class="bi bi-globe me-1"></i>Websites and hosting services</span>
+                    </div>
+                    
+                    <div class="alert alert-secondary mb-0">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Use of such services may also be subject to their individual privacy policies.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 8: Changes to This Policy -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="h4 text-primary mb-4">
+                        <span class="badge bg-primary me-2">8</span>Changes to This Policy
+                    </h2>
+                    
+                    <div class="bg-light p-4 rounded">
+                        <p class="mb-2"><i class="bi bi-arrow-repeat text-primary me-2"></i>KAL reserves the right to update or modify this Privacy Policy when necessary.</p>
+                        <p class="mb-0"><i class="bi bi-check-circle text-success me-2"></i>Continued use of the system after updates constitutes acceptance of the revised policy.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 9: Contact & Support -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body p-4 p-md-5">
+                    <h2 class="h4 text-primary mb-4">
+                        <span class="badge bg-primary me-2">9</span>Contact & Support
+                    </h2>
+                    
+                    <div class="text-center p-4 bg-primary bg-opacity-10 rounded">
+                        <i class="bi bi-headset text-primary fs-1 mb-3"></i>
+                        <p class="mb-0">For questions, support, or privacy-related concerns, contact the official KAL support channels or administrators.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Acknowledgment -->
+            <div class="card border-primary">
+                <div class="card-body p-4 text-center">
+                    <i class="bi bi-shield-check text-primary fs-1 mb-3"></i>
+                    <p class="mb-0 fw-medium">By participating in the KAL Affiliate System, you acknowledge that you have read and agreed to this Privacy Policy.</p>
+                </div>
+            </div>
+
+            <!-- Footer Branding -->
+            <div class="text-center mt-5">
+                <hr class="mb-4">
+                <div class="d-flex justify-content-center align-items-center gap-3 text-secondary mb-3">
+                    <span><i class="bi bi-building me-1"></i>Krysline Agency Ltd</span>
+                    <span>|</span>
+                    <span><i class="bi bi-globe me-1"></i>KAL Affiliate System</span>
+                </div>
+                <p class="text-primary fw-bold">
+                    <i class="bi bi-stars me-2"></i>
+                    KAL — Building Opportunities, Creating Earners.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
